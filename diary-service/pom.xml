@@ -15,7 +15,7 @@
     <description>Diary Service for Diabetes Diary App</description>
     <properties>
         <java.version>11</java.version>
-        <docker.image.prefix>MSA</docker.image.prefix>
+        <docker.image.prefix>msa</docker.image.prefix>
     </properties>
     <dependencies>
         <dependency>

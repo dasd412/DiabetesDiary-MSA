@@ -18,7 +18,7 @@
     </parent>
 
     <properties>
-        <docker.image.prefix>MSA</docker.image.prefix>
+        <docker.image.prefix>msa</docker.image.prefix>
     </properties>
 
     <modules>
