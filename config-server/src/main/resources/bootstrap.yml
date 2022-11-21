@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native #git
+  cloud:
+    config:
+      server:
+        encrypt:
+          enabled: false
+        native:
+          search-locations: classpath:/config
+        git:
+          uri: https://github.com/dasd412/DiabetesDiary-config.git
+          search-paths: diary-service
+
+server:
+  port: 8071
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
