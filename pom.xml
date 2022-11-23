@@ -24,6 +24,7 @@
     <modules>
         <module>diary-service</module>
         <module>config-server</module>
+        <module>eureka-server</module>
     </modules>
 
     <build>

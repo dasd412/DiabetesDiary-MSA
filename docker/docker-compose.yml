@@ -10,6 +10,17 @@ services:
         aliases:
           - "configserver"
 
+  eurekaserver:
+    image: msa/eureka-server:0.0.1-SNAPSHOT
+    ports:
+      - "8070:8070"
+    depends_on:
+      - configserver
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
   diaryservice:
     image: msa/diary-service:0.0.1-SNAPSHOT
     ports:

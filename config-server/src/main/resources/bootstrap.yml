@@ -2,7 +2,7 @@ spring:
   application:
     name: config-server
   profiles:
-    active: native #git
+    active: git #native
   cloud:
     config:
       server:
@@ -12,7 +12,6 @@ spring:
           search-locations: classpath:/config
         git:
           uri: https://github.com/dasd412/DiabetesDiary-config.git
-          search-paths: diary-service
 
 server:
   port: 8071
