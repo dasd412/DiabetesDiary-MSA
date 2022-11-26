@@ -11,6 +11,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
+@Table(name = "DiabetesDiary", uniqueConstraints = @UniqueConstraint(columnNames = {"diary_id"}))
 public class DiabetesDiary extends BaseTimeEntity {
 
     @Id

@@ -6,6 +6,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @RefreshScope
+@EnableJpaAuditing
 @SpringBootApplication
 public class WriterServiceApplication {
 
