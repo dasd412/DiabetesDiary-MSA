@@ -22,12 +22,25 @@ services:
           - "eurekaserver"
 
   diaryservice:
-    image: msa/diary-service:0.0.1-SNAPSHOT
+    image: msa/diary-service:0.0.2-SNAPSHOT
     ports:
       - "8081:8081"
     environment:
       PROFILE: "dev"
-      CONFIG_SERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+    depends_on:
+      - configserver
+    networks:
+      - backend
+
+  writerservice:
+    image: msa/writer-service:0.0.1-SNAPSHOT
+    ports:
+      - "8082:8082"
+    environment:
+      profile: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
     depends_on:
       - configserver

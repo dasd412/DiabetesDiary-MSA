@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: writer-service
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://configserver:8071
