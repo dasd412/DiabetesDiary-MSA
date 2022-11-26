@@ -15,13 +15,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class DiabetesDiary extends BaseTimeEntity {
 
     @Id
+    //todo GeneratedValue는 지워야할 수도
+    @GeneratedValue
     @Column(name = "diary_id", columnDefinition = "bigint default 0")
     private Long diaryId;
 
-//    @Id
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "writer_id")
-//    private Writer writer;
+    private Long writerId;
 
     @Column(name = "fpg")
     private int fastingPlasmaGlucose;
@@ -40,8 +39,8 @@ public class DiabetesDiary extends BaseTimeEntity {
     }
 
     //todo 나중에 지울 생성자. postman 실험용.
-    public DiabetesDiary(Long diaryId, int fastingPlasmaGlucose, String remark) {
-        this.diaryId = diaryId;
+    public DiabetesDiary(Long writerId, int fastingPlasmaGlucose, String remark) {
+        this.writerId=writerId;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
         this.remark = remark;
     }

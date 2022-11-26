@@ -15,7 +15,10 @@ import java.util.List;
 @Builder
 @Getter
 public class SecurityDiaryPostRequestDTO {
-
+    
+    //todo 지워야 할 것 같은 속성
+    private final Long writerId;
+    
     private final int fastingPlasmaGlucose;
 
     private final String remark;

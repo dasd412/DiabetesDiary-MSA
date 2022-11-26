@@ -47,8 +47,9 @@ public class Writer extends BaseTimeEntity {
      */
     private String providerId;
 
-//    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private final Set<DiabetesDiary> diaries = new HashSet<>();
+    @ElementCollection
+    private final List<Long>diaryIds=new ArrayList<>();
+
 //
 //    @OneToOne
 //    @JoinColumn(name = "profile_id")
