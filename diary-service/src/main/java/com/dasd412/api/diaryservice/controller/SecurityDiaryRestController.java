@@ -25,13 +25,13 @@ public class SecurityDiaryRestController {
     }
 
     @PostMapping
-    public ApiResult<SecurityDiaryPostResponseDTO> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) {
+    public ApiResult<SecurityDiaryPostResponseDTO> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto){
         logger.info("post diary with authenticated user");
 
         //todo 시큐리티 적용한 것으로 바꿔야할지 고민해봐야 함.
         //Long diaryId = saveDiaryService.postDiaryWithEntities(principalDetails, dto);
 
-        Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
+        Long diaryId= saveDiaryService.postDiaryWithEntities(dto);
 
         return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
     }
