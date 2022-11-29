@@ -7,8 +7,7 @@ spring:
     config:
       uri: http://configserver:8071
 
-resilience4j:
-  ratelimiter:
+resilience4j.ratelimiter:
     instances:
       diaryService:
         timeOutDuration: 1000ms

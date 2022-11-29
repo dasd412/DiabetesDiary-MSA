@@ -20,7 +20,7 @@
 		<java.version>11</java.version>
 		<docker.image.prefix>msa</docker.image.prefix>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-		<resilience4j.version>2.0.0</resilience4j.version>
+		<resilience4j.version>1.5.0</resilience4j.version>
 	</properties>
 
 	<dependencies>
