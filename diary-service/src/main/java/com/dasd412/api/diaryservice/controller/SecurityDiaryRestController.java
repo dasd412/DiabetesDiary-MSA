@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.controller;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostResponseDTO;
 import com.dasd412.api.diaryservice.service.SaveDiaryService;
+import com.dasd412.api.diaryservice.utils.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,8 @@ public class SecurityDiaryRestController {
     @PostMapping
     public ApiResult<SecurityDiaryPostResponseDTO> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto){
         logger.info("post diary with authenticated user");
-
+        logger.debug("SecurityDiaryRestController correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+        
         //todo 시큐리티 적용한 것으로 바꿔야할지 고민해봐야 함.
         //Long diaryId = saveDiaryService.postDiaryWithEntities(principalDetails, dto);
 
