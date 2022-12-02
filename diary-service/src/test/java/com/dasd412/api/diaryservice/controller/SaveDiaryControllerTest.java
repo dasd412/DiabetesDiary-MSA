@@ -17,6 +17,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,7 +29,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,7 +45,8 @@ public class SaveDiaryControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
+
+    @MockBean
     private DiaryRepository diaryRepository;
 
     @Autowired
@@ -64,7 +68,6 @@ public class SaveDiaryControllerTest {
                 .build();
 
         dto = new SecurityDiaryPostRequestDTO(1L, 100, "TEST");
-
     }
 
     @After
@@ -73,13 +76,35 @@ public class SaveDiaryControllerTest {
     }
 
     @Test
-    public void testSaveDiaryWhenCircuitBreakClosedAndServiceCallTimeOut() throws Exception {
+    public void testSaveDiaryWhenCircuitBreakClosedAndMicroServiceCallTimeOut() throws Exception {
         //given
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToClosedState();
 
         //when
         when(findWriterFeignClient.findWriterById(1L)).thenThrow(new TimeoutException());
+        mockMvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(dto)))
+                .andExpect(jsonPath("$.success").value("false"))
+                .andExpect(jsonPath("$.error.message").exists())
+                .andExpect(jsonPath("$.error.status").value("500"));
+
+        //then
+        assertThat(diaryRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testSaveDiaryWhenCircuitBreakClosedAndDataBaseTimeOut() throws Exception {
+        //given
+        circuitBreakerRegistry.circuitBreaker("diaryService")
+                .transitionToClosedState();
+        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
+        given(diaryRepository.save(any(DiabetesDiary.class))).willAnswer(invocation -> {
+            throw new TimeoutException();
+        });
+
+        //when
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -97,20 +122,25 @@ public class SaveDiaryControllerTest {
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToOpenState();
 
+        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
+        given(diaryRepository.save(any(DiabetesDiary.class))).willAnswer(invocation -> {
+            throw new TimeoutException();
+        });
+
         //when
-        when(findWriterFeignClient.findWriterById(1L)).thenThrow(new TimeoutException());
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(jsonPath("$.success").value("false"))
                 .andExpect(jsonPath("$.error.message").exists())
                 .andExpect(jsonPath("$.error.status").value("500"));
+
         //then
         assertThat(diaryRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
-    public void testSaveDiaryWhenCircuitBreakClosedAndServiceAvailable() throws Exception {
+    public void testSaveDiaryWhenCircuitBreakClosedAndAllServiceAvailable() throws Exception {
         //given
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToClosedState();
@@ -118,18 +148,16 @@ public class SaveDiaryControllerTest {
         given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
 
         //when
+        when(diaryRepository.save(any(DiabetesDiary.class))).thenReturn(new DiabetesDiary());
+
         mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response.id").value(1L));
+                .andExpect(jsonPath("$.success").value("true"));
 
         //then
-        DiabetesDiary savedLatest = diaryRepository.findAll().get(0);
-
-        assertThat(savedLatest.getFastingPlasmaGlucose()).isEqualTo(dto.getFastingPlasmaGlucose());
-        assertThat(savedLatest.getRemark()).isEqualTo(dto.getRemark());
+        verify(diaryRepository).save(any());
     }
 
 }

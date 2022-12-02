@@ -4,6 +4,8 @@ import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostResponseDTO;
 import com.dasd412.api.diaryservice.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.utils.UserContextHolder;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,16 +30,19 @@ public class SecurityDiaryRestController {
     }
 
     @PostMapping
-    public ApiResult<?> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) {
-        logger.info("post diary with authenticated user");
-        logger.debug("SecurityDiaryRestController correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+    @RateLimiter(name = "diaryService")
+    @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackPostDiary")
+    public ApiResult<?> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) throws TimeoutException {
+        logger.debug("SecurityDiaryRestController correlation id in posting diary:{}", UserContextHolder.getContext().getCorrelationId());
 
-        Long diaryId;
-        try {
-            diaryId = saveDiaryService.postDiaryWithEntities(dto);
-            return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
-        } catch (TimeoutException e) {
-            return ApiResult.ERROR("Failed to save diary.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
+
+        return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
+    }
+
+    @SuppressWarnings("unused")
+    private ApiResult<?> fallBackPostDiary(SecurityDiaryPostRequestDTO dto, Throwable throwable) {
+        logger.error("failed to call outer component in posting Diary. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
