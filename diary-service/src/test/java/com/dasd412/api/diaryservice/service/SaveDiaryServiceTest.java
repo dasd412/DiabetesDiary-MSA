@@ -6,6 +6,7 @@ import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -47,6 +48,11 @@ public class SaveDiaryServiceTest {
     @Before
     public void setUpDTO() {
         dto = new SecurityDiaryPostRequestDTO(1L, 100, "TEST");
+    }
+
+    @After
+    public void clean() {
+        diaryRepository.deleteAll();
     }
 
     @Test
