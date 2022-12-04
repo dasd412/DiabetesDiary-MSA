@@ -21,6 +21,25 @@ services:
         aliases:
           - "eurekaserver"
 
+  gatewayserver:
+    image: msa/gateway-server:0.0.1-SNAPSHOT
+    ports:
+      - "8062:8062"
+    environment:
+      PROFILE: "default"
+      SERVER_PORT: "8062"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      EUREKASERVER_URI: "http://eurekaserver:8070/eureka/"
+      EUREKASERVER_PORT: "8070"
+    depends_on:
+      - configserver
+      - eurekaserver
+    networks:
+      backend:
+        aliases:
+          - "gateway"
+
   diaryservice:
     image: msa/diary-service:0.0.2-SNAPSHOT
     ports:
