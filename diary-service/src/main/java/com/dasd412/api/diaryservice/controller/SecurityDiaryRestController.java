@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
@@ -35,9 +36,12 @@ public class SecurityDiaryRestController {
     public ApiResult<?> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) throws TimeoutException {
         logger.debug("SecurityDiaryRestController correlation id in posting diary:{}", UserContextHolder.getContext().getCorrelationId());
 
-        Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
-
-        return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
+        try {
+            Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
+            return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
+        } catch (NoResultException exception) {
+            return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @SuppressWarnings("unused")

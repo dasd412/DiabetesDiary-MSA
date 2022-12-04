@@ -9,6 +9,7 @@ import com.dasd412.api.diaryservice.utils.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeoutException;
 
@@ -27,6 +28,7 @@ public class SaveDiaryService {
     }
 
     //todo 스켈레톤 코드 지우고 실제 로직 넣을 필요 있음.
+    @Transactional
     public Long postDiaryWithEntities(SecurityDiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
