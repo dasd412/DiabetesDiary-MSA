@@ -1,6 +1,8 @@
 package com.dasd412.api.diaryservice.utils;
 
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class UserContextHolder {
 
     private static final ThreadLocal<UserContext> userContext = new ThreadLocal<>();
@@ -16,6 +18,7 @@ public class UserContextHolder {
     }
 
     public static void setUserContext(UserContext context) {
+        checkNotNull(context,"User context must be not null!!");
         userContext.set(context);
     }
 
