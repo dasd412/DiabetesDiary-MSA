@@ -7,6 +7,7 @@ import com.dasd412.api.writerservice.service.SaveWriterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/writer/")
 @RestController
 public class SecurityWriterController {
 
@@ -19,14 +20,14 @@ public class SecurityWriterController {
     }
 
     //todo 나중에 지울 메서드
-    @PostMapping("/writer/save")
+    @PostMapping()
     public ApiResult<Long> saveWriterTest(@RequestBody SaveTestDTO dto) {
         Long writerId = saveWriterService.saveWriterInTest(dto.getName(), dto.getEmail());
         return ApiResult.OK(writerId);
     }
 
     //todo 나중에 지울 메서드
-    @GetMapping("/writer/{writerId}")
+    @GetMapping("{writerId}")
     public ResponseEntity<Long> findWriterTest(@PathVariable("writerId") Long writerId) {
         Writer found = findWriterService.findWriterById(writerId);
         return ResponseEntity.ok(found.getId());

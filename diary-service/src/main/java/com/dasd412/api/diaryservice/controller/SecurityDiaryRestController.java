@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping("/api/diary/user/diabetes-diary")
+@RequestMapping("/diabetes-diary")
 public class SecurityDiaryRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

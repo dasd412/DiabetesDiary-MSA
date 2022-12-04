@@ -59,7 +59,7 @@ public class SaveDiaryControllerTest {
 
     private SecurityDiaryPostRequestDTO dto;
 
-    private final String url = "/api/diary/user/diabetes-diary";
+    private final String url = "/diabetes-diary";
 
     @Before
     public void setUpDTO() {
