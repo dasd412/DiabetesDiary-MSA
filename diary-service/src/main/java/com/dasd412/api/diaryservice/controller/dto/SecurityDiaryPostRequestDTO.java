@@ -17,7 +17,6 @@ import java.util.List;
 @Getter
 public class SecurityDiaryPostRequestDTO {
 
-    @NotEmpty
     @NotNull
     private final Long writerId;
     

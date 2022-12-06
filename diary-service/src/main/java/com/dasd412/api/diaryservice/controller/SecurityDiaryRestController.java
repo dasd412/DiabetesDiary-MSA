@@ -3,7 +3,7 @@ package com.dasd412.api.diaryservice.controller;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostResponseDTO;
 import com.dasd412.api.diaryservice.service.SaveDiaryService;
-import com.dasd412.api.diaryservice.utils.UserContextHolder;
+import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.slf4j.Logger;
