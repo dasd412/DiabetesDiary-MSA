@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -27,14 +28,14 @@ public class SaveDiaryService {
         this.findWriterFeignClient = findWriterFeignClient;
     }
 
-    //todo 스켈레톤 코드 지우고 실제 로직 넣을 필요 있음.
+    //todo JWT 도입 이후 바꿀 필요 있을지도...
     @Transactional
     public Long postDiaryWithEntities(SecurityDiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
 
         logger.info("saving diary... correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark());
+        DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), LocalDateTime.now());
         diaryRepository.save(diary);
 
         return diary.getId();
