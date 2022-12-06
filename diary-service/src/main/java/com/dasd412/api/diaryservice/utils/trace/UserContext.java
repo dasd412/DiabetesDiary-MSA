@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.utils;
+package com.dasd412.api.diaryservice.utils.trace;
 
 import lombok.Getter;
 import lombok.Setter;

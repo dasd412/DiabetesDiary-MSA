@@ -1,5 +1,7 @@
-package com.dasd412.api.diaryservice.utils;
+package com.dasd412.api.diaryservice.utils.trace;
 
+import com.dasd412.api.diaryservice.utils.trace.UserContext;
+import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
