@@ -86,9 +86,7 @@ public class SaveDiaryResilienceTest {
                 .collect(Collectors.toList());
 
         return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
-                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
-                .breakFastSugar(110).lunchSugar(120).dinnerSugar(130)
-                .breakFastFoods(breakFast).lunchFoods(lunch).dinnerFoods(dinner).build();
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
     @After

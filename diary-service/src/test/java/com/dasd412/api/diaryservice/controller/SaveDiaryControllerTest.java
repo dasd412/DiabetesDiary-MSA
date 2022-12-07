@@ -2,8 +2,11 @@ package com.dasd412.api.diaryservice.controller;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.controller.dto.SecurityDietDTO;
+import com.dasd412.api.diaryservice.controller.dto.SecurityFoodDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.DietRepository;
+import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import com.dasd412.api.diaryservice.domain.food.FoodRepository;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 
@@ -23,6 +26,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -75,6 +80,9 @@ public class SaveDiaryControllerTest {
         return mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto)));
     }
 
+    /*
+    일지만 테스트
+     */
     @Test
     public void postDiaryWhichHasInvalidFastingPlasmaGlucose() throws Exception {
         SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidFastingPlasmaGlucose();
@@ -138,5 +146,63 @@ public class SaveDiaryControllerTest {
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
+    /*
+    식단 테스트
+     */
+    @Test
+    public void postDiaryWhichHasInvalidBloodSugar() throws Exception {
+        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidBloodSugar();
+
+        postDto(dto)
+                .andExpect(jsonPath("$.success").value("false"))
+                .andExpect(jsonPath("$.error.status").value("400"))
+                .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidBloodSugar() {
+        List<SecurityDietDTO> invalidDietList = new ArrayList<>();
+        invalidDietList.add(new SecurityDietDTO(EatTime.ELSE, -1, new ArrayList<>()));
+
+        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .dietList(invalidDietList).build();
+    }
+
+    @Test
+    public void postDiaryWhichHasValidDiets() throws Exception {
+        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
+
+        postDto(dto)
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value("1"));
+    }
+
+    private SecurityDiaryPostRequestDTO makeDtoWhichHasValidDiet() {
+        List<SecurityDietDTO> validDietList = new ArrayList<>();
+        validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, new ArrayList<>()));
+
+        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .dietList(validDietList).build();
+    }
+
+    /*
+    음식 테스트
+     */
+
+    @Test
+    public void postDiaryWhichHasInvalidFoodNameLength() throws Exception {
+
+    }
+
+    @Test
+    public void postDiaryWhichHasInvalidFoodAmount() throws Exception {
+
+    }
+
+    @Test
+    public void postDiaryWhichHasValidFoods() throws Exception {
+
+    }
 
 }

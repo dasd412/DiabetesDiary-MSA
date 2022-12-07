@@ -1,6 +1,5 @@
 package com.dasd412.api.diaryservice.controller.dto;
 
-import com.dasd412.api.diaryservice.controller.FoodListSize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class SecurityDiaryPostRequestDTO {
 
     @NotNull
     private final Long writerId;
-    
+
     private final int fastingPlasmaGlucose;
 
     private final String remark;
@@ -47,19 +46,7 @@ public class SecurityDiaryPostRequestDTO {
     @NotEmpty
     @NotNull
     private final String second;
-
-    private final int breakFastSugar;
-    private final int lunchSugar;
-    private final int dinnerSugar;
-
-    @Size(max = FoodListSize.FOOD_LIST_SIZE)
-    private final List<SecurityFoodDTO> breakFastFoods;
-
-    @Size(max = FoodListSize.FOOD_LIST_SIZE)
-    private final List<SecurityFoodDTO> lunchFoods;
-
-    @Size(max = FoodListSize.FOOD_LIST_SIZE)
-    private final List<SecurityFoodDTO> dinnerFoods;
+    private final List<SecurityDietDTO> dietList;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
@@ -71,12 +58,7 @@ public class SecurityDiaryPostRequestDTO {
                 .append("hour", hour)
                 .append("minute", minute)
                 .append("second", second)
-                .append("breakFastSugar", breakFastSugar)
-                .append("lunchSugar", lunchSugar)
-                .append("dinnerSugar", dinnerSugar)
-                .append("breakFastFoods", breakFastFoods)
-                .append("lunchFoods", lunchFoods)
-                .append("dinnerFoods", dinnerFoods)
+                .append("dietList", dietList.toString())
                 .toString();
     }
 }

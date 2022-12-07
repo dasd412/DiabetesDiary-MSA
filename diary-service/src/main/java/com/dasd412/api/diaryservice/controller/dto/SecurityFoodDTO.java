@@ -32,6 +32,5 @@ public class SecurityFoodDTO {
                 .append("amount", amount)
                 .append("amountUnit", amountUnit)
                 .toString();
-
     }
 }

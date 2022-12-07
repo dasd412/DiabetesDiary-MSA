@@ -1,8 +1,11 @@
 package com.dasd412.api.diaryservice.service;
 
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.domain.EntityId;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
+import com.dasd412.api.diaryservice.domain.diet.Diet;
+import com.dasd412.api.diaryservice.domain.diet.DietRepository;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.utils.date.DateStringJoiner;
 import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -22,10 +26,13 @@ public class SaveDiaryService {
 
     private final DiaryRepository diaryRepository;
 
+    private final DietRepository dietRepository;
+
     private final FindWriterFeignClient findWriterFeignClient;
 
-    public SaveDiaryService(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient) {
+    public SaveDiaryService(DiaryRepository diaryRepository, DietRepository dietRepository, FindWriterFeignClient findWriterFeignClient) {
         this.diaryRepository = diaryRepository;
+        this.dietRepository = dietRepository;
         this.findWriterFeignClient = findWriterFeignClient;
     }
 
@@ -52,10 +59,24 @@ public class SaveDiaryService {
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
         //todo 하위 엔티티 저장도 사이에 넣어야 한다.
+        List<Diet> dietList = makeDietList(diary, dto);
 
         diaryRepository.save(diary);
 
         return diary.getId();
+    }
+
+    private List<Diet> makeDietList(DiabetesDiary diary, SecurityDiaryPostRequestDTO dto) {
+
+        return null;
+    }
+
+    public EntityId<Diet, Long> getNextIdOfDiet() {
+        Long dietId = dietRepository.findMaxOfId();
+        if (dietId == null) {
+            dietId = 0L;
+        }
+        return EntityId.of(Diet.class, dietId + 1);
     }
 
     //todo 아파치 카프카 로직 추가 필요
