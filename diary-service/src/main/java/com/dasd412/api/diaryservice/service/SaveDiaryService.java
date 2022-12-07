@@ -6,6 +6,7 @@ import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.diet.DietRepository;
+import com.dasd412.api.diaryservice.domain.food.Food;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.utils.date.DateStringJoiner;
 import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
@@ -29,13 +30,10 @@ public class SaveDiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    private final DietRepository dietRepository;
-
     private final FindWriterFeignClient findWriterFeignClient;
 
-    public SaveDiaryService(DiaryRepository diaryRepository, DietRepository dietRepository, FindWriterFeignClient findWriterFeignClient) {
+    public SaveDiaryService(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient) {
         this.diaryRepository = diaryRepository;
-        this.dietRepository = dietRepository;
         this.findWriterFeignClient = findWriterFeignClient;
     }
 
@@ -62,13 +60,21 @@ public class SaveDiaryService {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
-
-        //todo 하위 엔티티 저장도 사이에 넣어야 한다.
         if (dto.getDietList() != null) {
+
             dto.getDietList().forEach(
-                    elem -> {
-                        Diet diet = new Diet(diary, elem.getEatTime(), elem.getBloodSugar());
+                    dietDTO -> {
+                        Diet diet = new Diet(diary, dietDTO.getEatTime(), dietDTO.getBloodSugar());
                         diary.addDiet(diet);
+
+                        if (dietDTO.getFoodList() != null) {
+                            dietDTO.getFoodList().forEach(
+                                    foodDto -> {
+                                        Food food = new Food(diet, foodDto.getFoodName(), foodDto.getAmount());
+                                        diet.addFood(food);
+                                    }
+                            );
+                        }
                     });
         }
 

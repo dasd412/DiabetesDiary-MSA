@@ -34,7 +34,7 @@ public class SecurityDiaryRestController {
     @RateLimiter(name = "diaryService")
     @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackPostDiary")
     public ApiResult<?> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) throws TimeoutException {
-        logger.debug("correlation id in posting diary of SecurityDiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("correlation id in posting diary of SecurityDiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         try {
             Long diaryId = saveDiaryService.postDiaryWithEntities(dto);

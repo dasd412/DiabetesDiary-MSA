@@ -3,7 +3,6 @@ package com.dasd412.api.diaryservice.controller;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
 import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.controller.dto.SecurityFoodDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 
