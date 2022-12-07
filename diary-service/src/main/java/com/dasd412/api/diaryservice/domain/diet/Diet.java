@@ -12,19 +12,19 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Diet", uniqueConstraints = @UniqueConstraint(columnNames = {"diet_id"}))
+@Table(name = "Diet")
 public class Diet {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "diet_id", columnDefinition = "bigint default 0")
     private Long dietId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id", referencedColumnName = "diary_id")
+    @JoinColumn(name = "diary_id")
     private DiabetesDiary diary;
 
-    @Column(name = "writer_id", nullable = false, unique = true)
+    @Column(name = "writer_id", nullable = false)
     private Long writerId;
 
     @Enumerated(EnumType.STRING)
@@ -33,7 +33,7 @@ public class Diet {
     private int bloodSugar;
 
     @OneToMany(mappedBy = "diet", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private final Set<Food> foodList = new HashSet<>();
+    private final List<Food> foodList = new ArrayList<>();
 
     public Diet() {
     }

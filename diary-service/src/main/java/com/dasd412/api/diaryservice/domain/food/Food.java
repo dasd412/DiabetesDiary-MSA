@@ -12,18 +12,18 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
-@Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
+@Table(name = "Food")
 public class Food {
 
     @Id
-    @GeneratedValue
-    @Column(name = "food_id", columnDefinition = "bigint default 0")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "food_id")
     private Long foodId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Diet diet;
 
-    @Column(name = "writer_id", nullable = false, unique = true)
+    @Column(name = "writer_id", nullable = false)
     private Long writerId;
 
     private String foodName;
@@ -37,19 +37,18 @@ public class Food {
     public Food() {
     }
 
-    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName) {
-        this(foodEntityId, diet, foodName, 0);
+    public Food(Diet diet, String foodName) {
+        this(diet, foodName, 0);
     }
 
-    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount) {
-        this(foodEntityId, diet, foodName, amount, AmountUnit.NONE);
+    public Food( Diet diet, String foodName, double amount) {
+        this(diet, foodName, amount, AmountUnit.NONE);
     }
 
-    public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount, AmountUnit amountUnit) {
+    public Food(Diet diet, String foodName, double amount, AmountUnit amountUnit) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         checkArgument(amount >= 0, "amount must be positive.");
         checkArgument(diet.getWriterId() != null && diet.getWriterId() > 0, "foreign key must be positive integer.");
-        this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.writerId = diet.getWriterId();
         this.foodName = foodName;

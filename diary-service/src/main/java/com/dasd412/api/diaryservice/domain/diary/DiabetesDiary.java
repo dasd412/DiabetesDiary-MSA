@@ -16,11 +16,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class DiabetesDiary extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "diary_id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "diary_id")
     private Long diaryId;
 
-    @Column(name = "writer_id", nullable = false, unique = true)
+    @Column(name = "writer_id", nullable = false)
     private Long writerId;
 
     @Column(name = "fpg")
@@ -31,7 +31,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     private LocalDateTime writtenTime;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private final Set<Diet> dietList = new HashSet<>();
+    private final List<Diet> dietList = new ArrayList<>();
 
     /**
      * JPA 엔티티에는 기본 생성자가 필요하다.

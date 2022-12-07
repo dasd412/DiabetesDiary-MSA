@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,23 +56,27 @@ public class SaveDiaryService {
         return diaryId;
     }
 
+
     @Transactional
-    Long makeDiaryWithSubEntities(Long writerId, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
+    private Long makeDiaryWithSubEntities(Long writerId, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
-        diaryRepository.save(diary);
+
 
         //todo 하위 엔티티 저장도 사이에 넣어야 한다.
         if (dto.getDietList() != null) {
-
-            if (dto.getDietList().size() > 0) {
-
-            }
+            dto.getDietList().forEach(
+                    elem -> {
+                        Diet diet = new Diet(diary, elem.getEatTime(), elem.getBloodSugar());
+                        diary.addDiet(diet);
+                    });
         }
 
+        diaryRepository.save(diary);
 
         return diary.getId();
     }
+
 
     //todo 아파치 카프카 로직 추가 필요
     private void sendMessageToWriterService() {

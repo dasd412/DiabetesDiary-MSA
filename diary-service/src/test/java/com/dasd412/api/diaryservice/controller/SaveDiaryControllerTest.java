@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -161,6 +162,7 @@ public class SaveDiaryControllerTest {
 
     private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidBloodSugar() {
         List<SecurityDietDTO> invalidDietList = new ArrayList<>();
+        invalidDietList.add(new SecurityDietDTO(EatTime.LUNCH, 100, new ArrayList<>()));
         invalidDietList.add(new SecurityDietDTO(EatTime.ELSE, -1, new ArrayList<>()));
 
         return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
@@ -173,12 +175,17 @@ public class SaveDiaryControllerTest {
         SecurityDiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
 
         postDto(dto)
-                .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response.id").value("1"));
+                .andExpect(jsonPath("$.success").value("true"));
+
+        assertThat(diaryRepository.findAll().size()).isEqualTo(1);
+        assertThat(dietRepository.findAll().size()).isEqualTo(4);
     }
 
     private SecurityDiaryPostRequestDTO makeDtoWhichHasValidDiet() {
         List<SecurityDietDTO> validDietList = new ArrayList<>();
+        validDietList.add(new SecurityDietDTO(EatTime.LUNCH, 150, new ArrayList<>()));
+        validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, new ArrayList<>()));
+        validDietList.add(new SecurityDietDTO(EatTime.DINNER, 120, new ArrayList<>()));
         validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, new ArrayList<>()));
 
         return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")

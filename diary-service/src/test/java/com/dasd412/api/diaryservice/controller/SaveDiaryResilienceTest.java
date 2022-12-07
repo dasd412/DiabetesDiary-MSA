@@ -28,10 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,15 +75,9 @@ public class SaveDiaryResilienceTest {
     }
 
     private SecurityDiaryPostRequestDTO makeDtoValid() {
-        List<SecurityFoodDTO> breakFast = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("breakFast" + i, i))
-                .collect(Collectors.toList());
-        List<SecurityFoodDTO> lunch = IntStream.rangeClosed(1, 3).mapToObj(i -> new SecurityFoodDTO("lunch" + i, i))
-                .collect(Collectors.toList());
-        List<SecurityFoodDTO> dinner = IntStream.rangeClosed(1, 1).mapToObj(i -> new SecurityFoodDTO("dinner" + i, i))
-                .collect(Collectors.toList());
-
         return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
-                .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
+                .year("2021").month("12").day("22").hour("00").minute("00").second("00")
+                .build();
     }
 
     @After
