@@ -55,7 +55,7 @@ public class SaveDiaryService {
 
     @Transactional
     Long makeDiaryWithSubEntities(Long writerId, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
-        logger.info("saving diary... correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
         //todo 하위 엔티티 저장도 사이에 넣어야 한다.
@@ -81,13 +81,13 @@ public class SaveDiaryService {
 
     //todo 아파치 카프카 로직 추가 필요
     private void sendMessageToWriterService() {
-        logger.info("diary-service sent message to writer-service . correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
 
     //todo 아파치 카프카 로직 추가 필요
     private void sendMessageToFindDiaryService() {
-        logger.info("diary-service sent message to find-diary-service . correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
 

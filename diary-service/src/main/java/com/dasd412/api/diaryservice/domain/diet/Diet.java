@@ -41,6 +41,7 @@ public class Diet {
 
     public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
+        checkArgument(diary.getId() != null && diary.getId() > 0, "foreign key must be positive integer.");
         this.dietId = dietEntityId.getId();
         this.diary = diary;
         this.writerId= diary.getWriterId();
