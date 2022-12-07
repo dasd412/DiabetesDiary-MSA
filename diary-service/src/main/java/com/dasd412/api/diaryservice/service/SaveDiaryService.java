@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 @Service
 public class SaveDiaryService {
@@ -57,26 +59,18 @@ public class SaveDiaryService {
     Long makeDiaryWithSubEntities(Long writerId, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
-
-        //todo 하위 엔티티 저장도 사이에 넣어야 한다.
-        List<Diet> dietList = makeDietList(diary, dto);
-
         diaryRepository.save(diary);
 
-        return diary.getId();
-    }
+        //todo 하위 엔티티 저장도 사이에 넣어야 한다.
+        if (dto.getDietList() != null) {
 
-    private List<Diet> makeDietList(DiabetesDiary diary, SecurityDiaryPostRequestDTO dto) {
+            if (dto.getDietList().size() > 0) {
 
-        return null;
-    }
-
-    public EntityId<Diet, Long> getNextIdOfDiet() {
-        Long dietId = dietRepository.findMaxOfId();
-        if (dietId == null) {
-            dietId = 0L;
+            }
         }
-        return EntityId.of(Diet.class, dietId + 1);
+
+
+        return diary.getId();
     }
 
     //todo 아파치 카프카 로직 추가 필요

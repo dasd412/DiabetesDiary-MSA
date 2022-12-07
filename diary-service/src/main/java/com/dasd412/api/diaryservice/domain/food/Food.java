@@ -13,22 +13,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
 @Table(name = "Food", uniqueConstraints = @UniqueConstraint(columnNames = {"food_id"}))
-@IdClass(FoodId.class)
 public class Food {
 
     @Id
+    @GeneratedValue
     @Column(name = "food_id", columnDefinition = "bigint default 0")
     private Long foodId;
 
-    /**
-     * referencedColumnName 를 지정해줘야 순서가 거꾸로 안나온다.
-     */
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "diary_id", referencedColumnName = "diary_id"),
-            @JoinColumn(name = "diet_id", referencedColumnName = "diet_id")
-    })
     private Diet diet;
 
     @Column(name = "writer_id", nullable = false, unique = true)
@@ -56,6 +48,7 @@ public class Food {
     public Food(EntityId<Food, Long> foodEntityId, Diet diet, String foodName, double amount, AmountUnit amountUnit) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         checkArgument(amount >= 0, "amount must be positive.");
+        checkArgument(diet.getWriterId() != null && diet.getWriterId() > 0, "foreign key must be positive integer.");
         this.foodId = foodEntityId.getId();
         this.diet = diet;
         this.writerId = diet.getWriterId();

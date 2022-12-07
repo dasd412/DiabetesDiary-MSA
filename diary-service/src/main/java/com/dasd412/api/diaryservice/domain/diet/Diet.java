@@ -13,14 +13,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Entity
 @Table(name = "Diet", uniqueConstraints = @UniqueConstraint(columnNames = {"diet_id"}))
-@IdClass(DietId.class)
 public class Diet {
 
     @Id
+    @GeneratedValue
     @Column(name = "diet_id", columnDefinition = "bigint default 0")
     private Long dietId;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", referencedColumnName = "diary_id")
     private DiabetesDiary diary;
@@ -39,12 +38,11 @@ public class Diet {
     public Diet() {
     }
 
-    public Diet(EntityId<Diet, Long> dietEntityId, DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
+    public Diet(DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
-        checkArgument(diary.getId() != null && diary.getId() > 0, "foreign key must be positive integer.");
-        this.dietId = dietEntityId.getId();
+        checkArgument(diary.getWriterId() != null && diary.getWriterId() > 0, "foreign key must be positive integer.");
         this.diary = diary;
-        this.writerId= diary.getWriterId();
+        this.writerId = diary.getWriterId();
         this.eatTime = eatTime;
         this.bloodSugar = bloodSugar;
     }

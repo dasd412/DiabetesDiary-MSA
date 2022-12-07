@@ -9,8 +9,5 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
     public DietRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
-    @Override
-    public Long findMaxOfId() {
-        return jpaQueryFactory.from(QDiet.diet).select(QDiet.diet.dietId.max()).fetchOne();
-    }
+
 }
