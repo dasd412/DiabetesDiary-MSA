@@ -47,6 +47,9 @@ public class SecurityDiaryRestController {
     @SuppressWarnings("unused")
     private ApiResult<?> fallBackPostDiary(SecurityDiaryPostRequestDTO dto, Throwable throwable) {
         logger.error("failed to call outer component in posting Diary. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
         return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

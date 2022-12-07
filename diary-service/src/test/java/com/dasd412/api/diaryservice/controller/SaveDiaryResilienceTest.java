@@ -58,6 +58,7 @@ public class SaveDiaryResilienceTest {
     @Autowired
     private CircuitBreakerRegistry circuitBreakerRegistry;
 
+    //todo JWT 도입 후 지울 듯?
     @MockBean
     private FindWriterFeignClient findWriterFeignClient;
 
