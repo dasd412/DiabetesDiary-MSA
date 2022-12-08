@@ -1,9 +1,9 @@
 package com.dasd412.api.diaryservice.controller;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.controller.dto.SecurityDietDTO;
-import com.dasd412.api.diaryservice.controller.dto.SecurityFoodDTO;
+import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.controller.dto.DietDTO;
+import com.dasd412.api.diaryservice.controller.dto.FoodDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
@@ -77,7 +77,7 @@ public class SaveDiaryControllerTest {
         foodRepository.deleteAll();
     }
 
-    private ResultActions postDto(SecurityDiaryPostRequestDTO dto) throws Exception {
+    private ResultActions postDto(DiaryPostRequestDTO dto) throws Exception {
         String url = "/diabetes-diary";
         return mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto)));
     }
@@ -87,7 +87,7 @@ public class SaveDiaryControllerTest {
      */
     @Test
     public void postDiaryWhichHasInvalidFastingPlasmaGlucose() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidFastingPlasmaGlucose();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidFastingPlasmaGlucose();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -95,14 +95,14 @@ public class SaveDiaryControllerTest {
                 .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidFastingPlasmaGlucose() {
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(-1).remark("test")
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidFastingPlasmaGlucose() {
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(-1).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
     @Test
     public void postDiaryWhichHasInvalidRemarkLength() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidRemarkLength();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidRemarkLength();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -110,18 +110,18 @@ public class SaveDiaryControllerTest {
                 .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidRemarkLength() {
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidRemarkLength() {
 
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, 600).forEach(sb::append);
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark(sb.toString())
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark(sb.toString())
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
     @Test
     public void postDiaryWhichHasInvalidWriterId() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidWriterId();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidWriterId();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -129,22 +129,22 @@ public class SaveDiaryControllerTest {
                 .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidWriterId() {
-        return SecurityDiaryPostRequestDTO.builder().writerId(-1L).fastingPlasmaGlucose(100).remark("test")
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidWriterId() {
+        return DiaryPostRequestDTO.builder().writerId(-1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
     @Test
     public void postDiaryValid() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasValidDiary();
+        DiaryPostRequestDTO dto = makeDtoWhichHasValidDiary();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value("1"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasValidDiary() {
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+    private DiaryPostRequestDTO makeDtoWhichHasValidDiary() {
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
@@ -153,7 +153,7 @@ public class SaveDiaryControllerTest {
      */
     @Test
     public void postDiaryWhichHasInvalidBloodSugar() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidBloodSugar();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidBloodSugar();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -161,19 +161,19 @@ public class SaveDiaryControllerTest {
                 .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidBloodSugar() {
-        List<SecurityDietDTO> invalidDietList = new ArrayList<>();
-        invalidDietList.add(new SecurityDietDTO(EatTime.LUNCH, 100, new ArrayList<>()));
-        invalidDietList.add(new SecurityDietDTO(EatTime.ELSE, -1, new ArrayList<>()));
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidBloodSugar() {
+        List<DietDTO> invalidDietList = new ArrayList<>();
+        invalidDietList.add(new DietDTO(EatTime.LUNCH, 100, new ArrayList<>()));
+        invalidDietList.add(new DietDTO(EatTime.ELSE, -1, new ArrayList<>()));
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(invalidDietList).build();
     }
 
     @Test
     public void postDiaryWhichHasValidDiets() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
+        DiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("true"));
@@ -182,14 +182,14 @@ public class SaveDiaryControllerTest {
         assertThat(dietRepository.findAll().size()).isEqualTo(4);
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasValidDiet() {
-        List<SecurityDietDTO> validDietList = new ArrayList<>();
-        validDietList.add(new SecurityDietDTO(EatTime.LUNCH, 150, new ArrayList<>()));
-        validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, new ArrayList<>()));
-        validDietList.add(new SecurityDietDTO(EatTime.DINNER, 120, new ArrayList<>()));
-        validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, new ArrayList<>()));
+    private DiaryPostRequestDTO makeDtoWhichHasValidDiet() {
+        List<DietDTO> validDietList = new ArrayList<>();
+        validDietList.add(new DietDTO(EatTime.LUNCH, 150, new ArrayList<>()));
+        validDietList.add(new DietDTO(EatTime.ELSE, 100, new ArrayList<>()));
+        validDietList.add(new DietDTO(EatTime.DINNER, 120, new ArrayList<>()));
+        validDietList.add(new DietDTO(EatTime.ELSE, 100, new ArrayList<>()));
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }
@@ -200,7 +200,7 @@ public class SaveDiaryControllerTest {
 
     @Test
     public void postDiaryWhichHasInvalidFoodNameLength() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidFoodNameLength();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidFoodNameLength();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -209,21 +209,21 @@ public class SaveDiaryControllerTest {
 
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidFoodNameLength() {
-        List<SecurityFoodDTO> invalidFoodList = new ArrayList<>();
-        invalidFoodList.add(new SecurityFoodDTO("", 50.0, AmountUnit.g));
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidFoodNameLength() {
+        List<FoodDTO> invalidFoodList = new ArrayList<>();
+        invalidFoodList.add(new FoodDTO("", 50.0, AmountUnit.g));
 
-        List<SecurityDietDTO> dietList = new ArrayList<>();
-        dietList.add(new SecurityDietDTO(EatTime.LUNCH, 150, invalidFoodList));
+        List<DietDTO> dietList = new ArrayList<>();
+        dietList.add(new DietDTO(EatTime.LUNCH, 150, invalidFoodList));
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(dietList).build();
     }
 
     @Test
     public void postDiaryWhichHasInvalidFoodAmount() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasInvalidFoodAmount();
+        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidFoodAmount();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("false"))
@@ -231,21 +231,21 @@ public class SaveDiaryControllerTest {
                 .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasInvalidFoodAmount() {
-        List<SecurityFoodDTO> invalidFoodList = new ArrayList<>();
-        invalidFoodList.add(new SecurityFoodDTO("toast", -50.0, AmountUnit.g));
+    private DiaryPostRequestDTO makeDtoWhichHasInvalidFoodAmount() {
+        List<FoodDTO> invalidFoodList = new ArrayList<>();
+        invalidFoodList.add(new FoodDTO("toast", -50.0, AmountUnit.g));
 
-        List<SecurityDietDTO> dietList = new ArrayList<>();
-        dietList.add(new SecurityDietDTO(EatTime.LUNCH, 150, invalidFoodList));
+        List<DietDTO> dietList = new ArrayList<>();
+        dietList.add(new DietDTO(EatTime.LUNCH, 150, invalidFoodList));
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(dietList).build();
     }
 
     @Test
     public void postDiaryWhichHasValidFoods() throws Exception {
-        SecurityDiaryPostRequestDTO dto = makeDtoWhichHasValidFood();
+        DiaryPostRequestDTO dto = makeDtoWhichHasValidFood();
 
         postDto(dto)
                 .andExpect(jsonPath("$.success").value("true"));
@@ -255,19 +255,19 @@ public class SaveDiaryControllerTest {
         assertThat(foodRepository.findAll().size()).isEqualTo(3);
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoWhichHasValidFood() {
-        List<SecurityFoodDTO> foodList1 = new ArrayList<>();
-        foodList1.add(new SecurityFoodDTO("toast", 50.0, AmountUnit.g));
-        foodList1.add(new SecurityFoodDTO("chicken", 150.0, AmountUnit.g));
+    private DiaryPostRequestDTO makeDtoWhichHasValidFood() {
+        List<FoodDTO> foodList1 = new ArrayList<>();
+        foodList1.add(new FoodDTO("toast", 50.0, AmountUnit.g));
+        foodList1.add(new FoodDTO("chicken", 150.0, AmountUnit.g));
 
-        List<SecurityFoodDTO> foodList2 = new ArrayList<>();
-        foodList2.add(new SecurityFoodDTO("coke", 100.0, AmountUnit.mL));
+        List<FoodDTO> foodList2 = new ArrayList<>();
+        foodList2.add(new FoodDTO("coke", 100.0, AmountUnit.mL));
 
-        List<SecurityDietDTO> validDietList = new ArrayList<>();
-        validDietList.add(new SecurityDietDTO(EatTime.LUNCH, 150, foodList1));
-        validDietList.add(new SecurityDietDTO(EatTime.ELSE, 100, foodList2));
+        List<DietDTO> validDietList = new ArrayList<>();
+        validDietList.add(new DietDTO(EatTime.LUNCH, 150, foodList1));
+        validDietList.add(new DietDTO(EatTime.ELSE, 100, foodList2));
 
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }

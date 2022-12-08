@@ -1,10 +1,10 @@
 package com.dasd412.api.diaryservice.controller.dto;
 
-public class SecurityDiaryPostResponseDTO {
+public class DiaryPostResponseDTO {
 
     private final Long id;
 
-    public SecurityDiaryPostResponseDTO(Long id) {
+    public DiaryPostResponseDTO(Long id) {
         this.id = id;
     }
 

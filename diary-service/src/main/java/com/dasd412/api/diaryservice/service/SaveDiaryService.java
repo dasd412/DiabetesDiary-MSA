@@ -1,11 +1,9 @@
 package com.dasd412.api.diaryservice.service;
 
-import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.domain.EntityId;
+import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
-import com.dasd412.api.diaryservice.domain.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.food.Food;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.utils.date.DateStringJoiner;
@@ -16,12 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.IntStream;
 
 @Service
 public class SaveDiaryService {
@@ -38,7 +32,7 @@ public class SaveDiaryService {
     }
 
     //todo JWT 도입 이후 feignClient 부분은 지울 필요 있을지도... 그리고 트랜잭션 처리는 어떻게 해야할까?
-    public Long postDiaryWithEntities(SecurityDiaryPostRequestDTO dto) throws TimeoutException {
+    public Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
         Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
@@ -56,7 +50,7 @@ public class SaveDiaryService {
 
 
     @Transactional
-    private Long makeDiaryWithSubEntities(Long writerId, SecurityDiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
+    private Long makeDiaryWithSubEntities(Long writerId, DiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
@@ -102,7 +96,7 @@ public class SaveDiaryService {
      *
      * @return String => LocalDateTime
      */
-    private LocalDateTime convertStringToLocalDateTime(SecurityDiaryPostRequestDTO dto) {
+    private LocalDateTime convertStringToLocalDateTime(DiaryPostRequestDTO dto) {
         DateStringJoiner dateStringJoiner = DateStringJoiner.builder()
                 .year(dto.getYear()).month(dto.getMonth()).day(dto.getDay())
                 .hour(dto.getHour()).minute(dto.getMinute()).second(dto.getSecond())

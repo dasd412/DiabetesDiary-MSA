@@ -8,14 +8,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Builder
 @Getter
-public class SecurityDiaryPostRequestDTO {
+public class DiaryPostRequestDTO {
 
     @NotNull
     private final Long writerId;
@@ -47,7 +45,7 @@ public class SecurityDiaryPostRequestDTO {
     @NotEmpty
     @NotNull
     private final String second;
-    private final List<SecurityDietDTO> dietList;
+    private final List<DietDTO> dietList;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

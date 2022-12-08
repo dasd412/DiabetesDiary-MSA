@@ -2,7 +2,7 @@ package com.dasd412.api.diaryservice.controller;
 
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 
@@ -60,7 +60,7 @@ public class SaveDiaryResilienceTest {
 
     private MockMvc mockMvc;
 
-    private SecurityDiaryPostRequestDTO dto;
+    private DiaryPostRequestDTO dto;
 
     private final String url = "/diabetes-diary";
 
@@ -73,8 +73,8 @@ public class SaveDiaryResilienceTest {
         dto = makeDtoValid();
     }
 
-    private SecurityDiaryPostRequestDTO makeDtoValid() {
-        return SecurityDiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+    private DiaryPostRequestDTO makeDtoValid() {
+        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .build();
     }

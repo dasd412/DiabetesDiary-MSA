@@ -1,7 +1,7 @@
 package com.dasd412.api.diaryservice.controller;
 
-import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.controller.dto.SecurityDiaryPostResponseDTO;
+import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.controller.dto.DiaryPostResponseDTO;
 import com.dasd412.api.diaryservice.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -20,32 +20,32 @@ import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/diabetes-diary")
-public class SecurityDiaryRestController {
+public class DiaryRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SaveDiaryService saveDiaryService;
 
-    public SecurityDiaryRestController(SaveDiaryService saveDiaryService) {
+    public DiaryRestController(SaveDiaryService saveDiaryService) {
         this.saveDiaryService = saveDiaryService;
     }
 
     @PostMapping
     @RateLimiter(name = "diaryService")
     @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackPostDiary")
-    public ApiResult<?> postDiary(@RequestBody @Valid SecurityDiaryPostRequestDTO dto) throws TimeoutException {
+    public ApiResult<?> postDiary(@RequestBody @Valid DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("correlation id in posting diary of SecurityDiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         try {
             Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
-            return ApiResult.OK(new SecurityDiaryPostResponseDTO(diaryId));
+            return ApiResult.OK(new DiaryPostResponseDTO(diaryId));
         } catch (NoResultException exception) {
             return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
         }
     }
 
     @SuppressWarnings("unused")
-    private ApiResult<?> fallBackPostDiary(SecurityDiaryPostRequestDTO dto, Throwable throwable) {
+    private ApiResult<?> fallBackPostDiary(DiaryPostRequestDTO dto, Throwable throwable) {
         logger.error("failed to call outer component in posting Diary of SecurityDiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
