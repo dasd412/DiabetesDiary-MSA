@@ -34,7 +34,7 @@ public class DiaryRestController {
     @RateLimiter(name = "diaryService")
     @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackPostDiary")
     public ApiResult<?> postDiary(@RequestBody @Valid DiaryPostRequestDTO dto) throws TimeoutException {
-        logger.info("correlation id in posting diary of SecurityDiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("correlation id in posting diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         try {
             Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
@@ -46,7 +46,7 @@ public class DiaryRestController {
 
     @SuppressWarnings("unused")
     private ApiResult<?> fallBackPostDiary(DiaryPostRequestDTO dto, Throwable throwable) {
-        logger.error("failed to call outer component in posting Diary of SecurityDiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        logger.error("failed to call outer component in posting Diary of DiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
         }
