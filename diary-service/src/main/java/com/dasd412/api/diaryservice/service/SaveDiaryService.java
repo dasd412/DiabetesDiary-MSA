@@ -5,6 +5,8 @@ import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.food.Food;
+import com.dasd412.api.diaryservice.message.ActionEum;
+import com.dasd412.api.diaryservice.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.utils.date.DateStringJoiner;
 import com.dasd412.api.diaryservice.utils.trace.UserContextHolder;
@@ -26,9 +28,12 @@ public class SaveDiaryService {
 
     private final FindWriterFeignClient findWriterFeignClient;
 
-    public SaveDiaryService(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient) {
+    private final KafkaSourceBean kafkaSourceBean;
+
+    public SaveDiaryService(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient, KafkaSourceBean kafkaSourceBean) {
         this.diaryRepository = diaryRepository;
         this.findWriterFeignClient = findWriterFeignClient;
+        this.kafkaSourceBean = kafkaSourceBean;
     }
 
     //todo JWT 도입 이후 feignClient 부분은 지울 필요 있을지도... 그리고 트랜잭션 처리는 어떻게 해야할까?
@@ -41,7 +46,7 @@ public class SaveDiaryService {
 
         Long diaryId = makeDiaryWithSubEntities(writerId, dto, writtenTime);
 
-        sendMessageToWriterService();
+        sendMessageToWriterService(dto.getWriterId(),diaryId);
 
         sendMessageToFindDiaryService();
 
@@ -79,9 +84,9 @@ public class SaveDiaryService {
 
 
     //todo 아파치 카프카 로직 추가 필요
-    private void sendMessageToWriterService() {
+    private void sendMessageToWriterService(Long writerId,Long diaryId) {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-
+        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED,writerId,diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요

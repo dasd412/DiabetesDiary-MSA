@@ -76,6 +76,7 @@ services:
       CONFIGSERVER_PORT: "8071"
     depends_on:
       - configserver
+      - kafkaserver
     networks:
       - backend
 
@@ -89,6 +90,7 @@ services:
       CONFIGSERVER_PORT: "8071"
     depends_on:
       - configserver
+      - kafkaserver
     networks:
       - backend
 
@@ -102,6 +104,7 @@ services:
       CONFIGSERVER_PORT: "8071"
     depends_on:
       - configserver
+      - kafkaserver
     networks:
       - backend
 
