@@ -2,6 +2,7 @@ package com.dasd412.api.readdiaryservice.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 @Getter
@@ -14,9 +15,47 @@ public class UserContext {
     public static final String USER_ID = "writer-id";
     public static final String DIARY_ID = "diary-id";
 
-    private String correlationId = "";
-    private String authToken = "";
-    private String userId = "";
-    private String diaryId = "";
+    private static final ThreadLocal<String> correlationId = new ThreadLocal<>();
+    private static final ThreadLocal<String> authToken = new ThreadLocal<>();
+    private static final ThreadLocal<String> userId = new ThreadLocal<>();
+    private static final ThreadLocal<String> diaryId = new ThreadLocal<>();
 
+    public static String getCorrelationId() {
+        return correlationId.get();
+    }
+
+    public static String getAuthToken() {
+        return authToken.get();
+    }
+
+    public static String getUserId() {
+        return userId.get();
+    }
+
+    public static String getDiaryId() {
+        return diaryId.get();
+    }
+
+    public void setCorrelationId(String paramCorrelationId) {
+        correlationId.set(paramCorrelationId);
+    }
+
+    public void setAuthToken(String paramAuthToken) {
+        authToken.set(paramAuthToken);
+    }
+
+    public void setUserId(String paramUserId) {
+        userId.set(paramUserId);
+    }
+
+    public void setDiaryId(String paramDiaryId) {
+        diaryId.set(paramDiaryId);
+    }
+
+    public static HttpHeaders getHttpHeaders() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(CORRELATION_ID, getCorrelationId());
+        httpHeaders.set(AUTH_TOKEN, getAuthToken());
+        return httpHeaders;
+    }
 }
