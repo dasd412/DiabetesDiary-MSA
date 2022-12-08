@@ -41,9 +41,22 @@ services:
           - "gateway"
 
   diaryservice:
-    image: msa/diary-service:0.0.2-SNAPSHOT
+    image: msa/diary-service:0.0.3-SNAPSHOT
     ports:
       - "8081:8081"
+    environment:
+      PROFILE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+    depends_on:
+      - configserver
+    networks:
+      - backend
+
+  readdiaryservice:
+    image: msa/read-diary-service:0.0.1-SNAPSHOT
+    ports:
+      - "8083:8083"
     environment:
       PROFILE: "dev"
       CONFIGSERVER_URI: "http://configserver:8071"
