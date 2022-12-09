@@ -6,6 +6,8 @@ import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
 
+import com.dasd412.api.diaryservice.message.source.KafkaSourceBean;
+import com.dasd412.api.diaryservice.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,6 +51,11 @@ public class SaveDiaryResilienceTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private SaveDiaryService saveDiaryService;
+    @MockBean
+    KafkaSourceBean kafkaSourceBean;
 
     @MockBean
     private DiaryRepository diaryRepository;

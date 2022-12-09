@@ -9,6 +9,8 @@ import com.dasd412.api.diaryservice.domain.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
 import com.dasd412.api.diaryservice.domain.food.FoodRepository;
+import com.dasd412.api.diaryservice.message.source.KafkaSourceBean;
+import com.dasd412.api.diaryservice.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +38,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -41,10 +46,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @TestPropertySource(locations = "/application-test.properties")
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class SaveDiaryControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+    @Autowired
+    private SaveDiaryService saveDiaryService;
+    @MockBean
+    KafkaSourceBean kafkaSourceBean;
 
     //todo JWT 도입 후 지울 듯?
     @MockBean
@@ -176,7 +186,8 @@ public class SaveDiaryControllerTest {
         DiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
 
         postDto(dto)
-                .andExpect(jsonPath("$.success").value("true"));
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value("1"));
 
         assertThat(diaryRepository.findAll().size()).isEqualTo(1);
         assertThat(dietRepository.findAll().size()).isEqualTo(4);
@@ -248,7 +259,8 @@ public class SaveDiaryControllerTest {
         DiaryPostRequestDTO dto = makeDtoWhichHasValidFood();
 
         postDto(dto)
-                .andExpect(jsonPath("$.success").value("true"));
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value("1"));
 
         assertThat(diaryRepository.findAll().size()).isEqualTo(1);
         assertThat(dietRepository.findAll().size()).isEqualTo(2);

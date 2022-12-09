@@ -9,11 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.stereotype.Component;
-
-@Component
 public class KafkaSourceBean {
-
     private final Source source;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
