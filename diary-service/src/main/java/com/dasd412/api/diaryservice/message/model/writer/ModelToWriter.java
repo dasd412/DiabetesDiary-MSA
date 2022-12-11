@@ -13,11 +13,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Setter
 @Builder
 public class ModelToWriter implements DiaryChangeModel {
+
     private String type;
+
     private String action;
+
     private Long writerId;
+
     private Long diaryId;
+
     private String correlationId;
+
+    private String localDateTimeFormat;
 
     @Override
     public String toString() {
@@ -27,6 +34,7 @@ public class ModelToWriter implements DiaryChangeModel {
                 .append("writer id ", writerId)
                 .append("diary id", diaryId)
                 .append("correlation id ", correlationId)
+                .append("localDateTimeFormat",localDateTimeFormat)
                 .toString();
     }
 }

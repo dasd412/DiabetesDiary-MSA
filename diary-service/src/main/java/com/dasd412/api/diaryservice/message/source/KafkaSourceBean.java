@@ -9,7 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class KafkaSourceBean {
+
     private final Source source;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -27,6 +32,7 @@ public class KafkaSourceBean {
                 .writerId(writerId)
                 .diaryId(diaryId)
                 .correlationId(UserContext.getCorrelationId())
+                .localDateTimeFormat(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .build();
 
         source.output().send(MessageBuilder.withPayload(changeModel).build());

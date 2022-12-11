@@ -12,7 +12,7 @@
 
 	<groupId>com.dasd412.api</groupId>
 	<artifactId>writer-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>writer-service</name>
 	<description>Writer service of msa project</description>
 

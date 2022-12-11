@@ -1,10 +1,6 @@
 package com.dasd412.api.writerservice.domain.writer;
 
 import com.dasd412.api.writerservice.domain.BaseTimeEntity;
-import com.dasd412.api.writerservice.domain.EntityId;
-import lombok.Builder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.*;
@@ -136,23 +132,13 @@ public class Writer extends BaseTimeEntity {
 //        return profile;
 //    }
 //
-//    public void addDiary(DiabetesDiary diary) {
-//        this.diaries.add(diary);
-//        /* 무한 루프 방지 */
-//        if (diary.getWriter() != this) {
-//            diary.makeRelationWithWriter(this);
-//        }
-//    }
+    public void addDiary(Long diaryId) {
+        this.diaryIds.add(diaryId);
+    }
 
-//    /**
-//     * 연관 관계 제거 시에만 사용
-//     *
-//     * @param diary 작성자가 작성했던 혈당 일지
-//     */
-//    public void removeDiary(DiabetesDiary diary) {
-//        checkArgument(this.diaries.contains(diary), "this writer does not have the diary");
-//        this.diaries.remove(diary);
-//    }
+    public void removeDiary(Long diaryId) {
+        this.diaryIds.remove(diaryId);
+    }
 
 //    @Override
 //    public String toString() {

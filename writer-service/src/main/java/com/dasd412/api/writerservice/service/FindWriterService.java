@@ -22,8 +22,6 @@ public class FindWriterService {
 
     @Transactional(readOnly = true)
     public Writer findWriterById(Long id){
-        logger.info("find writer test");
         return writerRepository.findById(id).orElseThrow(NoResultException::new);
     }
-
 }
