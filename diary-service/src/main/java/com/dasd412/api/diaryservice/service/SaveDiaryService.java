@@ -53,7 +53,6 @@ public class SaveDiaryService {
         return diaryId;
     }
 
-
     @Transactional
     private Long makeDiaryWithSubEntities(Long writerId, DiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
@@ -82,8 +81,6 @@ public class SaveDiaryService {
         return diary.getId();
     }
 
-
-    //todo 아파치 카프카 로직 추가 필요
     private void sendMessageToWriterService(Long writerId,Long diaryId) {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED,writerId,diaryId);
@@ -94,8 +91,6 @@ public class SaveDiaryService {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
-
-
     /**
      * JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 헬프 메서드.
      *
@@ -109,5 +104,4 @@ public class SaveDiaryService {
 
         return dateStringJoiner.convertLocalDateTime();
     }
-
 }

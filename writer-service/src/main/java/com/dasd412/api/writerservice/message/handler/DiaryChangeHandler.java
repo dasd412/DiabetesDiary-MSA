@@ -23,7 +23,7 @@ public class DiaryChangeHandler {
     }
 
     @StreamListener("inboundDiaryChanges")
-    public void logSinkMessage(DiaryChangeModel diaryChange) {
+    public void changeRelationWithDiary(DiaryChangeModel diaryChange) {
         logger.debug("Received an {} event for writer id {} and diary id {} at created time : {}", diaryChange.getAction(), diaryChange.getWriterId(), diaryChange.getDiaryId(), diaryChange.getLocalDateTimeFormat());
 
         //todo 나중에 레디스 등을 활용해서 결과적 일관성을 맞출 수 있어야 한다. diaryChange.getLocalDateTimeFormat()을 이용하면 될듯.
