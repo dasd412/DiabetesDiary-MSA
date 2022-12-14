@@ -2,6 +2,7 @@ package com.dasd412.api.diaryservice.domain.diary;
 
 import com.dasd412.api.diaryservice.domain.BaseTimeEntity;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
+
 
 @Entity
 @Table(name = "DiabetesDiary")
@@ -39,6 +41,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     public DiabetesDiary() {
     }
 
+    @Builder
     public DiabetesDiary(Long writerId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         checkArgument(fastingPlasmaGlucose >= 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
         checkArgument(remark.length() <= 500, "remark length should be lower than 501");
@@ -57,7 +60,7 @@ public class DiabetesDiary extends BaseTimeEntity {
         return fastingPlasmaGlucose;
     }
 
-    private void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
+    public void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
         checkArgument(fastingPlasmaGlucose >= 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
     }
@@ -66,7 +69,7 @@ public class DiabetesDiary extends BaseTimeEntity {
         return remark;
     }
 
-    private void modifyRemark(String remark) {
+    public void modifyRemark(String remark) {
         checkArgument(remark.length() <= 500, "remark length should be lower than 501");
         this.remark = remark;
     }
