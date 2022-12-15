@@ -1,7 +1,9 @@
 package com.dasd412.api.diaryservice.domain.food;
 
 import com.dasd412.api.diaryservice.domain.EntityId;
+import com.dasd412.api.diaryservice.domain.StringMaxLength;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -45,8 +47,9 @@ public class Food {
         this(diet, foodName, amount, AmountUnit.NONE);
     }
 
+    @Builder
     public Food(Diet diet, String foodName, double amount, AmountUnit amountUnit) {
-        checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
+        checkArgument(foodName.length() > 0 && foodName.length() <= StringMaxLength.FOOD_NAME, "food name length should be between 1 and 50");
         checkArgument(amount >= 0, "amount must be positive.");
         checkArgument(diet.getWriterId() != null && diet.getWriterId() > 0, "foreign key must be positive integer.");
         this.diet = diet;
@@ -72,17 +75,17 @@ public class Food {
         return amountUnit;
     }
 
-    private void modifyFoodName(String foodName) {
+    public void modifyFoodName(String foodName) {
         checkArgument(foodName.length() > 0 && foodName.length() <= 50, "food name length should be between 1 and 50");
         this.foodName = foodName;
     }
 
-    private void modifyAmount(double amount) {
+    public void modifyAmount(double amount) {
         checkArgument(amount >= 0, "amount must be positive.");
         this.amount = amount;
     }
 
-    private void modifyAmountUnit(AmountUnit amountUnit) {
+    public void modifyAmountUnit(AmountUnit amountUnit) {
         this.amountUnit = amountUnit;
     }
 

@@ -1,6 +1,7 @@
 package com.dasd412.api.diaryservice.domain.diary;
 
 import com.dasd412.api.diaryservice.domain.BaseTimeEntity;
+import com.dasd412.api.diaryservice.domain.StringMaxLength;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -44,7 +45,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     @Builder
     public DiabetesDiary(Long writerId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime) {
         checkArgument(fastingPlasmaGlucose >= 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
-        checkArgument(remark.length() <= 500, "remark length should be lower than 501");
+        checkArgument(remark.length() <= StringMaxLength.DIARY_REMARK, "remark length should be lower than 501");
         checkArgument(writerId != null && writerId > 0, "foreign key must be positive integer.");
         this.writerId = writerId;
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
@@ -70,7 +71,7 @@ public class DiabetesDiary extends BaseTimeEntity {
     }
 
     public void modifyRemark(String remark) {
-        checkArgument(remark.length() <= 500, "remark length should be lower than 501");
+        checkArgument(remark.length() <= StringMaxLength.DIARY_REMARK, "remark length should be lower than 501");
         this.remark = remark;
     }
 

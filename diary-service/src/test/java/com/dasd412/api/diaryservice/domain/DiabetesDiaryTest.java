@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,13 +19,11 @@ import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @RunWith(SpringRunner.class)
 @Import({JPATestConfiguration.class})
 @DataJpaTest()
 @TestPropertySource(locations = "/application-test.properties")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class DiabetesDiaryTest {
 
     @Rule
@@ -66,7 +63,7 @@ public class DiabetesDiaryTest {
         thrown.expect(IllegalArgumentException.class);
 
         StringBuilder remark = new StringBuilder();
-        IntStream.range(0, 501).forEach(i -> remark.append("a"));
+        IntStream.range(0, StringMaxLength.DIARY_REMARK+1).forEach(i -> remark.append("a"));
 
         diary = DiabetesDiary.builder()
                 .writerId(1L)
@@ -135,7 +132,7 @@ public class DiabetesDiaryTest {
         DiabetesDiary valid = makeValidDiaryForUpdate();
 
         StringBuilder remark = new StringBuilder();
-        IntStream.range(0, 501).forEach(i -> remark.append("a"));
+        IntStream.range(0, StringMaxLength.DIARY_REMARK+1).forEach(i -> remark.append("a"));
 
         valid.modifyRemark(remark.toString());
     }

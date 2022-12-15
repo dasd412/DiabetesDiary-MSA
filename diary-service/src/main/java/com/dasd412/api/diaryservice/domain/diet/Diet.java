@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.domain.diet;
 import com.dasd412.api.diaryservice.domain.EntityId;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.food.Food;
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -38,6 +39,7 @@ public class Diet {
     public Diet() {
     }
 
+    @Builder
     public Diet(DiabetesDiary diary, EatTime eatTime, int bloodSugar) {
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
         checkArgument(diary.getWriterId() != null && diary.getWriterId() > 0, "foreign key must be positive integer.");
@@ -55,7 +57,7 @@ public class Diet {
         return eatTime;
     }
 
-    private void modifyEatTime(EatTime eatTime) {
+    public void modifyEatTime(EatTime eatTime) {
         this.eatTime = eatTime;
     }
 
@@ -63,7 +65,7 @@ public class Diet {
         return bloodSugar;
     }
 
-    private void modifyBloodSugar(int bloodSugar) {
+    public void modifyBloodSugar(int bloodSugar) {
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
         this.bloodSugar = bloodSugar;
     }
