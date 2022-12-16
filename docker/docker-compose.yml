@@ -15,7 +15,8 @@ services:
     ports:
       - "8070:8070"
     depends_on:
-      - configserver
+      configserver:
+        condition: service_started
     networks:
       backend:
         aliases:
@@ -33,8 +34,10 @@ services:
       EUREKASERVER_URI: "http://eurekaserver:8070/eureka/"
       EUREKASERVER_PORT: "8070"
     depends_on:
-      - configserver
-      - eurekaserver
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
     networks:
       backend:
         aliases:
@@ -75,8 +78,10 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
     depends_on:
-      - configserver
-      - kafkaserver
+      configserver:
+        condition: service_started
+      kafkaserver:
+        condition: service_started
     networks:
       - backend
 
@@ -89,8 +94,10 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
     depends_on:
-      - configserver
-      - kafkaserver
+      configserver:
+        condition: service_started
+      kafkaserver:
+        condition: service_started
     networks:
       - backend
 
@@ -103,8 +110,10 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
     depends_on:
-      - configserver
-      - kafkaserver
+      configserver:
+        condition: service_started
+      kafkaserver:
+        condition: service_started
     networks:
       - backend
 

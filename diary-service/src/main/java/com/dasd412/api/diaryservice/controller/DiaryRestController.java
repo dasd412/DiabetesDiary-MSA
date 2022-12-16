@@ -1,5 +1,7 @@
 package com.dasd412.api.diaryservice.controller;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.controller.dto.DiaryPostResponseDTO;
 import com.dasd412.api.diaryservice.service.SaveDiaryService;
@@ -26,8 +28,11 @@ public class DiaryRestController {
 
     private final SaveDiaryService saveDiaryService;
 
-    public DiaryRestController(SaveDiaryService saveDiaryService) {
+    private final Tracer tracer;
+
+    public DiaryRestController(SaveDiaryService saveDiaryService, Tracer tracer) {
         this.saveDiaryService = saveDiaryService;
+        this.tracer = tracer;
     }
 
     @PostMapping
@@ -36,11 +41,16 @@ public class DiaryRestController {
     public ApiResult<?> postDiary(@RequestBody @Valid DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("correlation id in posting diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
+        ScopedSpan span = tracer.startScopedSpan("postDiary");
+
         try {
             Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
             return ApiResult.OK(new DiaryPostResponseDTO(diaryId));
         } catch (NoResultException exception) {
             return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
+        } finally {
+            span.tag("cud.diary.service", "create");
+            span.finish();
         }
     }
 
