@@ -2,6 +2,7 @@ package com.dasd412.api.diaryservice.controller;
 
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
+import com.dasd412.api.diaryservice.config.JPATestConfiguration;
 import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
 import org.springframework.test.context.TestPropertySource;

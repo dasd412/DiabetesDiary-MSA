@@ -1,6 +1,7 @@
 package com.dasd412.api.diaryservice.controller;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
+import com.dasd412.api.diaryservice.config.JPATestConfiguration;
 import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.controller.dto.DietDTO;
 import com.dasd412.api.diaryservice.controller.dto.FoodDTO;
@@ -22,8 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,7 +40,6 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -46,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @TestPropertySource(locations = "/application-test.properties")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class SaveDiaryControllerTest {
 
     @Autowired
@@ -186,8 +186,7 @@ public class SaveDiaryControllerTest {
         DiaryPostRequestDTO dto = makeDtoWhichHasValidDiet();
 
         postDto(dto)
-                .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response.id").value("1"));
+                .andExpect(jsonPath("$.success").value("true"));
 
         assertThat(diaryRepository.findAll().size()).isEqualTo(1);
         assertThat(dietRepository.findAll().size()).isEqualTo(4);
@@ -259,8 +258,7 @@ public class SaveDiaryControllerTest {
         DiaryPostRequestDTO dto = makeDtoWhichHasValidFood();
 
         postDto(dto)
-                .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response.id").value("1"));
+                .andExpect(jsonPath("$.success").value("true"));
 
         assertThat(diaryRepository.findAll().size()).isEqualTo(1);
         assertThat(dietRepository.findAll().size()).isEqualTo(2);
