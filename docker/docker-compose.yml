@@ -65,6 +65,49 @@ services:
       backend:
         aliases:
           - "kafka"
+
+  diaryservice:
+    image: msa/diary-service:0.0.3-SNAPSHOT
+    ports:
+      - "8081:8081"
+    environment:
+      PROFILE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+    depends_on:
+      - configserver
+      - kafkaserver
+    networks:
+      - backend
+
+  readdiaryservice:
+    image: msa/read-diary-service:0.0.1-SNAPSHOT
+    ports:
+      - "8083:8083"
+    environment:
+      PROFILE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+    depends_on:
+      - configserver
+      - kafkaserver
+    networks:
+      - backend
+
+  writerservice:
+    image: msa/writer-service:0.0.2-SNAPSHOT
+    ports:
+      - "8082:8082"
+    environment:
+      profile: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+    depends_on:
+      - configserver
+      - kafkaserver
+    networks:
+      - backend
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
     container_name: elasticsearch
@@ -113,47 +156,20 @@ services:
         aliases:
           - "logstash"
 
-  diaryservice:
-    image: msa/diary-service:0.0.3-SNAPSHOT
-    ports:
-      - "8081:8081"
-    environment:
-      PROFILE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT: "8071"
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
     depends_on:
-      - configserver
-      - kafkaserver
-    networks:
-      - backend
-
-  readdiaryservice:
-    image: msa/read-diary-service:0.0.1-SNAPSHOT
-    ports:
-      - "8083:8083"
+      - elasticsearch
     environment:
-      PROFILE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT: "8071"
-    depends_on:
-      - configserver
-      - kafkaserver
-    networks:
-      - backend
-
-  writerservice:
-    image: msa/writer-service:0.0.2-SNAPSHOT
+      - STORAGE_TYPE=elasticsearch
+      - "ES_HOSTS=elasticsearch:9300"
     ports:
-      - "8082:8082"
-    environment:
-      profile: "dev"
-      CONFIGSERVER_URI: "http://configserver:8071"
-      CONFIGSERVER_PORT: "8071"
-    depends_on:
-      - configserver
-      - kafkaserver
+      - "9411:9411"
     networks:
-      - backend
+      backend:
+        aliases:
+          - "zipkin"
 
 volumes:
   esdata1:
