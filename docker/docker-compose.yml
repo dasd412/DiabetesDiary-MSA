@@ -65,6 +65,53 @@ services:
       backend:
         aliases:
           - "kafka"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9300
+      - 9200:9200
+    networks:
+      backend:
+        aliases:
+          - "elasticsearch"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.11.1
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+    networks:
+      backend:
+        aliases:
+          - "kibana"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.12.0
+    container_name: logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    networks:
+      backend:
+        aliases:
+          - "logstash"
 
   diaryservice:
     image: msa/diary-service:0.0.3-SNAPSHOT
@@ -107,6 +154,10 @@ services:
       - kafkaserver
     networks:
       - backend
+
+volumes:
+  esdata1:
+    driver: local
 
 networks:
   backend:
