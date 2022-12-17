@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   configserver:
-    image: msa/config-server:0.0.1-SNAPSHOT
+    image: msa/config-server:0.0.2-SNAPSHOT
     ports:
       - "8071:8071"
     networks:

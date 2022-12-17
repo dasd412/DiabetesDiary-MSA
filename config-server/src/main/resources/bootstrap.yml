@@ -11,10 +11,20 @@ spring:
         native:
           search-locations: classpath:/config
         git:
-          uri: https://github.com/dasd412/DiabetesDiary-config.git
+          uri: git@github.com:dasd412/DiabetesDiary-config.git
+          ignore-local-ssh-settings: true
+          private-key: |
+            -----BEGIN EC PRIVATE KEY-----
+            MHcCAQEEIIzIAN997anuBfyc/SEZwjej01GbgdxsFvZudIdYYbHSoAoGCCqGSM49
+            AwEHoUQDQgAE3E2+DaY1ROCOrum9RW0Up1NTWatNh8NBvTnei4Zf4eV9t3fiJQ6Q
+            pZmmT+Bxk9hw81mICyV9AmUN995x/vhdiA==
+            -----END EC PRIVATE KEY-----
 
 server:
   port: 8071
+
+encrypt:
+  key: jun-key
 
 management:
   endpoints:
