@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.utils;
+package com.dasd412.api.readdiaryservice.common.utils;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;

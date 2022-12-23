@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.utils;
+package com.dasd412.api.readdiaryservice.common.utils;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;

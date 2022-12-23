@@ -1,6 +1,6 @@
-package com.dasd412.api.readdiaryservice.config;
+package com.dasd412.api.readdiaryservice.common.config;
 
-import com.dasd412.api.readdiaryservice.utils.UserContextInterceptor;
+import com.dasd412.api.readdiaryservice.common.utils.UserContextInterceptor;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;

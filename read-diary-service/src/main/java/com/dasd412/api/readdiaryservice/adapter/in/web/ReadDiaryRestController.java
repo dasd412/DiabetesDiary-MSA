@@ -1,7 +1,8 @@
-package com.dasd412.api.readdiaryservice.controller;
+package com.dasd412.api.readdiaryservice.adapter.in.web;
 
-import com.dasd412.api.readdiaryservice.service.ReadDiaryService;
-import com.dasd412.api.readdiaryservice.utils.UserContextHolder;
+import com.dasd412.api.readdiaryservice.adapter.out.web.ApiResult;
+import com.dasd412.api.readdiaryservice.application.service.impl.ReadDiaryServiceImpl;
+import com.dasd412.api.readdiaryservice.common.utils.UserContextHolder;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.slf4j.Logger;
@@ -17,9 +18,9 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("/diabetes-diary")
 public class ReadDiaryRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ReadDiaryService diaryService;
+    private final ReadDiaryServiceImpl diaryService;
 
-    public ReadDiaryRestController(ReadDiaryService diaryService) {
+    public ReadDiaryRestController(ReadDiaryServiceImpl diaryService) {
         this.diaryService = diaryService;
     }
 

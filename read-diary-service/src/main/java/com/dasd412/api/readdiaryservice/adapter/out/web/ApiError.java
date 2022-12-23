@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.controller;
+package com.dasd412.api.readdiaryservice.adapter.out.web;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
