@@ -12,7 +12,7 @@
 
     <groupId>com.dasd412.api</groupId>
     <artifactId>diary-service</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>diary-service</name>
     <description>Diary Service for Diabetes Diary App</description>
 

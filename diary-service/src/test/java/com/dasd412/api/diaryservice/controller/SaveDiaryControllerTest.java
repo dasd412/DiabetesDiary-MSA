@@ -1,18 +1,17 @@
 package com.dasd412.api.diaryservice.controller;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.config.JPATestConfiguration;
-import com.dasd412.api.diaryservice.controller.dto.DiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.controller.dto.DietDTO;
-import com.dasd412.api.diaryservice.controller.dto.FoodDTO;
-import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
-import com.dasd412.api.diaryservice.domain.diet.DietRepository;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.DietDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.FoodDTO;
+import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
+import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
-import com.dasd412.api.diaryservice.domain.food.FoodRepository;
-import com.dasd412.api.diaryservice.message.source.KafkaSourceBean;
-import com.dasd412.api.diaryservice.service.SaveDiaryService;
-import com.dasd412.api.diaryservice.service.client.FindWriterFeignClient;
+import com.dasd412.api.diaryservice.adapter.out.persistence.food.FoodRepository;
+import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
+import com.dasd412.api.diaryservice.application.service.impl.SaveDiaryServiceImpl;
+import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
 import org.springframework.test.context.TestPropertySource;
@@ -52,7 +50,7 @@ public class SaveDiaryControllerTest {
     @Autowired
     private WebApplicationContext context;
     @Autowired
-    private SaveDiaryService saveDiaryService;
+    private SaveDiaryServiceImpl saveDiaryService;
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 

@@ -2,7 +2,7 @@ package com.dasd412.api.diaryservice.domain;
 
 import com.dasd412.api.diaryservice.config.JPATestConfiguration;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
-import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
+import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;

@@ -3,8 +3,8 @@ package com.dasd412.api.diaryservice.domain;
 import com.dasd412.api.diaryservice.config.JPATestConfiguration;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
-import com.dasd412.api.diaryservice.domain.diary.DiaryRepository;
-import com.dasd412.api.diaryservice.domain.diet.DietRepository;
+import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
+import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
 
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import org.junit.Before;
