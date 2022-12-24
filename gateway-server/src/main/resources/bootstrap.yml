@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    config:
+      uri: http://configserver:8071
+
+
+logging:
+  level:
+    com.neflix: WARN
+    org.springframework.web: WARN
+    com.dasd412.api: DEBUG
