@@ -49,8 +49,10 @@ public class DiaryPostRestControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
     @Autowired
     private SaveDiaryService saveDiaryService;
+
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 
@@ -71,10 +73,11 @@ public class DiaryPostRestControllerTest {
 
     @Before
     public void setUp() throws TimeoutException {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-
+        if (mockMvc==null){
+            mockMvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .build();
+        }
         given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
     }
 
