@@ -20,13 +20,13 @@ public class FoodUpdateRequestDTO {
 
     private double amount;
 
-    private String amountUnit;
+    private AmountUnit amountUnit;
 
     public FoodUpdateRequestDTO(Long foodId, String foodName, double amount, AmountUnit amountUnit) {
         this.foodId = foodId;
         this.foodName = foodName;
         this.amount = amount;
-        this.amountUnit = amountUnit.name();
+        this.amountUnit = amountUnit;
     }
 
     public String toString() {
