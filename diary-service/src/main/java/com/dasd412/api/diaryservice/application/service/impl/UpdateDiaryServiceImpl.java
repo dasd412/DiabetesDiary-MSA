@@ -56,8 +56,6 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
 
         Long diaryId = updateDiaryWithSubEntities(writerId, dto);
 
-        sendMessageToWriterService(dto.getWriterId(), diaryId);
-
         sendMessageToFindDiaryService();
 
         return diaryId;
@@ -90,11 +88,6 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
         diaryRepository.save(targetDiary);
 
         return targetDiary.getId();
-    }
-
-    private void sendMessageToWriterService(Long writerId, Long diaryId) {
-        logger.info("diary-service sent message to writer-service in UpdateDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.UPDATED, writerId, diaryId);
     }
 
     private void sendMessageToFindDiaryService() {
