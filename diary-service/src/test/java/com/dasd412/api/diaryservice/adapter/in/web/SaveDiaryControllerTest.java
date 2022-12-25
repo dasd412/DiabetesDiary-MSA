@@ -2,8 +2,8 @@ package com.dasd412.api.diaryservice.adapter.in.web;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietDTO;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
@@ -170,9 +170,9 @@ public class SaveDiaryControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasInvalidBloodSugar() {
-        List<DietDTO> invalidDietList = new ArrayList<>();
-        invalidDietList.add(new DietDTO(EatTime.LUNCH, 100, new ArrayList<>()));
-        invalidDietList.add(new DietDTO(EatTime.ELSE, -1, new ArrayList<>()));
+        List<DietPostRequestDTO> invalidDietList = new ArrayList<>();
+        invalidDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 100, new ArrayList<>()));
+        invalidDietList.add(new DietPostRequestDTO(EatTime.ELSE, -1, new ArrayList<>()));
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
@@ -191,11 +191,11 @@ public class SaveDiaryControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasValidDiet() {
-        List<DietDTO> validDietList = new ArrayList<>();
-        validDietList.add(new DietDTO(EatTime.LUNCH, 150, new ArrayList<>()));
-        validDietList.add(new DietDTO(EatTime.ELSE, 100, new ArrayList<>()));
-        validDietList.add(new DietDTO(EatTime.DINNER, 120, new ArrayList<>()));
-        validDietList.add(new DietDTO(EatTime.ELSE, 100, new ArrayList<>()));
+        List<DietPostRequestDTO> validDietList = new ArrayList<>();
+        validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, new ArrayList<>()));
+        validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, new ArrayList<>()));
+        validDietList.add(new DietPostRequestDTO(EatTime.DINNER, 120, new ArrayList<>()));
+        validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, new ArrayList<>()));
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
@@ -218,11 +218,11 @@ public class SaveDiaryControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasInvalidFoodNameLength() {
-        List<FoodDTO> invalidFoodList = new ArrayList<>();
-        invalidFoodList.add(new FoodDTO("", 50.0, AmountUnit.g));
+        List<FoodPostRequestDTO> invalidFoodList = new ArrayList<>();
+        invalidFoodList.add(new FoodPostRequestDTO("", 50.0, AmountUnit.g));
 
-        List<DietDTO> dietList = new ArrayList<>();
-        dietList.add(new DietDTO(EatTime.LUNCH, 150, invalidFoodList));
+        List<DietPostRequestDTO> dietList = new ArrayList<>();
+        dietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, invalidFoodList));
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
@@ -240,11 +240,11 @@ public class SaveDiaryControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasInvalidFoodAmount() {
-        List<FoodDTO> invalidFoodList = new ArrayList<>();
-        invalidFoodList.add(new FoodDTO("toast", -50.0, AmountUnit.g));
+        List<FoodPostRequestDTO> invalidFoodList = new ArrayList<>();
+        invalidFoodList.add(new FoodPostRequestDTO("toast", -50.0, AmountUnit.g));
 
-        List<DietDTO> dietList = new ArrayList<>();
-        dietList.add(new DietDTO(EatTime.LUNCH, 150, invalidFoodList));
+        List<DietPostRequestDTO> dietList = new ArrayList<>();
+        dietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, invalidFoodList));
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
@@ -264,16 +264,16 @@ public class SaveDiaryControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasValidFood() {
-        List<FoodDTO> foodList1 = new ArrayList<>();
-        foodList1.add(new FoodDTO("toast", 50.0, AmountUnit.g));
-        foodList1.add(new FoodDTO("chicken", 150.0, AmountUnit.g));
+        List<FoodPostRequestDTO> foodList1 = new ArrayList<>();
+        foodList1.add(new FoodPostRequestDTO("toast", 50.0, AmountUnit.g));
+        foodList1.add(new FoodPostRequestDTO("chicken", 150.0, AmountUnit.g));
 
-        List<FoodDTO> foodList2 = new ArrayList<>();
-        foodList2.add(new FoodDTO("coke", 100.0, AmountUnit.mL));
+        List<FoodPostRequestDTO> foodList2 = new ArrayList<>();
+        foodList2.add(new FoodPostRequestDTO("coke", 100.0, AmountUnit.mL));
 
-        List<DietDTO> validDietList = new ArrayList<>();
-        validDietList.add(new DietDTO(EatTime.LUNCH, 150, foodList1));
-        validDietList.add(new DietDTO(EatTime.ELSE, 100, foodList2));
+        List<DietPostRequestDTO> validDietList = new ArrayList<>();
+        validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, foodList1));
+        validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, foodList2));
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")

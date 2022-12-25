@@ -45,7 +45,7 @@ public class DiaryPostRequestDTO {
     @NotEmpty
     @NotNull
     private final String second;
-    private final List<DietDTO> dietList;
+    private final List<DietPostRequestDTO> dietList;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
