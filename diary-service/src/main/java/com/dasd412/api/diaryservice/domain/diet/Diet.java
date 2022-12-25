@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Diet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diet_id", columnDefinition = "bigint default 0")
     private Long dietId;
 

@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class DiabetesDiary extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long diaryId;
 

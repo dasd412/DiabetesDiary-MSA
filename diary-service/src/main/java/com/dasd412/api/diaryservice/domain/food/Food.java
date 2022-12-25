@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Food {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "food_id")
     private Long foodId;
 
@@ -59,7 +59,7 @@ public class Food {
         this.amountUnit = Objects.requireNonNullElse(amountUnit, AmountUnit.NONE);
     }
 
-    public Long getId() {
+    public Long getFoodId() {
         return foodId;
     }
 

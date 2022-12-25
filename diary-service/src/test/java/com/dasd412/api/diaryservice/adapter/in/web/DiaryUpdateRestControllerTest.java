@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +46,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringRunner.class)
@@ -80,20 +82,21 @@ public class DiaryUpdateRestControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        if (mockMvc == null) {
-            mockMvc = MockMvcBuilders
-                    .webAppContextSetup(context)
-                    .build();
 
-            //단 1번만 포스트 쏘도록 설정.
-            DiaryPostRequestDTO dto = makePostRequestDto();
+        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
+
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
+
+        // 단 1번만 포스트 쏘도록 제한.
+        if(diaryRepository.findAll().size()==0){
+            DiaryPostRequestDTO postRequestDTO = makePostRequestDto();
 
             mockMvc.perform(MockMvcRequestBuilders.post(URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(dto)));
+                    .content(new ObjectMapper().writeValueAsString(postRequestDTO))).andDo(print());
         }
-
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
     }
 
     private DiaryPostRequestDTO makePostRequestDto() {
@@ -144,17 +147,6 @@ public class DiaryUpdateRestControllerTest {
     }
 
     @Test
-    public void updateDiaryWhichHasInvalidWriterId() throws Exception {
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(-1L).diaryId(1L)
-                .fastingPlasmaGlucose(100).remark("test").build();
-
-        updateDTO(dto)
-                .andExpect(jsonPath("$.success").value("false"))
-                .andExpect(jsonPath("$.error.status").value("400"))
-                .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
-    }
-
-    @Test
     public void updateDiaryValid() throws Exception {
         DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").build();
@@ -172,6 +164,7 @@ public class DiaryUpdateRestControllerTest {
     //식단
     @Test
     public void updateDiaryWhichHasInvalidBloodSugar() throws Exception {
+
         DietUpdateRequestDTO dietDto = new DietUpdateRequestDTO(1L, EatTime.LUNCH, -100, null);
 
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
