@@ -75,9 +75,11 @@ public class ControllerResilienceTest {
 
     @Before
     public void setUpDTO() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
+        if (mockMvc==null){
+            mockMvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .build();
+        }
 
         dto = makeDtoValid();
     }
