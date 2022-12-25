@@ -6,11 +6,11 @@ import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
+import com.dasd412.api.diaryservice.application.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
 import com.dasd412.api.diaryservice.adapter.out.persistence.food.FoodRepository;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
-import com.dasd412.api.diaryservice.application.service.impl.SaveDiaryServiceImpl;
 import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,12 +45,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @TestPropertySource(locations = "/application-test.properties")
-public class SaveDiaryControllerTest {
+public class DiaryPostRestControllerTest {
 
     @Autowired
     private WebApplicationContext context;
     @Autowired
-    private SaveDiaryServiceImpl saveDiaryService;
+    private SaveDiaryService saveDiaryService;
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 
@@ -70,7 +70,7 @@ public class SaveDiaryControllerTest {
     private MockMvc mockMvc;
 
     @Before
-    public void setUpDTO() throws TimeoutException {
+    public void setUp() throws TimeoutException {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();

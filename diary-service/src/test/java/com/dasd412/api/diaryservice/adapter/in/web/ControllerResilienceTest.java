@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @Execution(ExecutionMode.SAME_THREAD)
 @TestPropertySource(locations = "/application-test.properties")
-public class SaveDiaryResilienceTest {
+public class ControllerResilienceTest {
 
     @Autowired
     private WebApplicationContext context;
