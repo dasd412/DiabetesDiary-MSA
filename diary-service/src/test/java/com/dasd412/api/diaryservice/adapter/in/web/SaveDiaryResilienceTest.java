@@ -1,8 +1,8 @@
-package com.dasd412.api.diaryservice.controller;
+package com.dasd412.api.diaryservice.adapter.in.web;
 
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 

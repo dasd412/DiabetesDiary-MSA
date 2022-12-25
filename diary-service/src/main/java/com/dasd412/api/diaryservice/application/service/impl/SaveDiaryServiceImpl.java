@@ -2,7 +2,7 @@ package com.dasd412.api.diaryservice.application.service.impl;
 
 import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.application.service.SaveDiaryService;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.Diet;

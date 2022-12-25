@@ -3,8 +3,9 @@ package com.dasd412.api.diaryservice.adapter.in.web;
 import brave.ScopedSpan;
 import brave.Tracer;
 import com.dasd412.api.diaryservice.adapter.out.web.ApiResult;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.web.dto.DiaryPostResponseDTO;
+import com.dasd412.api.diaryservice.application.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.application.service.impl.SaveDiaryServiceImpl;
 import com.dasd412.api.diaryservice.common.utils.trace.UserContextHolder;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -27,7 +28,7 @@ public class DiaryRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final SaveDiaryServiceImpl saveDiaryService;
+    private final SaveDiaryService saveDiaryService;
 
     private final Tracer tracer;
 

@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.adapter.in.web.dto;
+package com.dasd412.api.diaryservice.adapter.in.web.dto.post;
 
 import lombok.Builder;
 import lombok.Getter;

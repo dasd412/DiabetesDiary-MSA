@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.adapter.in.web.dto;
+package com.dasd412.api.diaryservice.adapter.in.web.dto.post;
 
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
 import lombok.Getter;

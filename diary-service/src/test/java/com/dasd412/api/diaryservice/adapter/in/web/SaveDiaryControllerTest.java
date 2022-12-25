@@ -1,9 +1,9 @@
-package com.dasd412.api.diaryservice.controller;
+package com.dasd412.api.diaryservice.adapter.in.web;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DietDTO;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.FoodDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodDTO;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
