@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.adapter.in.web.dto;
+package com.dasd412.api.diaryservice.adapter.in.web.dto.post;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class DiaryPostRequestDTO {
     @NotEmpty
     @NotNull
     private final String second;
-    private final List<DietDTO> dietList;
+    private final List<DietPostRequestDTO> dietList;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

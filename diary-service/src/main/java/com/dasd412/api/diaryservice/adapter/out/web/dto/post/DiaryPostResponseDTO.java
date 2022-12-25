@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.adapter.out.web.dto;
+package com.dasd412.api.diaryservice.adapter.out.web.dto.post;
 
 public class DiaryPostResponseDTO {
 

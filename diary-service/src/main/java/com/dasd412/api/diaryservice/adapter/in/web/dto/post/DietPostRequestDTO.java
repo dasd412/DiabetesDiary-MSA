@@ -1,4 +1,4 @@
-package com.dasd412.api.diaryservice.adapter.in.web.dto;
+package com.dasd412.api.diaryservice.adapter.in.web.dto.post;
 
 import com.dasd412.api.diaryservice.adapter.in.web.FoodListSize;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
@@ -13,12 +13,12 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class DietDTO {
+public class DietPostRequestDTO {
 
     private final EatTime eatTime;
     private final int bloodSugar;
     @Size(max = FoodListSize.FOOD_LIST_SIZE)
-    private final List<FoodDTO> foodList;
+    private final List<FoodPostRequestDTO> foodList;
 
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

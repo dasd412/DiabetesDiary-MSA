@@ -16,5 +16,6 @@ MSA project
 8. AWS Lightsail에 배포 실패(ELK 스택에 필요한 메모리 부족 문제 때문)
 
 ## 세 번째 Iteration
-1. 일지 CUD 서비스 완성하기 
+1. 일지 CUD 서비스의 Update 완성 및 테스트 ✅
+2. 일지 CUD 서비스의 Delete 완성 및 테스트
 

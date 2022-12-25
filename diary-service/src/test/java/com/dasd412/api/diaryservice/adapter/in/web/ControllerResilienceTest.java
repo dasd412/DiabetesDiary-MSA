@@ -1,8 +1,8 @@
-package com.dasd412.api.diaryservice.controller;
+package com.dasd412.api.diaryservice.adapter.in.web;
 
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.DiaryPostRequestDTO;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 
@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @Execution(ExecutionMode.SAME_THREAD)
 @TestPropertySource(locations = "/application-test.properties")
-public class SaveDiaryResilienceTest {
+public class ControllerResilienceTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -75,9 +75,11 @@ public class SaveDiaryResilienceTest {
 
     @Before
     public void setUpDTO() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
+        if (mockMvc==null){
+            mockMvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .build();
+        }
 
         dto = makeDtoValid();
     }
