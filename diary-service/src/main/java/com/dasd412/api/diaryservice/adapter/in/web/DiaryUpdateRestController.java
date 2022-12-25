@@ -8,8 +8,10 @@ import com.dasd412.api.diaryservice.common.utils.trace.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
 @RestController
@@ -27,7 +29,7 @@ public class DiaryUpdateRestController {
     }
 
     @PutMapping("/diabetes-diary")
-    public ApiResult<?> updateDiary(DiaryUpdateRequestDTO dto) throws TimeoutException {
+    public ApiResult<?> updateDiary(@RequestBody @Valid DiaryUpdateRequestDTO dto) throws TimeoutException {
         logger.info("correlation id in updating diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         return null;

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class DiaryUpdateRequestDTO {
 
     //일지
     @NotNull
-    @NotEmpty
     private final Long diaryId;
 
     private final int fastingPlasmaGlucose;

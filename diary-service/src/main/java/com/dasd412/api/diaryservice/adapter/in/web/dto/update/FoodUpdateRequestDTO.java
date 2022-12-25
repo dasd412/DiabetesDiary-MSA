@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -15,7 +14,6 @@ import javax.validation.constraints.NotNull;
 public class FoodUpdateRequestDTO {
 
     @NotNull
-    @NotEmpty
     private Long foodId;
 
     private String foodName;
@@ -28,12 +26,7 @@ public class FoodUpdateRequestDTO {
         this.foodId = foodId;
         this.foodName = foodName;
         this.amount = amount;
-
-        if (amountUnit.name().equals(AmountUnit.NONE.name())) {
-            this.amountUnit = "";
-        } else {
-            this.amountUnit = amountUnit.name();
-        }
+        this.amountUnit = amountUnit.name();
     }
 
     public String toString() {
