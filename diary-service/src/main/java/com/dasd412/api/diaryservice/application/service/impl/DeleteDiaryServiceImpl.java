@@ -1,6 +1,6 @@
 package com.dasd412.api.diaryservice.application.service.impl;
 
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.delete.DiaryDeleteRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.message.ActionEum;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
@@ -9,21 +9,23 @@ import com.dasd412.api.diaryservice.adapter.out.persistence.food.FoodRepository;
 import com.dasd412.api.diaryservice.application.service.DeleteDiaryService;
 import com.dasd412.api.diaryservice.common.utils.trace.UserContextHolder;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
+import com.dasd412.api.diaryservice.domain.diet.Diet;
+import com.dasd412.api.diaryservice.domain.food.Food;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @Service
 public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    //todo 이 동기식 검증이 JWT 도입 이후에도 필요할지는 고민 필요.
-    private final FindWriterFeignClient findWriterFeignClient;
 
     private final KafkaSourceBean kafkaSourceBean;
 
@@ -33,38 +35,40 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     private final FoodRepository foodRepository;
 
-    public DeleteDiaryServiceImpl(FindWriterFeignClient findWriterFeignClient,
-                                  KafkaSourceBean kafkaSourceBean,
-                                  DiaryRepository diaryRepository,
-                                  DietRepository dietRepository,
-                                  FoodRepository foodRepository) {
-        this.findWriterFeignClient = findWriterFeignClient;
+    public DeleteDiaryServiceImpl(
+            KafkaSourceBean kafkaSourceBean,
+            DiaryRepository diaryRepository, DietRepository dietRepository, FoodRepository foodRepository) {
         this.kafkaSourceBean = kafkaSourceBean;
         this.diaryRepository = diaryRepository;
         this.dietRepository = dietRepository;
         this.foodRepository = foodRepository;
     }
 
-
     @Override
-    public Long deleteDiaryWithSubEntities(Long diaryId) throws TimeoutException {
+    public Long deleteDiaryWithSubEntities(DiaryDeleteRequestDTO dto) throws TimeoutException {
 
-        DiabetesDiary targetDiary = diaryRepository.findById(diaryId).orElseThrow(() -> new NoResultException("diary not exist"));
+        removeDiaryWithSubEntities(dto.getDiaryId());
 
-        removeDiaryWithSubEntities(diaryId);
-
-        Long writerId = targetDiary.getWriterId();
-
-        sendMessageToWriterService(writerId, diaryId);
+        sendMessageToWriterService(dto.getWriterId(), dto.getDiaryId());
 
         sendMessageToFindDiaryService();
 
-        return diaryId;
+        return dto.getDiaryId();
     }
 
     @Transactional
     private void removeDiaryWithSubEntities(Long diaryId) throws TimeoutException {
+        /*
+            DELETE A, B, C
+            FROM A
+            JOIN B ON A.id = B.a_id
+            JOIN C ON B.id = C.b_id
+            WHERE A.id = paramId
+            을 만족하는 쿼리를 짜야하는데, Querydsl은 기본적으로 delete와 join을 같이 쓰지 못하게 막아놨다.
 
+            cascade.all 했으므로 하위 엔티티도 같이 삭제된다.
+        */
+        diaryRepository.deleteById(diaryId);
     }
 
     private void sendMessageToWriterService(Long writerId, Long diaryId) {

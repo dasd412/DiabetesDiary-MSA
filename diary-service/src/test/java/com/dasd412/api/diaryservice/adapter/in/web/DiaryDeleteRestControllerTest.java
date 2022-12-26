@@ -1,6 +1,7 @@
 package com.dasd412.api.diaryservice.adapter.in.web;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
+import com.dasd412.api.diaryservice.adapter.in.web.dto.delete.DiaryDeleteRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
@@ -104,9 +105,8 @@ public class DiaryDeleteRestControllerTest {
 
     @Test
     public void deleteDiary() throws Exception {
-        Long targetId = diaryRepository.findAll().get(0).getId();
-
-        mockMvc.perform(delete(URL + targetId))
+        mockMvc.perform(delete(URL).contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(new DiaryDeleteRequestDTO(1L, 1L))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value("1"));
