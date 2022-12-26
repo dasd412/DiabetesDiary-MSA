@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -106,7 +107,9 @@ public class DiaryDeleteRestControllerTest {
         Long targetId = diaryRepository.findAll().get(0).getId();
 
         mockMvc.perform(delete(URL + targetId))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response.id").value("1"));
 
         assertThat(diaryRepository.findAll().size()).isEqualTo(0);
         assertThat(dietRepository.findAll().size()).isEqualTo(0);
