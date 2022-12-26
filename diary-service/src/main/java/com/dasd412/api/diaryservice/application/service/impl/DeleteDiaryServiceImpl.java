@@ -8,7 +8,7 @@ import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.food.FoodRepository;
 import com.dasd412.api.diaryservice.application.service.DeleteDiaryService;
 import com.dasd412.api.diaryservice.common.utils.trace.UserContextHolder;
-import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
+
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.food.Food;
 import org.slf4j.Logger;
@@ -16,11 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 @Service
 public class DeleteDiaryServiceImpl implements DeleteDiaryService {
@@ -58,17 +56,23 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     @Transactional
     private void removeDiaryWithSubEntities(Long diaryId) throws TimeoutException {
-        /*
-            DELETE A, B, C
-            FROM A
-            JOIN B ON A.id = B.a_id
-            JOIN C ON B.id = C.b_id
-            WHERE A.id = paramId
-            을 만족하는 쿼리를 짜야하는데, Querydsl은 기본적으로 delete와 join을 같이 쓰지 못하게 막아놨다.
+        List<Diet> targetDiets = dietRepository.findDietsInDiary(diaryId);
 
-            cascade.all 했으므로 하위 엔티티도 같이 삭제된다.
-        */
-        diaryRepository.deleteById(diaryId);
+        List<Long> dietIds = new ArrayList<>();
+        List<Long> foodIds = new ArrayList<>();
+
+        for (Diet diet : targetDiets) {
+            dietIds.add(diet.getDietId());
+            for (Food food : diet.getFoodList()) {
+                foodIds.add(food.getFoodId());
+            }
+        }
+        foodRepository.deleteFoodsInIds(foodIds);
+        dietRepository.deleteDietsInIds(dietIds);
+
+        //기본적으로 제공하는 deleteById()쓰면 낙관적락과 관련된 오류가 발생함. 아마 하위 엔티티가 db에서 삭제되고 나서
+        //영속성 컨텍스트 내의 엔티티 간 연관 관계 삭제할 때, 이미 없는 것을 삭제하려는 것이기 때문에 문제가 생기나봄...
+        diaryRepository.deleteDiaryForBulkDelete(diaryId);
     }
 
     private void sendMessageToWriterService(Long writerId, Long diaryId) {

@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class DiaryDeleteRestControllerTest {
 
             mockMvc.perform(MockMvcRequestBuilders.post(URL)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(postRequestDTO))).andDo(print());
+                    .content(new ObjectMapper().writeValueAsString(postRequestDTO)));
         }
     }
 
@@ -94,15 +95,27 @@ public class DiaryDeleteRestControllerTest {
         List<FoodPostRequestDTO> foodList2 = new ArrayList<>();
         foodList2.add(new FoodPostRequestDTO("coke", 100.0, AmountUnit.mL));
 
+        List<FoodPostRequestDTO> foodList3 = new ArrayList<>();
+        foodList3.add(new FoodPostRequestDTO("toast", 50.0, AmountUnit.g));
+        foodList3.add(new FoodPostRequestDTO("chicken", 150.0, AmountUnit.g));
+
+        List<FoodPostRequestDTO> foodList4 = new ArrayList<>();
+        foodList4.add(new FoodPostRequestDTO("toast", 50.0, AmountUnit.g));
+        foodList4.add(new FoodPostRequestDTO("coke", 50.0, AmountUnit.mL));
+
         List<DietPostRequestDTO> validDietList = new ArrayList<>();
-        validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, foodList1));
-        validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, foodList2));
+        validDietList.add(new DietPostRequestDTO(EatTime.BREAK_FAST, 100, foodList1));
+        validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, foodList2));
+        validDietList.add(new DietPostRequestDTO(EatTime.DINNER, 110, foodList3));
+        validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 130, foodList4));
+
 
         return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }
 
+    @Transactional
     @Test
     public void deleteDiary() throws Exception {
         mockMvc.perform(delete(URL).contentType(MediaType.APPLICATION_JSON)
