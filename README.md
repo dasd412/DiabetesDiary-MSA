@@ -17,5 +17,7 @@ MSA project
 
 ## 세 번째 Iteration
 1. 일지 CUD 서비스의 Update 완성 및 테스트 ✅
-2. 일지 CUD 서비스의 Delete 완성 및 테스트
+2. 일지 CUD 서비스의 Delete 완성 및 테스트 ✅
+
+
 

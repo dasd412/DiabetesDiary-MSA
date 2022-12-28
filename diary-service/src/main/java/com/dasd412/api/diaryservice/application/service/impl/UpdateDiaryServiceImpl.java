@@ -2,7 +2,6 @@ package com.dasd412.api.diaryservice.application.service.impl;
 
 import com.dasd412.api.diaryservice.adapter.in.web.dto.update.DiaryUpdateRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
-import com.dasd412.api.diaryservice.adapter.out.message.ActionEum;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
@@ -16,9 +15,9 @@ import com.dasd412.api.diaryservice.domain.food.Food;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -50,6 +49,7 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
     }
 
     @Override
+    @Transactional
     public Long updateDiaryWithEntities(DiaryUpdateRequestDTO dto) throws TimeoutException {
 
         Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
@@ -61,7 +61,6 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
         return diaryId;
     }
 
-    @Transactional
     private Long updateDiaryWithSubEntities(Long writerId, DiaryUpdateRequestDTO dto) {
         logger.info("updating diary in UpdateDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
