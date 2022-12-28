@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate" level="TRACE">
+    <logger name="org.hibernate" level="INFO">
         <appender-ref ref="CONSOLE" />
     </logger>
     <logger name="org.hibernate.hql" level="INFO">

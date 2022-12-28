@@ -38,6 +38,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
     }
 
     //todo JWT 도입 이후 feignClient 부분은 지울 필요 있을지도... 그리고 트랜잭션 처리는 어떻게 해야할까?
+    @Transactional
     public Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
@@ -54,7 +55,6 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         return diaryId;
     }
 
-    @Transactional
     private Long makeDiaryWithSubEntities(Long writerId, DiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
         logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
