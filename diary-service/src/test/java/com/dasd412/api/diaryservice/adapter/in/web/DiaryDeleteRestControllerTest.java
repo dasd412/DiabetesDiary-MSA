@@ -26,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
@@ -115,7 +114,6 @@ public class DiaryDeleteRestControllerTest {
                 .dietList(validDietList).build();
     }
 
-    @Transactional
     @Test
     public void deleteDiary() throws Exception {
         mockMvc.perform(delete(URL).contentType(MediaType.APPLICATION_JSON)

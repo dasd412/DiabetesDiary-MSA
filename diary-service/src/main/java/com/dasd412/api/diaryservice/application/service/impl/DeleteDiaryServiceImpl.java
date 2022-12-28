@@ -43,6 +43,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
     }
 
     @Override
+    @Transactional
     public Long deleteDiaryWithSubEntities(DiaryDeleteRequestDTO dto) throws TimeoutException {
 
         removeDiaryWithSubEntities(dto.getDiaryId());
@@ -54,7 +55,6 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
         return dto.getDiaryId();
     }
 
-    @Transactional
     private void removeDiaryWithSubEntities(Long diaryId) throws TimeoutException {
         List<Diet> targetDiets = dietRepository.findDietsInDiary(diaryId);
 
