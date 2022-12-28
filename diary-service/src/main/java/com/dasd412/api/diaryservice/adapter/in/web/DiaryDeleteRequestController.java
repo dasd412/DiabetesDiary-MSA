@@ -41,7 +41,7 @@ public class DiaryDeleteRequestController {
     public ApiResult<?> deleteDiary(@RequestBody @Valid DiaryDeleteRequestDTO dto) throws TimeoutException {
         logger.info("correlation id in deleting diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
-        ScopedSpan span = tracer.startScopedSpan("updateDiary");
+        ScopedSpan span = tracer.startScopedSpan("deleteDiary");
 
         try {
             Long removedId = deleteDiaryService.deleteDiaryWithSubEntities(dto);
