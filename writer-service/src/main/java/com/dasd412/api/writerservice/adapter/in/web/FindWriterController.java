@@ -1,7 +1,7 @@
 package com.dasd412.api.writerservice.adapter.in.web;
 
-import com.dasd412.api.writerservice.application.service.FindWriterService;
-import com.dasd412.api.writerservice.application.service.impl.FindWriterServiceImpl;
+import com.dasd412.api.writerservice.application.service.writer.FindWriterService;
+import com.dasd412.api.writerservice.application.service.writer.impl.FindWriterServiceImpl;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

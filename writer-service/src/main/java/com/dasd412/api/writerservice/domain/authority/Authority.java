@@ -35,4 +35,8 @@ public class Authority {
         checkArgument(this.writerAuthorities.contains(writerAuthority), "writer has not that authority.");
         this.writerAuthorities.remove(writerAuthority);
     }
+
+    public void addWriterAuthority(WriterAuthority writerAuthority){
+        this.writerAuthorities.add(writerAuthority);
+    }
 }

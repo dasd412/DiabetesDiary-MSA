@@ -4,7 +4,7 @@ import com.dasd412.api.writerservice.adapter.out.message.DiaryActionEnum;
 import com.dasd412.api.writerservice.adapter.out.message.DiaryChannels;
 import com.dasd412.api.writerservice.adapter.out.message.model.DiaryChangeModel;
 import com.dasd412.api.writerservice.adapter.out.message.exception.NotSupportedKafkaMessageException;
-import com.dasd412.api.writerservice.application.service.impl.UpdateWriterServiceImpl;
+import com.dasd412.api.writerservice.application.service.writer.impl.UpdateWriterServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.annotation.EnableBinding;

@@ -1,6 +1,6 @@
-package com.dasd412.api.writerservice.application.service.impl;
+package com.dasd412.api.writerservice.application.service.writer.impl;
 
-import com.dasd412.api.writerservice.application.service.SaveWriterService;
+import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 

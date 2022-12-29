@@ -2,8 +2,8 @@ package com.dasd412.api.writerservice.adapter.in.web;
 
 import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.dto.SaveTestDTO;
-import com.dasd412.api.writerservice.application.service.SaveWriterService;
-import com.dasd412.api.writerservice.application.service.impl.SaveWriterServiceImpl;
+import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
+import com.dasd412.api.writerservice.application.service.writer.impl.SaveWriterServiceImpl;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

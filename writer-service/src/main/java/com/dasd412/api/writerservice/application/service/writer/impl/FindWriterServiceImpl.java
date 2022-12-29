@@ -1,6 +1,6 @@
-package com.dasd412.api.writerservice.application.service.impl;
+package com.dasd412.api.writerservice.application.service.writer.impl;
 
-import com.dasd412.api.writerservice.application.service.FindWriterService;
+import com.dasd412.api.writerservice.application.service.writer.FindWriterService;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import org.slf4j.Logger;
