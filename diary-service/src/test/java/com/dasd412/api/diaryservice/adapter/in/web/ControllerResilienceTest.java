@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SuppressWarnings("unused")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @Execution(ExecutionMode.SAME_THREAD)

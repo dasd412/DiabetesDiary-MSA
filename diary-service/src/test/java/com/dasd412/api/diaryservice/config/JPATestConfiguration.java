@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@SuppressWarnings("unused")
 @TestConfiguration
 public class JPATestConfiguration {
 
