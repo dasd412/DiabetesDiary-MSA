@@ -1,6 +1,10 @@
 package com.dasd412.api.writerservice.domain.writer;
 
 import com.dasd412.api.writerservice.domain.BaseTimeEntity;
+import com.dasd412.api.writerservice.domain.authority.WriterAuthority;
+import lombok.Builder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.*;
@@ -10,8 +14,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Entity
 @Table(name = "Writer", uniqueConstraints = @UniqueConstraint(columnNames = {"writer_id", "name"}))
 public class Writer extends BaseTimeEntity {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "writer_id", columnDefinition = "bigint default 0", nullable = false, unique = true)
     private Long writerId;
 
@@ -30,9 +35,6 @@ public class Writer extends BaseTimeEntity {
      */
     private String password;
 
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
-
     /**
      * OAuth 로그인일 경우 provider가 누구인지
      */
@@ -44,12 +46,10 @@ public class Writer extends BaseTimeEntity {
     private String providerId;
 
     @ElementCollection
-    private final List<Long>diaryIds=new ArrayList<>();
+    private final List<Long> diaryIds = new ArrayList<>();
 
-//
-//    @OneToOne
-//    @JoinColumn(name = "profile_id")
-//    private Profile profile;
+    @OneToMany(mappedBy = "writer")
+    private final Set<WriterAuthority> writerAuthorities = new HashSet<>();
 
     public Writer() {
     }
@@ -60,23 +60,21 @@ public class Writer extends BaseTimeEntity {
         this.email = email;
     }
 
-//    /**
-//     * @param email          이메일 (github의 경우 null일 수 있다.)
-//     * @param password       암호화된 비밀 번호 (OAuth 로그인의 경우 null과 마찬가지)
-//     * @param provider       OAuth 제공자 (Form Login의 경우 null)
-//     * @param providerId     OAuth 제공자 식별자 (Form Login의 경우 null)
-//     */
-//    @Builder
-//    public Writer(EntityId<Writer, Long> writerEntityId, String name, String email, String password, Role role, String provider, String providerId) {
-//        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
-//        this.writerId = writerEntityId.getId();
-//        this.name = name;
-//        this.email = email;
-//        this.password = password;
-//        this.role = role;
-//        this.provider = provider;
-//        this.providerId = providerId;
-//    }
+    /**
+     * @param email      이메일 (github의 경우 null일 수 있다.)
+     * @param password   암호화된 비밀 번호 (OAuth 로그인의 경우 null과 마찬가지)
+     * @param provider   OAuth 제공자 (Form Login의 경우 null)
+     * @param providerId OAuth 제공자 식별자 (Form Login의 경우 null)
+     */
+    @Builder
+    public Writer(String name, String email, String password, String provider, String providerId) {
+        checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 
     public Long getId() {
         return writerId;
@@ -96,21 +94,9 @@ public class Writer extends BaseTimeEntity {
     }
 
     private void modifyEmail(String email) {
-        //CHECK Email
+        //todo email 정규식 확인 로직 넣기
         this.email = email;
     }
-
-//    public Role getRole() {
-//        return role;
-//    }
-//
-//    private void modifyRole(Role role) {
-//        this.role = role;
-//    }
-//
-//    public List<DiabetesDiary> getDiaries() {
-//        return new ArrayList<>(diaries);
-//    }
 
     public String getPassword() {
         return password;
@@ -124,14 +110,10 @@ public class Writer extends BaseTimeEntity {
         return providerId;
     }
 
-//    public void setProfile(Profile profile) {
-//        this.profile = profile;
-//    }
-//
-//    public Profile getProfile() {
-//        return profile;
-//    }
-//
+    public Set<WriterAuthority> getWriterAuthorities() {
+        return writerAuthorities;
+    }
+
     public void addDiary(Long diaryId) {
         this.diaryIds.add(diaryId);
     }
@@ -140,16 +122,20 @@ public class Writer extends BaseTimeEntity {
         this.diaryIds.remove(diaryId);
     }
 
-//    @Override
-//    public String toString() {
-//        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-//                .append("id", writerId)
-//                .append("name", name)
-//                .append("email", email)
-//                .append("role", role)
-//                .append("provider", provider)
-//                .toString();
-//    }
+    public void removeWriterAuthorities(WriterAuthority writerAuthority) {
+        checkArgument(this.writerAuthorities.contains(writerAuthority), "writer has not that authority.");
+        this.writerAuthorities.remove(writerAuthority);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", writerId)
+                .append("name", name)
+                .append("email", email)
+                .append("provider", provider)
+                .toString();
+    }
 
     @Override
     public int hashCode() {
@@ -168,11 +154,8 @@ public class Writer extends BaseTimeEntity {
         return Objects.equals(this.writerId, target.writerId);
     }
 
-//    public void update(String name, String email, Role role) {
-//        modifyName(name);
-//        modifyEmail(email);
-//        modifyRole(role);
-//    }
-
-
+    public void update(String name, String email) {
+        modifyName(name);
+        modifyEmail(email);
+    }
 }
