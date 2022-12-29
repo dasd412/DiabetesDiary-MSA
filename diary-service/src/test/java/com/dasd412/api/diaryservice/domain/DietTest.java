@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("unused")
 @RunWith(SpringRunner.class)
 @Import({JPATestConfiguration.class})
 @DataJpaTest()

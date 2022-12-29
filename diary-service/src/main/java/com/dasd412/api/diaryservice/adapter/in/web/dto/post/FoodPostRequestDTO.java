@@ -16,12 +16,6 @@ public class FoodPostRequestDTO {
 
     private AmountUnit amountUnit;
 
-    public FoodPostRequestDTO(String foodName, double amount) {
-        this.foodName = foodName;
-        this.amount = amount;
-        this.amountUnit = AmountUnit.g;
-    }
-
     public FoodPostRequestDTO(String foodName, double amount, AmountUnit amountUnit) {
         this.foodName = foodName;
         this.amount = amount;

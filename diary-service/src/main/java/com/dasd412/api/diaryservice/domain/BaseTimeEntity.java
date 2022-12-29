@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 /**
  * 생성 시간, 갱신 시간 자동 추적용 추상 클래스
  */
+@SuppressWarnings("unused")
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

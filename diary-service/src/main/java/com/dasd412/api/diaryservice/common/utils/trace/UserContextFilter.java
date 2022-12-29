@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@SuppressWarnings({"unused","static-access"})
 @Component
 public class UserContextFilter implements Filter {
 

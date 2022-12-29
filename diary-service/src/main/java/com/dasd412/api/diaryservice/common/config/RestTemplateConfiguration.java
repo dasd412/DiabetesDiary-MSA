@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Configuration
 public class RestTemplateConfiguration {
 

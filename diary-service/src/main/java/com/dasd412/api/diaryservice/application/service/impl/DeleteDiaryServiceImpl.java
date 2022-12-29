@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+
+@SuppressWarnings({"unused","static-access"})
 @Service
 public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
@@ -75,7 +77,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
         diaryRepository.deleteDiaryForBulkDelete(diaryId);
     }
 
-    private void sendMessageToWriterService(Long writerId, Long diaryId) {
+    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException  {
         logger.info("diary-service sent message to writer-service in DeleteDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.DELETED, writerId, diaryId);
     }

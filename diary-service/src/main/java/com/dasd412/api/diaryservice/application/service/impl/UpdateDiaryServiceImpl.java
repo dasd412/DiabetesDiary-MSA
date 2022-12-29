@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings({"unused","static-access"})
 @Service
 public class UpdateDiaryServiceImpl implements UpdateDiaryService {
 

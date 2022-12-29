@@ -50,6 +50,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+@SuppressWarnings("unused")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DiaryServiceApplication.class)
 @TestPropertySource(locations = "/application-test.properties")

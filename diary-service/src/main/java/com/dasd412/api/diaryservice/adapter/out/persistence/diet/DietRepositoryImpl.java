@@ -1,6 +1,6 @@
 package com.dasd412.api.diaryservice.adapter.out.persistence.diet;
 
-import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepositoryCustom;
+
 import com.dasd412.api.diaryservice.domain.diary.QDiabetesDiary;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.diet.QDiet;
@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class DietRepositoryImpl implements DietRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;

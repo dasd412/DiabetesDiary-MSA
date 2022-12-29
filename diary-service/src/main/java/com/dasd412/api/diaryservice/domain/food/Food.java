@@ -1,6 +1,5 @@
 package com.dasd412.api.diaryservice.domain.food;
 
-import com.dasd412.api.diaryservice.domain.EntityId;
 import com.dasd412.api.diaryservice.domain.StringMaxLength;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import lombok.Builder;
@@ -13,6 +12,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "Food")
 public class Food {

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@SuppressWarnings("unused")
 @Configuration
 public class QueryDSLConfiguration {
 

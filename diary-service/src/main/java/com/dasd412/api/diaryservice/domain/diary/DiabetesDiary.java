@@ -13,7 +13,7 @@ import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "DiabetesDiary")
 public class DiabetesDiary extends BaseTimeEntity {

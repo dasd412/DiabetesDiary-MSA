@@ -1,10 +1,9 @@
 package com.dasd412.api.diaryservice.common.utils.trace;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("unused")
 @Component
 public class UserContext {
 

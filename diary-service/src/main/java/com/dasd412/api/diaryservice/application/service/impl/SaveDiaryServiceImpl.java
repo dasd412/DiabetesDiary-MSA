@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings({"unused","static-access"})
 @Service
 public class SaveDiaryServiceImpl implements SaveDiaryService {
 
@@ -82,7 +83,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         return diary.getId();
     }
 
-    private void sendMessageToWriterService(Long writerId,Long diaryId) {
+    private void sendMessageToWriterService(Long writerId,Long diaryId) throws TimeoutException  {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED,writerId,diaryId);
     }
