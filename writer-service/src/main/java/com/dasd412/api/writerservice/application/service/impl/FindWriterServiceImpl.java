@@ -1,9 +1,8 @@
 package com.dasd412.api.writerservice.application.service.impl;
 
 import com.dasd412.api.writerservice.application.service.FindWriterService;
-import com.dasd412.api.writerservice.application.service.WriterService;
 import com.dasd412.api.writerservice.domain.writer.Writer;
-import com.dasd412.api.writerservice.adapter.out.persistence.WriterRepository;
+import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
