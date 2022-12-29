@@ -8,6 +8,7 @@ import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@SuppressWarnings("unused")
 @EnableBinding(Source.class)
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 @Configuration

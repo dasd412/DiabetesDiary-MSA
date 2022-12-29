@@ -1,9 +1,9 @@
 package com.dasd412.api.diaryservice.adapter.out.persistence.diary;
 
-import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepositoryCustom;
 import com.dasd412.api.diaryservice.domain.diary.QDiabetesDiary;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+@SuppressWarnings("unused")
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;

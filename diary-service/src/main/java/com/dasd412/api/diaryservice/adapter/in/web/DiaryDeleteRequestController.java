@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings({"unused","static-access"})
 @RestController
 public class DiaryDeleteRequestController {
 
@@ -29,6 +29,7 @@ public class DiaryDeleteRequestController {
     private final DeleteDiaryService deleteDiaryService;
 
     private final Tracer tracer;
+
 
     public DiaryDeleteRequestController(DeleteDiaryService deleteDiaryService, Tracer tracer) {
         this.deleteDiaryService = deleteDiaryService;
@@ -55,7 +56,6 @@ public class DiaryDeleteRequestController {
         }
     }
 
-    @SuppressWarnings("unused")
     private ApiResult<?> fallBackDeleteDiary(DiaryDeleteRequestDTO dto, Throwable throwable) {
         logger.error("failed to call outer component in deleting Diary of DiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {

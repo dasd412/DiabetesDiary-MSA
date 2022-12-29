@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.domain.food;
 /**
  * 음식 엔티티의 수량 단위를 나타내는 enum
  */
+@SuppressWarnings("unused")
 public enum AmountUnit {
     /* 개수 */
     count,

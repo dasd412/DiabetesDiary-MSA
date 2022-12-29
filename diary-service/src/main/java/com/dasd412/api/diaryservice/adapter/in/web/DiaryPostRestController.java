@@ -21,6 +21,7 @@ import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings({"unused","static-access"})
 @RestController
 public class DiaryPostRestController {
 
@@ -54,7 +55,6 @@ public class DiaryPostRestController {
         }
     }
 
-    @SuppressWarnings("unused")
     private ApiResult<?> fallBackPostDiary(DiaryPostRequestDTO dto, Throwable throwable) {
         logger.error("failed to call outer component in posting Diary of DiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {

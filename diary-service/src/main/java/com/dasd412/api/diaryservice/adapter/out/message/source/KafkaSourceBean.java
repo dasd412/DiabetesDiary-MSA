@@ -12,6 +12,7 @@ import org.springframework.messaging.support.MessageBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
 
 public class KafkaSourceBean {
 
@@ -23,7 +24,7 @@ public class KafkaSourceBean {
         this.source = source;
     }
 
-    public void publishDiaryChangeToWriter(ActionEum action, Long writerId, Long diaryId) {
+    public void publishDiaryChangeToWriter(ActionEum action, Long writerId, Long diaryId)  throws TimeoutException {
         logger.debug("sending kafka message {} for publishing change of diary to writer-service", action);
 
         DiaryChangeModel changeModel = ModelToWriter.builder()
