@@ -20,13 +20,4 @@ public class SaveWriterServiceImpl implements SaveWriterService {
         this.writerRepository = writerRepository;
     }
 
-    //todo 나중에 지울 테스트용 메서드
-    @Transactional
-    public Long saveWriterInTest(String name, String email){
-        logger.info("save test");
-        Writer writer=new Writer(name,email);
-        writerRepository.save(writer);
-        return writer.getId();
-    }
-
 }

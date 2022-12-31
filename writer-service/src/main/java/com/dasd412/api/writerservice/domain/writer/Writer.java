@@ -54,12 +54,6 @@ public class Writer extends BaseTimeEntity {
     public Writer() {
     }
 
-    //todo 나중에 지울 생성자
-    public Writer(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
     /**
      * @param email      이메일 (github의 경우 null일 수 있다.)
      * @param password   암호화된 비밀 번호 (OAuth 로그인의 경우 null과 마찬가지)
