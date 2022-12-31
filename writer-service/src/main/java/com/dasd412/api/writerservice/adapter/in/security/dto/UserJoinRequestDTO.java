@@ -24,5 +24,5 @@ public class UserJoinRequestDTO implements Serializable {
     private final String password;
 
     @NotBlank
-    private final List<Role> role;
+    private final List<Role> roles;
 }
