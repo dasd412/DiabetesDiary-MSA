@@ -1,9 +1,9 @@
-package com.dasd412.api.writerservice.application.service.writer_authority.impl;
+package com.dasd412.api.writerservice.application.service.writerauthority.impl;
 
 import com.dasd412.api.writerservice.adapter.out.persistence.authority.AuthorityRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer_authority.WriterAuthorityRepository;
-import com.dasd412.api.writerservice.application.service.writer_authority.WriterAuthorityService;
+import com.dasd412.api.writerservice.application.service.writerauthority.WriterAuthorityService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.dasd412.api.writerservice.domain.authority.Authority;
 import com.dasd412.api.writerservice.domain.authority.WriterAuthority;

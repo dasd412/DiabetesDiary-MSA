@@ -1,12 +1,9 @@
 package com.dasd412.api.writerservice.domain.authority;
 
-import com.dasd412.api.writerservice.domain.authority.Authority;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import lombok.Getter;
 
 import javax.persistence.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 @Entity

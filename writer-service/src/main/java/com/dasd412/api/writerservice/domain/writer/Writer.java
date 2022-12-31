@@ -110,6 +110,10 @@ public class Writer extends BaseTimeEntity {
         return providerId;
     }
 
+    public Set<WriterAuthority> getWriterAuthorities() {
+        return writerAuthorities;
+    }
+
     public void addWriterAuthority(WriterAuthority writerAuthority){
         this.writerAuthorities.add(writerAuthority);
     }

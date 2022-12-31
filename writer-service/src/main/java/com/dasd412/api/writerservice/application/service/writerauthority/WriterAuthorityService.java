@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.application.service.writer_authority;
+package com.dasd412.api.writerservice.application.service.writerauthority;
 
 import java.util.concurrent.TimeoutException;
 

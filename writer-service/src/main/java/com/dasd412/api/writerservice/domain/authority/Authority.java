@@ -22,21 +22,23 @@ public class Authority {
     private Role role;
 
     @OneToMany(mappedBy = "authority")
-    private final Set<WriterAuthority> writerAuthorities=new HashSet<>();
+    private final Set<WriterAuthority> writerAuthorities = new HashSet<>();
 
     public Authority() {
     }
 
-    public Authority(Role role){
-        this.role=role;
+    public Authority(Role role) {
+        this.role = role;
     }
 
-    public void removeWriterAuthorities(WriterAuthority writerAuthority){
+    public void addWriterAuthority(WriterAuthority writerAuthority) {
+        this.writerAuthorities.add(writerAuthority);
+    }
+
+
+    public void removeWriterAuthorities(WriterAuthority writerAuthority) {
         checkArgument(this.writerAuthorities.contains(writerAuthority), "writer has not that authority.");
         this.writerAuthorities.remove(writerAuthority);
     }
 
-    public void addWriterAuthority(WriterAuthority writerAuthority){
-        this.writerAuthorities.add(writerAuthority);
-    }
 }
