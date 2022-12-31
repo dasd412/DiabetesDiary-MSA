@@ -1,6 +1,5 @@
 package com.dasd412.api.writerservice.application.service;
 
-import com.dasd412.api.writerservice.WriterServiceApplication;
 import com.dasd412.api.writerservice.adapter.out.persistence.authority.AuthorityRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer_authority.WriterAuthorityRepository;
@@ -22,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 @Import({JPATestConfiguration.class})
 @DataJpaTest
 @TestPropertySource(locations = "/application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class WriterAuthorityServiceTest {
 
     private WriterAuthorityService writerAuthorityService;
@@ -64,5 +64,26 @@ public class WriterAuthorityServiceTest {
 
         //then
         assertThat(writerAuthorityRepository.findAll().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void findAllAuthorityOfWriter() throws TimeoutException {
+        //given
+        writerRepository.save(new Writer("test", "test@com", "test", "test", "test"));
+        authorityRepository.save(new Authority(Role.USER));
+        authorityRepository.save(new Authority(Role.PATIENT));
+        authorityRepository.save(new Authority(Role.ENTERPRISE));
+
+        //when
+        writerAuthorityService.createWriterAuthority(1L, 1L);
+        writerAuthorityService.createWriterAuthority(1L, 2L);
+        writerAuthorityService.createWriterAuthority(1L, 3L);
+
+        //then
+        List<Authority> authorityList = writerAuthorityService.findAllAuthority(1L);
+        assertThat(authorityList.size()).isEqualTo(3);
+        assertThat(authorityList.get(0).getRole()).isEqualTo(Role.USER);
+        assertThat(authorityList.get(1).getRole()).isEqualTo(Role.PATIENT);
+        assertThat(authorityList.get(2).getRole()).isEqualTo(Role.ENTERPRISE);
     }
 }

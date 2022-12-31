@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 
@@ -51,5 +52,11 @@ public class WriterAuthorityServiceImpl implements WriterAuthorityService {
         authority.addWriterAuthority(writerAuthority);
 
         writerAuthorityRepository.save(writerAuthority);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Authority> findAllAuthority(long writerId) {
+        return authorityRepository.findAllAuthority(writerId);
     }
 }
