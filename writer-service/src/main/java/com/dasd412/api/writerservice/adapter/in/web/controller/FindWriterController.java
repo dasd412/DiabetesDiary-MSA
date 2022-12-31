@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.in.web;
+package com.dasd412.api.writerservice.adapter.in.web.controller;
 
 import com.dasd412.api.writerservice.application.service.writer.FindWriterService;
 import com.dasd412.api.writerservice.application.service.writer.impl.FindWriterServiceImpl;
