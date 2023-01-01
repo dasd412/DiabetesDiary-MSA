@@ -1,5 +1,7 @@
 package com.dasd412.api.writerservice.adapter.in.web.controller;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.dasd412.api.writerservice.adapter.in.security.dto.UserJoinRequestDTO;
 import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.exception.EmailExistException;
@@ -9,6 +11,9 @@ import com.dasd412.api.writerservice.application.service.vo.UserDetailsVO;
 import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
 import com.dasd412.api.writerservice.application.service.writerauthority.WriterAuthorityService;
 
+import com.dasd412.api.writerservice.common.utils.UserContextHolder;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,14 +36,22 @@ public class JoinController {
 
     private final WriterAuthorityService writerAuthorityService;
 
-    public JoinController(SaveWriterService saveWriterService, AuthorityService authorityService, WriterAuthorityService writerAuthorityService) {
+    private final Tracer tracer;
+
+    public JoinController(SaveWriterService saveWriterService, AuthorityService authorityService, WriterAuthorityService writerAuthorityService, Tracer tracer) {
         this.saveWriterService = saveWriterService;
         this.authorityService = authorityService;
         this.writerAuthorityService = writerAuthorityService;
+        this.tracer = tracer;
     }
 
     @PostMapping("/signup")
+    @RateLimiter(name = "writerService")
+    @CircuitBreaker(name = "writerService", fallbackMethod = "fallBackSignup")
     public ApiResult<?> signup(@RequestBody @Valid UserJoinRequestDTO dto) throws TimeoutException {
+        logger.info("signing up in JoinController:{}", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("signup");
 
         UserDetailsVO userDetailsVO = UserDetailsVO.builder()
                 .name(dto.getUsername())
@@ -60,6 +73,20 @@ public class JoinController {
             return ApiResult.OK("join success");
         } catch (UserNameExistException | EmailExistException e) {
             return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ApiResult.ERROR(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            span.tag("writer.service", "signup");
+            span.finish();
         }
+    }
+
+    private ApiResult<?> fallBackSignup(UserJoinRequestDTO dto, Throwable throwable) {
+        logger.error("error occurred while signing up in JoinController:{}", UserContextHolder.getContext().getCorrelationId());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
