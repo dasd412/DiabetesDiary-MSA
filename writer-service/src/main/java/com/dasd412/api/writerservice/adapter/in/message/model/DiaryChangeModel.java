@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.out.message.model;
+package com.dasd412.api.writerservice.adapter.in.message.model;
 
 import lombok.Builder;
 import lombok.Getter;

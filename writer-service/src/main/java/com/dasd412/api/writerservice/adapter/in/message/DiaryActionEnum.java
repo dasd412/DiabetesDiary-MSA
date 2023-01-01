@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.out.message;
+package com.dasd412.api.writerservice.adapter.in.message;
 
 public enum DiaryActionEnum {
     CREATED,

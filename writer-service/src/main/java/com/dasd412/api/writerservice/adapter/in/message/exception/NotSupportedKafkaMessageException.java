@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.out.message.exception;
+package com.dasd412.api.writerservice.adapter.in.message.exception;
 
 public class NotSupportedKafkaMessageException extends IllegalArgumentException{
     public NotSupportedKafkaMessageException(String s) {

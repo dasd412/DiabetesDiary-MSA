@@ -25,13 +25,9 @@ public class SaveWriterServiceImpl implements SaveWriterService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SaveWriterServiceImpl(WriterRepository writerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SaveWriterServiceImpl(WriterRepository writerRepository) {
         this.writerRepository = writerRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    private String encodePassword(String rawPassword) {
-        return bCryptPasswordEncoder.encode(rawPassword);
+        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     @Transactional
@@ -39,15 +35,15 @@ public class SaveWriterServiceImpl implements SaveWriterService {
     public Long saveWriter(AuthenticationVO vo) throws TimeoutException, UserNameExistException, EmailExistException {
         logger.info("create writer in SaveWriterService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
-        if(writerRepository.existName(vo.getName())){
+        if (writerRepository.existName(vo.getName())) {
             throw new UserNameExistException("username already exist");
         }
 
-        if(writerRepository.existEmail(vo.getEmail(),vo.getProvider())){
+        if (writerRepository.existEmail(vo.getEmail(), vo.getProvider())) {
             throw new EmailExistException("email already exist");
         }
 
-        Writer entity=vo.makeEntityWithPasswordEncode(bCryptPasswordEncoder);
+        Writer entity = vo.makeEntityWithPasswordEncode(bCryptPasswordEncoder);
 
         writerRepository.save(entity);
 

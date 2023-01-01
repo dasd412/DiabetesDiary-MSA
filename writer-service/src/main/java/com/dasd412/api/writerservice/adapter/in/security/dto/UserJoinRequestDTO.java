@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class UserJoinRequestDTO implements Serializable {
     @NotBlank
     private final String password;
 
-    @NotBlank
+    @NotNull
+    @Size(min=1)
     private final List<Role> roles;
 }
