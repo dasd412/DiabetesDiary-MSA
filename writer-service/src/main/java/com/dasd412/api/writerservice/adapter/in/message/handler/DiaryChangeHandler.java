@@ -4,24 +4,23 @@ import com.dasd412.api.writerservice.adapter.in.message.DiaryActionEnum;
 import com.dasd412.api.writerservice.adapter.in.message.DiaryChannels;
 import com.dasd412.api.writerservice.adapter.in.message.model.DiaryChangeModel;
 import com.dasd412.api.writerservice.adapter.in.message.exception.NotSupportedKafkaMessageException;
-import com.dasd412.api.writerservice.application.service.writer.impl.UpdateWriterServiceImpl;
+import com.dasd412.api.writerservice.application.service.writer.UpdateWriterService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 
-//@EnableBinding(DiaryChannels.class)
 public class DiaryChangeHandler {
 
-    private final UpdateWriterServiceImpl updateWriterService;
+    private final UpdateWriterService updateWriterService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DiaryChangeHandler(UpdateWriterServiceImpl updateWriterService) {
+    public DiaryChangeHandler(UpdateWriterService updateWriterService) {
         this.updateWriterService = updateWriterService;
     }
 
-    //@StreamListener("inboundDiaryChanges")
+    @StreamListener("inboundDiaryChanges")
     public void changeRelationWithDiary(DiaryChangeModel diaryChange) {
         logger.debug("Received an {} event for writer id {} and diary id {} at created time : {}", diaryChange.getAction(), diaryChange.getWriterId(), diaryChange.getDiaryId(), diaryChange.getLocalDateTimeFormat());
 
