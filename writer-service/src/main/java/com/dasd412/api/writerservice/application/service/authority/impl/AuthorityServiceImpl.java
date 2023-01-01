@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -27,13 +28,15 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Override
     @Transactional
-    public List<Long> createAuthority(List<Role> roles) throws TimeoutException {
+    public List<Long> createAuthority(Set<Role> roles) throws TimeoutException {
         logger.info("create authorities in AuthorityService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
         List<Long> authorityIds = new ArrayList<>();
 
         roles.forEach(role -> {
-            authorityRepository.save(new Authority(role));
+            Authority authority = new Authority(role);
+            authorityRepository.save(authority);
+            authorityIds.add(authority.getId());
         });
 
         return authorityIds;

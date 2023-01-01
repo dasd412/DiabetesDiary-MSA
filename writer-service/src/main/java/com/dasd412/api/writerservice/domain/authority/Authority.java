@@ -21,7 +21,7 @@ public class Authority {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "authority")
+    @OneToMany(mappedBy = "authority",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<WriterAuthority> writerAuthorities = new HashSet<>();
 
     public Authority() {

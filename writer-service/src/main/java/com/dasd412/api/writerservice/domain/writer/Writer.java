@@ -48,7 +48,7 @@ public class Writer extends BaseTimeEntity {
     @ElementCollection
     private final List<Long> diaryIds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "writer")
+    @OneToMany(mappedBy = "writer",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<WriterAuthority> writerAuthorities = new HashSet<>();
 
     public Writer() {
