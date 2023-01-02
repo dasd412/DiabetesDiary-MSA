@@ -12,7 +12,7 @@
 
 	<groupId>com.dasd412.api</groupId>
 	<artifactId>writer-service</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>writer-service</name>
 	<description>Writer service of msa project</description>
 
@@ -35,8 +35,19 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- msa -->
+		<!-- security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<!-- msa -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
