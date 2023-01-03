@@ -69,6 +69,16 @@ services:
         aliases:
           - "kafka"
 
+  redisserver:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      backend:
+        aliases:
+          - "redis"
+
   diaryservice:
     image: msa/diary-service:0.0.6-SNAPSHOT
     ports:
