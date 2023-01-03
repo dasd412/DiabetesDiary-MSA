@@ -77,7 +77,8 @@ public class JWTTokenProvider {
 
     public boolean validateJwtToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET).parseClaimsJwt(token);
+            //parseClaimsJws()으로 해야 UnsupportedJwtException 발생 안함.
+            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
             return true;
         } catch (SignatureException | MalformedJwtException |
                  UnsupportedJwtException | IllegalArgumentException | ExpiredJwtException exception) {
@@ -88,7 +89,8 @@ public class JWTTokenProvider {
 
     private Claims retrieveClaimsFromJwtToken(String token) {
         try {
-            return Jwts.parser().setSigningKey(SECRET).parseClaimsJwt(token).getBody();
+            //parseClaimsJws()으로 해야 UnsupportedJwtException 발생 안함.
+            return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

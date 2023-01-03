@@ -1,20 +1,20 @@
 package com.dasd412.api.writerservice.adapter.in.security.dto;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
-@Getter
-@RequiredArgsConstructor
-public class LoginRequestDTO implements Serializable {
+@Data
+public class LoginRequestDTO {
 
     @NotBlank
-    @Email
-    private final String email;
+    private String username;
 
     @NotBlank
-    private final String password;
+    private String password;
 }
