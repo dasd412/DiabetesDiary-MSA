@@ -52,7 +52,7 @@ public class WriterAuthorityServiceTest {
     @Test
     public void createWriterAuthorityTriple() throws TimeoutException {
         //given
-        writerRepository.save(new Writer("test", "test@com", "test", "test", "test"));
+        writerRepository.save(new Writer("test", "test@naver.com", "test", "test", "test"));
         authorityRepository.save(new Authority(Role.USER));
         authorityRepository.save(new Authority(Role.PATIENT));
         authorityRepository.save(new Authority(Role.ENTERPRISE));
@@ -69,7 +69,7 @@ public class WriterAuthorityServiceTest {
     @Test
     public void findAllAuthorityOfWriter() throws TimeoutException {
         //given
-        writerRepository.save(new Writer("test", "test@com", "test", "test", "test"));
+        writerRepository.save(new Writer("test", "test@naver.com", "test", "test", "test"));
         authorityRepository.save(new Authority(Role.USER));
         authorityRepository.save(new Authority(Role.PATIENT));
         authorityRepository.save(new Authority(Role.ENTERPRISE));
