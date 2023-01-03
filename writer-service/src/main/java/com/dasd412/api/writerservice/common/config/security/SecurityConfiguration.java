@@ -3,7 +3,7 @@ package com.dasd412.api.writerservice.common.config.security;
 import com.dasd412.api.writerservice.adapter.in.security.filter.JwtAuthenticationFilter;
 import com.dasd412.api.writerservice.adapter.in.security.jwt.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
-import com.dasd412.api.writerservice.application.service.redis.refresh.RefreshTokenService;
+import com.dasd412.api.writerservice.application.service.cache.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +32,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/h2-console/**");
     }
 
-
     /*
     1.JWT는 무상태성이므로 세션이 없고
     2.크로스 오리진을 모두 허용하며
@@ -43,9 +42,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        JwtAuthenticationFilter authenticationFilter=new JwtAuthenticationFilter(authenticationManagerBean(),jwtTokenProvider,refreshTokenService,cookieProvider);
+        authenticationFilter.setFilterProcessesUrl("/login");
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(corsFilter)
+                .addFilter(authenticationFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests().anyRequest().permitAll()

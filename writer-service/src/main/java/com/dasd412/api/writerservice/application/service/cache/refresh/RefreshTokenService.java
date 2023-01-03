@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.application.service.redis.refresh;
+package com.dasd412.api.writerservice.application.service.cache.refresh;
 
 public interface RefreshTokenService {
 
