@@ -25,9 +25,9 @@ public class SaveWriterServiceImpl implements SaveWriterService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SaveWriterServiceImpl(WriterRepository writerRepository) {
+    public SaveWriterServiceImpl(WriterRepository writerRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.writerRepository = writerRepository;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Transactional

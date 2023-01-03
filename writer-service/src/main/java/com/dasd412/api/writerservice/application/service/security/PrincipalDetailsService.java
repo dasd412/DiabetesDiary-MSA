@@ -6,6 +6,8 @@ import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,6 @@ public class PrincipalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Writer user = writerRepository.findWriterByName(username).orElseThrow(() -> new UsernameNotFoundException("username not exist"));
 
-        return  new PrincipalDetails(user);
+        return new PrincipalDetails(user);
     }
 }
