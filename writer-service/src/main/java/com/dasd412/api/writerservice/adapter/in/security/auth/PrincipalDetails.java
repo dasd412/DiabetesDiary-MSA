@@ -78,4 +78,8 @@ public class PrincipalDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public Writer getWriter() {
+        return writer;
+    }
 }

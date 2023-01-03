@@ -2,6 +2,8 @@ package com.dasd412.api.writerservice.common.config.security;
 
 import com.dasd412.api.writerservice.adapter.in.security.filter.JwtAuthenticationFilter;
 import com.dasd412.api.writerservice.adapter.in.security.jwt.JWTTokenProvider;
+import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
+import com.dasd412.api.writerservice.application.service.redis.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
 
     private final JWTTokenProvider jwtTokenProvider;
+
+    private final RefreshTokenService refreshTokenService;
+
+    private final CookieProvider cookieProvider;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -50,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         formLogin().disable()을 사용하면 UsernamePasswordAuthenticationFilter를 이용할 수 없다.
         이를 이용하려면 UsernamePasswordAuthenticationFilter 를 상속한 커스텀 필터를 만들어서 적용해야 한다.
          */
-        http.addFilter(new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider));
+        http.addFilter(new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider, refreshTokenService, cookieProvider));
     }
 
     @Override
