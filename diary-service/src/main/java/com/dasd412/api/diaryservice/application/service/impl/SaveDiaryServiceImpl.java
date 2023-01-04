@@ -28,26 +28,21 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    private final FindWriterFeignClient findWriterFeignClient;
-
     private final KafkaSourceBean kafkaSourceBean;
 
     public SaveDiaryServiceImpl(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient, KafkaSourceBean kafkaSourceBean) {
         this.diaryRepository = diaryRepository;
-        this.findWriterFeignClient = findWriterFeignClient;
         this.kafkaSourceBean = kafkaSourceBean;
     }
 
-    //todo JWT 도입 이후 feignClient 부분은 지울 필요 있을지도... 그리고 트랜잭션 처리는 어떻게 해야할까?
+    //todo dto에서 id 속성 지우고, 리퀘스트 헤더에서 id 읽어오는 방식으로 변경 필요
     @Transactional
     public Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
-        Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
-
         LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
 
-        Long diaryId = makeDiaryWithSubEntities(writerId, dto, writtenTime);
+        Long diaryId = makeDiaryWithSubEntities(dto.getWriterId(), dto, writtenTime);
 
         sendMessageToWriterService(dto.getWriterId(),diaryId);
 

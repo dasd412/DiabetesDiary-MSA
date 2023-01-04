@@ -63,10 +63,6 @@ public class DiaryUpdateRestControllerTest {
     @Autowired
     private UpdateDiaryService updateDiaryService;
 
-    //todo JWT 도입 후 지울 듯?
-    @MockBean
-    private FindWriterFeignClient findWriterFeignClient;
-
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 
@@ -85,8 +81,6 @@ public class DiaryUpdateRestControllerTest {
 
     @Before
     public void setUp() throws Exception {
-
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)

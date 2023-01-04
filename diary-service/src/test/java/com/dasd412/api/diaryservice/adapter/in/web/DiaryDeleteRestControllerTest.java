@@ -50,10 +50,6 @@ public class DiaryDeleteRestControllerTest {
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 
-    //todo JWT 도입 후 지울 듯?
-    @MockBean
-    private FindWriterFeignClient findWriterFeignClient;
-
     @Autowired
     private DiaryRepository diaryRepository;
 
@@ -74,7 +70,6 @@ public class DiaryDeleteRestControllerTest {
                     .webAppContextSetup(context)
                     .build();
         }
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
 
         // 단 1번만 포스트 쏘도록 제한.
         if (diaryRepository.findAll().size() == 0) {

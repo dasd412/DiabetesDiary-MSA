@@ -64,10 +64,6 @@ public class ControllerResilienceTest {
     @Autowired
     private CircuitBreakerRegistry circuitBreakerRegistry;
 
-    //todo JWT 도입 후 지울 듯?
-    @MockBean
-    private FindWriterFeignClient findWriterFeignClient;
-
     private MockMvc mockMvc;
 
     private DiaryPostRequestDTO dto;
@@ -97,30 +93,10 @@ public class ControllerResilienceTest {
     }
 
     @Test
-    public void testSaveDiaryWhenCircuitBreakClosedAndMicroServiceCallTimeOut() throws Exception {
-        //given
-        circuitBreakerRegistry.circuitBreaker("diaryService")
-                .transitionToClosedState();
-
-        //when
-        when(findWriterFeignClient.findWriterById(1L)).thenThrow(new TimeoutException());
-        mockMvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(jsonPath("$.success").value("false"))
-                .andExpect(jsonPath("$.error.message").exists())
-                .andExpect(jsonPath("$.error.status").value("500"));
-
-        //then
-        assertThat(diaryRepository.findAll().size()).isEqualTo(0);
-    }
-
-    @Test
     public void testSaveDiaryWhenCircuitBreakClosedAndDataBaseTimeOut() throws Exception {
         //given
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToClosedState();
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
         given(diaryRepository.save(any(DiabetesDiary.class))).willAnswer(invocation -> {
             throw new TimeoutException();
         });
@@ -143,7 +119,6 @@ public class ControllerResilienceTest {
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToOpenState();
 
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
         given(diaryRepository.save(any(DiabetesDiary.class))).willAnswer(invocation -> {
             throw new TimeoutException();
         });
@@ -165,8 +140,6 @@ public class ControllerResilienceTest {
         //given
         circuitBreakerRegistry.circuitBreaker("diaryService")
                 .transitionToClosedState();
-
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
 
         //when
         when(diaryRepository.save(any(DiabetesDiary.class))).thenReturn(new DiabetesDiary());

@@ -44,6 +44,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
         this.foodRepository = foodRepository;
     }
 
+    //todo dto에서 id 속성 지우고, 리퀘스트 헤더에서 id 읽어오는 방식으로 변경 필요
     @Override
     @Transactional
     public Long deleteDiaryWithSubEntities(DiaryDeleteRequestDTO dto) throws TimeoutException {
