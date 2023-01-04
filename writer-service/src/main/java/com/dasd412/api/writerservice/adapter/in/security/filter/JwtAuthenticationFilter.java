@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             LoginRequestDTO dto = objectMapper.readValue(request.getInputStream(), LoginRequestDTO.class);
 
             //인증 토큰 만들기. loadUserByUsername()에서 판별되는 토큰이다.
-            //todo loadUserByUsername()의 인자와 UsernamePasswordAuthenticationToken의 첫 번째 인자가 동일해야 로그인이 되는 듯 하다. 확인 필요
+            //loadUserByUsername()의 인자와 UsernamePasswordAuthenticationToken의 첫 번째 인자가 동일해야 로그인이 된다.
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
 
             //loadUserByUsername()을 호출하고, session에 인증 객체 저장. jwt 토큰이라 세션이 필요 없지만, 인가를 위해 저장됨.
@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         //access token과 만료 시간은 response body에 담는다.
-        String accessToken = jwtTokenProvider.issueNewJwtAccessToken(principalDetails.getUsername(), request.getRequestURI(), principalDetails.getAuthorities());
+        String accessToken = jwtTokenProvider.issueNewJwtAccessToken(principalDetails.getUsername(),principalDetails.getWriter().getId(), request.getRequestURI(), principalDetails.getAuthorities());
 
         LocalDateTime expired = LocalDateTime.ofInstant(jwtTokenProvider.retrieveExpiredTime(accessToken).toInstant(), ZoneId.systemDefault());
 
