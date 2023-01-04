@@ -55,11 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
 
-        /*
-        formLogin().disable()을 사용하면 UsernamePasswordAuthenticationFilter를 이용할 수 없다.
-        이를 이용하려면 UsernamePasswordAuthenticationFilter 를 상속한 커스텀 필터를 만들어서 적용해야 한다.
-         */
-        http.addFilter(new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider, refreshTokenService, cookieProvider));
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -53,6 +54,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         logger.info("attempting login in JwtFilter");
 
+        if (!request.getMethod().equals("POST")) {
+            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+        }
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -76,7 +81,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         //access token과 만료 시간은 response body에 담는다.
-        String accessToken = jwtTokenProvider.issueNewJwtAccessToken(principalDetails.getUsername(),principalDetails.getWriter().getId(), request.getRequestURI(), principalDetails.getAuthorities());
+        String accessToken = jwtTokenProvider.issueNewJwtAccessToken(principalDetails.getUsername(), principalDetails.getWriter().getId(), request.getRequestURI(), principalDetails.getAuthorities());
 
         LocalDateTime expired = LocalDateTime.ofInstant(jwtTokenProvider.retrieveExpiredTime(accessToken).toInstant(), ZoneId.systemDefault());
 
