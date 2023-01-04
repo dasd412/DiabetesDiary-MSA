@@ -7,7 +7,7 @@ import com.dasd412.api.writerservice.adapter.in.security.dto.LoginRequestDTO;
 import com.dasd412.api.writerservice.adapter.in.security.jwt.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
 import com.dasd412.api.writerservice.application.service.cache.refresh.RefreshTokenService;
-import com.dasd412.api.writerservice.common.utils.UserContextHolder;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        logger.info("attempting login in JwtFilter:{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("attempting login in JwtFilter");
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        logger.info("success login in JwtFilter:{}", UserContextHolder.getContext().getCorrelationId());
+        logger.info("success login in JwtFilter");
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
