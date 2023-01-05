@@ -5,5 +5,5 @@ import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import java.util.concurrent.TimeoutException;
 
 public interface SaveDiaryService extends DiaryService{
-    Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException;
+    Long postDiaryWithEntities(Long writerId, DiaryPostRequestDTO dto) throws TimeoutException;
 }

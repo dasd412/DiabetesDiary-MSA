@@ -14,13 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
-@SuppressWarnings({"unused","static-access"})
+@SuppressWarnings({"unused", "static-access"})
 @RestController
 public class DiaryUpdateRestController {
 
@@ -38,13 +39,13 @@ public class DiaryUpdateRestController {
     @PutMapping("/diabetes-diary")
     @RateLimiter(name = "diaryService")
     @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackUpdateDiary")
-    public ApiResult<?> updateDiary(@RequestBody @Valid DiaryUpdateRequestDTO dto) throws TimeoutException {
+    public ApiResult<?> updateDiary(@RequestBody @Valid DiaryUpdateRequestDTO dto, @RequestHeader(value = "writer-id") String writerId) throws TimeoutException {
         logger.info("correlation id in updating diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         ScopedSpan span = tracer.startScopedSpan("updateDiary");
 
         try {
-            Long diaryId = updateDiaryService.updateDiaryWithEntities(dto);
+            Long diaryId = updateDiaryService.updateDiaryWithEntities(Long.parseLong(writerId), dto);
             return ApiResult.OK(new DiaryUpdateResponseDTO(diaryId));
         } catch (NoResultException exception) {
             return ApiResult.ERROR(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -54,7 +55,7 @@ public class DiaryUpdateRestController {
         }
     }
 
-    private ApiResult<?> fallBackUpdateDiary(DiaryUpdateRequestDTO dto, Throwable throwable) {
+    private ApiResult<?> fallBackUpdateDiary(DiaryUpdateRequestDTO dto, String writerId, Throwable throwable) {
         logger.error("failed to call outer component in updating Diary of DiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);

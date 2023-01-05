@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 
-@SuppressWarnings({"unused","static-access"})
+@SuppressWarnings({"unused", "static-access"})
 @Service
 public class SaveDiaryServiceImpl implements SaveDiaryService {
 
@@ -28,28 +28,22 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    private final FindWriterFeignClient findWriterFeignClient;
-
     private final KafkaSourceBean kafkaSourceBean;
 
     public SaveDiaryServiceImpl(DiaryRepository diaryRepository, FindWriterFeignClient findWriterFeignClient, KafkaSourceBean kafkaSourceBean) {
         this.diaryRepository = diaryRepository;
-        this.findWriterFeignClient = findWriterFeignClient;
         this.kafkaSourceBean = kafkaSourceBean;
     }
 
-    //todo JWT 도입 이후 feignClient 부분은 지울 필요 있을지도... 그리고 트랜잭션 처리는 어떻게 해야할까?
     @Transactional
-    public Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException {
+    public Long postDiaryWithEntities(Long writerId, DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-
-        Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
 
         LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
 
         Long diaryId = makeDiaryWithSubEntities(writerId, dto, writtenTime);
 
-        sendMessageToWriterService(dto.getWriterId(),diaryId);
+        sendMessageToWriterService(writerId, diaryId);
 
         sendMessageToFindDiaryService();
 
@@ -83,9 +77,9 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         return diary.getId();
     }
 
-    private void sendMessageToWriterService(Long writerId,Long diaryId) throws TimeoutException  {
+    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED,writerId,diaryId);
+        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED, writerId, diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요
@@ -93,6 +87,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
+
     /**
      * JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 헬프 메서드.
      *

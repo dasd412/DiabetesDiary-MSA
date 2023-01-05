@@ -11,9 +11,6 @@ import java.util.Optional;
 public class FilterUtils {
 
     public static final String CORRELATION_ID = "diary-correlation-id";
-    public static final String AUTH_TOKEN = "Authorization";
-    public static final String USER_ID = "writer-id";
-    public static final String DIARY_ID = "diary-id";
 
     public Optional<String> getCorrelationId(HttpHeaders httpHeaders) {
         List<String> header = httpHeaders.get(CORRELATION_ID);

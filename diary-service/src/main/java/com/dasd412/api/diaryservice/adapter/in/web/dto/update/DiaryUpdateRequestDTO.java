@@ -14,9 +14,6 @@ import java.util.List;
 @Getter
 public class DiaryUpdateRequestDTO {
 
-    @NotNull
-    private final Long writerId;
-
     //일지
     @NotNull
     private final Long diaryId;

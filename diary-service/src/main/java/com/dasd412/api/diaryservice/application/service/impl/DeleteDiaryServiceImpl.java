@@ -1,6 +1,5 @@
 package com.dasd412.api.diaryservice.application.service.impl;
 
-import com.dasd412.api.diaryservice.adapter.in.web.dto.delete.DiaryDeleteRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.message.ActionEum;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
@@ -46,15 +45,15 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     @Override
     @Transactional
-    public Long deleteDiaryWithSubEntities(DiaryDeleteRequestDTO dto) throws TimeoutException {
+    public Long deleteDiaryWithSubEntities(Long diaryId,Long writerId) throws TimeoutException {
 
-        removeDiaryWithSubEntities(dto.getDiaryId());
+        removeDiaryWithSubEntities(diaryId);
 
-        sendMessageToWriterService(dto.getWriterId(), dto.getDiaryId());
+        sendMessageToWriterService(writerId, diaryId);
 
         sendMessageToFindDiaryService();
 
-        return dto.getDiaryId();
+        return diaryId;
     }
 
     private void removeDiaryWithSubEntities(Long diaryId) throws TimeoutException {

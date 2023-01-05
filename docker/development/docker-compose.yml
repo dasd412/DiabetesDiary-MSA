@@ -23,7 +23,7 @@ services:
           - "eurekaserver"
 
   gatewayserver:
-    image: msa/gateway-server:0.0.1-SNAPSHOT
+    image: msa/gateway-server:0.0.2-SNAPSHOT
     ports:
       - "8062:8062"
     environment:
@@ -68,6 +68,16 @@ services:
       backend:
         aliases:
           - "kafka"
+
+  redisserver:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      backend:
+        aliases:
+          - "redis"
 
   diaryservice:
     image: msa/diary-service:0.0.6-SNAPSHOT

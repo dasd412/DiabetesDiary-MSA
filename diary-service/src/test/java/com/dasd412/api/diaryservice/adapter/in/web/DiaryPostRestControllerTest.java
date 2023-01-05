@@ -11,7 +11,6 @@ import com.dasd412.api.diaryservice.domain.diet.EatTime;
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
 import com.dasd412.api.diaryservice.adapter.out.persistence.food.FoodRepository;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -38,7 +37,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -58,10 +56,6 @@ public class DiaryPostRestControllerTest {
     @MockBean
     KafkaSourceBean kafkaSourceBean;
 
-    //todo JWT 도입 후 지울 듯?
-    @MockBean
-    private FindWriterFeignClient findWriterFeignClient;
-
     @Autowired
     private DiaryRepository diaryRepository;
 
@@ -75,12 +69,11 @@ public class DiaryPostRestControllerTest {
 
     @Before
     public void setUp() throws TimeoutException {
-        if (mockMvc==null){
+        if (mockMvc == null) {
             mockMvc = MockMvcBuilders
                     .webAppContextSetup(context)
                     .build();
         }
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
     }
 
     @After
@@ -92,7 +85,10 @@ public class DiaryPostRestControllerTest {
 
     private ResultActions postDto(DiaryPostRequestDTO dto) throws Exception {
         String url = "/diabetes-diary";
-        return mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto)));
+        return mockMvc.perform(post(url)
+                .header("writer-id", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(dto)));
     }
 
     /*
@@ -109,7 +105,7 @@ public class DiaryPostRestControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasInvalidFastingPlasmaGlucose() {
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(-1).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(-1).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
@@ -128,22 +124,7 @@ public class DiaryPostRestControllerTest {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, 600).forEach(sb::append);
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark(sb.toString())
-                .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
-    }
-
-    @Test
-    public void postDiaryWhichHasInvalidWriterId() throws Exception {
-        DiaryPostRequestDTO dto = makeDtoWhichHasInvalidWriterId();
-
-        postDto(dto)
-                .andExpect(jsonPath("$.success").value("false"))
-                .andExpect(jsonPath("$.error.status").value("400"))
-                .andExpect(jsonPath("$.error.message").value("java.lang.IllegalArgumentException"));
-    }
-
-    private DiaryPostRequestDTO makeDtoWhichHasInvalidWriterId() {
-        return DiaryPostRequestDTO.builder().writerId(-1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark(sb.toString())
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
@@ -157,7 +138,7 @@ public class DiaryPostRestControllerTest {
     }
 
     private DiaryPostRequestDTO makeDtoWhichHasValidDiary() {
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00").build();
     }
 
@@ -179,7 +160,7 @@ public class DiaryPostRestControllerTest {
         invalidDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 100, new ArrayList<>()));
         invalidDietList.add(new DietPostRequestDTO(EatTime.ELSE, -1, new ArrayList<>()));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(invalidDietList).build();
     }
@@ -202,7 +183,7 @@ public class DiaryPostRestControllerTest {
         validDietList.add(new DietPostRequestDTO(EatTime.DINNER, 120, new ArrayList<>()));
         validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, new ArrayList<>()));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }
@@ -229,7 +210,7 @@ public class DiaryPostRestControllerTest {
         List<DietPostRequestDTO> dietList = new ArrayList<>();
         dietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, invalidFoodList));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(dietList).build();
     }
@@ -251,7 +232,7 @@ public class DiaryPostRestControllerTest {
         List<DietPostRequestDTO> dietList = new ArrayList<>();
         dietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, invalidFoodList));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(dietList).build();
     }
@@ -280,7 +261,7 @@ public class DiaryPostRestControllerTest {
         validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, foodList1));
         validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, foodList2));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }

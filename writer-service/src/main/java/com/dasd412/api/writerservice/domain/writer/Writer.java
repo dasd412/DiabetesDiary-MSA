@@ -1,5 +1,6 @@
 package com.dasd412.api.writerservice.domain.writer;
 
+import com.dasd412.api.writerservice.common.utils.email.EmailChecker;
 import com.dasd412.api.writerservice.domain.BaseTimeEntity;
 import com.dasd412.api.writerservice.domain.authority.WriterAuthority;
 import lombok.Builder;
@@ -48,7 +49,7 @@ public class Writer extends BaseTimeEntity {
     @ElementCollection
     private final List<Long> diaryIds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "writer",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<WriterAuthority> writerAuthorities = new HashSet<>();
 
     public Writer() {
@@ -63,6 +64,7 @@ public class Writer extends BaseTimeEntity {
     @Builder
     public Writer(String name, String email, String password, String provider, String providerId) {
         checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
+        checkArgument(EmailChecker.checkEmail(email), "String must be format of email.");
         this.name = name;
         this.email = email;
         this.password = password;
@@ -78,7 +80,7 @@ public class Writer extends BaseTimeEntity {
         return name;
     }
 
-    private void modifyName(String name) {
+    public void modifyName(String name) {
         checkArgument(name.length() > 0 && name.length() <= 50, "name should be between 1 and 50");
         this.name = name;
     }
@@ -87,8 +89,8 @@ public class Writer extends BaseTimeEntity {
         return email;
     }
 
-    private void modifyEmail(String email) {
-        //todo email 정규식 확인 로직 넣기
+    public void modifyEmail(String email) {
+        checkArgument(EmailChecker.checkEmail(email), "String must be format of email.");
         this.email = email;
     }
 
@@ -108,7 +110,7 @@ public class Writer extends BaseTimeEntity {
         return writerAuthorities;
     }
 
-    public void addWriterAuthority(WriterAuthority writerAuthority){
+    public void addWriterAuthority(WriterAuthority writerAuthority) {
         this.writerAuthorities.add(writerAuthority);
     }
 
@@ -150,10 +152,5 @@ public class Writer extends BaseTimeEntity {
         }
         Writer target = (Writer) obj;
         return Objects.equals(this.writerId, target.writerId);
-    }
-
-    public void update(String name, String email) {
-        modifyName(name);
-        modifyEmail(email);
     }
 }

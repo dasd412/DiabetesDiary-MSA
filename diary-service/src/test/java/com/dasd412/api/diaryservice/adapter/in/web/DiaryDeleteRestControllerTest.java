@@ -1,11 +1,9 @@
 package com.dasd412.api.diaryservice.adapter.in.web;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.delete.DiaryDeleteRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
@@ -32,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,10 +47,6 @@ public class DiaryDeleteRestControllerTest {
 
     @MockBean
     KafkaSourceBean kafkaSourceBean;
-
-    //todo JWT 도입 후 지울 듯?
-    @MockBean
-    private FindWriterFeignClient findWriterFeignClient;
 
     @Autowired
     private DiaryRepository diaryRepository;
@@ -74,7 +68,6 @@ public class DiaryDeleteRestControllerTest {
                     .webAppContextSetup(context)
                     .build();
         }
-        given(findWriterFeignClient.findWriterById(1L)).willReturn(1L);
 
         // 단 1번만 포스트 쏘도록 제한.
         if (diaryRepository.findAll().size() == 0) {
@@ -82,6 +75,7 @@ public class DiaryDeleteRestControllerTest {
 
             mockMvc.perform(MockMvcRequestBuilders.post(URL)
                     .contentType(MediaType.APPLICATION_JSON)
+                    .header("writer-id", "1")
                     .content(new ObjectMapper().writeValueAsString(postRequestDTO)));
         }
     }
@@ -109,15 +103,16 @@ public class DiaryDeleteRestControllerTest {
         validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 130, foodList4));
 
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }
 
     @Test
     public void deleteDiary() throws Exception {
-        mockMvc.perform(delete(URL).contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(new DiaryDeleteRequestDTO(1L, 1L))))
+        mockMvc.perform(delete(URL+"/1").contentType(MediaType.APPLICATION_JSON)
+                        .header("writer-id", "1"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value("1"));

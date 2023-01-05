@@ -6,5 +6,5 @@ import java.util.concurrent.TimeoutException;
 
 public interface UpdateDiaryService extends DiaryService {
 
-    Long updateDiaryWithEntities(DiaryUpdateRequestDTO dto) throws TimeoutException;
+    Long updateDiaryWithEntities(Long writerId,DiaryUpdateRequestDTO dto) throws TimeoutException;
 }

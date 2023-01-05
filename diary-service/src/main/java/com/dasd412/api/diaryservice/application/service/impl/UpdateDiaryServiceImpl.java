@@ -28,9 +28,6 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    //todo 이 동기식 검증이 JWT 도입 이후에도 필요할지는 고민 필요.
-    private final FindWriterFeignClient findWriterFeignClient;
-
     private final KafkaSourceBean kafkaSourceBean;
 
     private final DietRepository dietRepository;
@@ -43,7 +40,6 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
                                   DietRepository dietRepository,
                                   FoodRepository foodRepository) {
         this.diaryRepository = diaryRepository;
-        this.findWriterFeignClient = findWriterFeignClient;
         this.kafkaSourceBean = kafkaSourceBean;
         this.dietRepository = dietRepository;
         this.foodRepository = foodRepository;
@@ -51,9 +47,7 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
 
     @Override
     @Transactional
-    public Long updateDiaryWithEntities(DiaryUpdateRequestDTO dto) throws TimeoutException {
-
-        Long writerId = findWriterFeignClient.findWriterById(dto.getWriterId());
+    public Long updateDiaryWithEntities(Long writerId, DiaryUpdateRequestDTO dto) throws TimeoutException {
 
         Long diaryId = updateDiaryWithSubEntities(writerId, dto);
 
