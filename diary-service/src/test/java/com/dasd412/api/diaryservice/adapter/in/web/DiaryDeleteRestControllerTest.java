@@ -1,11 +1,9 @@
 package com.dasd412.api.diaryservice.adapter.in.web;
 
 import com.dasd412.api.diaryservice.DiaryServiceApplication;
-import com.dasd412.api.diaryservice.adapter.in.web.dto.delete.DiaryDeleteRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DietPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
@@ -34,6 +32,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -111,8 +110,9 @@ public class DiaryDeleteRestControllerTest {
 
     @Test
     public void deleteDiary() throws Exception {
-        mockMvc.perform(delete(URL).contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(new DiaryDeleteRequestDTO(1L, 1L))))
+        mockMvc.perform(delete(URL+"/1").contentType(MediaType.APPLICATION_JSON)
+                        .header("writer-id", "1"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
                 .andExpect(jsonPath("$.response.id").value("1"));

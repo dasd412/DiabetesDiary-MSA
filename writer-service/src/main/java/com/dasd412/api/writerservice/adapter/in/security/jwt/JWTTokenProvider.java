@@ -36,7 +36,6 @@ public class JWTTokenProvider {
     public String issueNewJwtAccessToken(String username, Long writerId,String requestURI, Collection<? extends GrantedAuthority> authorities) {
         Claims claims = Jwts.claims().setSubject(username);
 
-        //todo gateway server에서 header로 처리해줄 내용이다. cud 서비스 내 dto의 writerId 속성 다 지우고, header에서 읽어 오는 것으로 변경 필요
         claims.put(USER_ID,writerId);
 
         List<String> roles = authorities.stream()
