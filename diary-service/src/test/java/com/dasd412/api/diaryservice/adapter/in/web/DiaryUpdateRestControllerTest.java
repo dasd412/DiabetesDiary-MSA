@@ -91,6 +91,7 @@ public class DiaryUpdateRestControllerTest {
 
             mockMvc.perform(MockMvcRequestBuilders.post(URL)
                     .contentType(MediaType.APPLICATION_JSON)
+                    .header("writer-id", "1")
                     .content(new ObjectMapper().writeValueAsString(postRequestDTO))).andDo(print());
         }
     }
@@ -107,7 +108,7 @@ public class DiaryUpdateRestControllerTest {
         validDietList.add(new DietPostRequestDTO(EatTime.LUNCH, 150, foodList1));
         validDietList.add(new DietPostRequestDTO(EatTime.ELSE, 100, foodList2));
 
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .dietList(validDietList).build();
     }

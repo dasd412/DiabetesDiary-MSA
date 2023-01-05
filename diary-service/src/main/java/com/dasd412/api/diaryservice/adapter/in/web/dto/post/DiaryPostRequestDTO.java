@@ -15,9 +15,6 @@ import java.util.List;
 @Getter
 public class DiaryPostRequestDTO {
 
-    @NotNull
-    private final Long writerId;
-
     private final int fastingPlasmaGlucose;
 
     private final String remark;

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeoutException;
 
-@SuppressWarnings({"unused","static-access"})
+@SuppressWarnings({"unused", "static-access"})
 @Service
 public class SaveDiaryServiceImpl implements SaveDiaryService {
 
@@ -35,16 +35,15 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         this.kafkaSourceBean = kafkaSourceBean;
     }
 
-    //todo dto에서 id 속성 지우고, 리퀘스트 헤더에서 id 읽어오는 방식으로 변경 필요
     @Transactional
-    public Long postDiaryWithEntities(DiaryPostRequestDTO dto) throws TimeoutException {
+    public Long postDiaryWithEntities(Long writerId, DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
         LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
 
-        Long diaryId = makeDiaryWithSubEntities(dto.getWriterId(), dto, writtenTime);
+        Long diaryId = makeDiaryWithSubEntities(writerId, dto, writtenTime);
 
-        sendMessageToWriterService(dto.getWriterId(),diaryId);
+        sendMessageToWriterService(writerId, diaryId);
 
         sendMessageToFindDiaryService();
 
@@ -78,9 +77,9 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         return diary.getId();
     }
 
-    private void sendMessageToWriterService(Long writerId,Long diaryId) throws TimeoutException  {
+    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED,writerId,diaryId);
+        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED, writerId, diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요
@@ -88,6 +87,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
+
     /**
      * JSON 직렬화가 LocalDateTime 에는 적용이 안되서 작성한 헬프 메서드.
      *

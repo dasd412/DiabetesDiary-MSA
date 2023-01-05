@@ -15,13 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import java.util.concurrent.TimeoutException;
 
-@SuppressWarnings({"unused","static-access"})
+@SuppressWarnings({"unused", "static-access"})
 @RestController
 public class DiaryPostRestController {
 
@@ -39,13 +40,13 @@ public class DiaryPostRestController {
     @PostMapping("/diabetes-diary")
     @RateLimiter(name = "diaryService")
     @CircuitBreaker(name = "diaryService", fallbackMethod = "fallBackPostDiary")
-    public ApiResult<?> postDiary(@RequestBody @Valid DiaryPostRequestDTO dto) throws TimeoutException {
+    public ApiResult<?> postDiary(@RequestBody @Valid DiaryPostRequestDTO dto, @RequestHeader(value = "writer-id") String writerId) throws TimeoutException {
         logger.info("correlation id in posting diary of DiaryRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
         ScopedSpan span = tracer.startScopedSpan("postDiary");
 
         try {
-            Long diaryId = saveDiaryService.postDiaryWithEntities(dto);
+            Long diaryId = saveDiaryService.postDiaryWithEntities(Long.parseLong(writerId), dto);
             return ApiResult.OK(new DiaryPostResponseDTO(diaryId));
         } catch (NoResultException exception) {
             return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
@@ -55,7 +56,7 @@ public class DiaryPostRestController {
         }
     }
 
-    private ApiResult<?> fallBackPostDiary(DiaryPostRequestDTO dto, Throwable throwable) {
+    private ApiResult<?> fallBackPostDiary(DiaryPostRequestDTO dto, String writerId, Throwable throwable) {
         logger.error("failed to call outer component in posting Diary of DiaryRestController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);

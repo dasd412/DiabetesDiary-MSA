@@ -5,10 +5,8 @@ import com.dasd412.api.diaryservice.DiaryServiceApplication;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
-
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.application.service.impl.SaveDiaryServiceImpl;
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.junit.After;
@@ -72,7 +70,7 @@ public class ControllerResilienceTest {
 
     @Before
     public void setUpDTO() {
-        if (mockMvc==null){
+        if (mockMvc == null) {
             mockMvc = MockMvcBuilders
                     .webAppContextSetup(context)
                     .build();
@@ -82,7 +80,7 @@ public class ControllerResilienceTest {
     }
 
     private DiaryPostRequestDTO makeDtoValid() {
-        return DiaryPostRequestDTO.builder().writerId(1L).fastingPlasmaGlucose(100).remark("test")
+        return DiaryPostRequestDTO.builder().fastingPlasmaGlucose(100).remark("test")
                 .year("2021").month("12").day("22").hour("00").minute("00").second("00")
                 .build();
     }
@@ -103,6 +101,7 @@ public class ControllerResilienceTest {
 
         //when
         mockMvc.perform(post(url)
+                        .header("writer-id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(jsonPath("$.success").value("false"))
@@ -125,6 +124,7 @@ public class ControllerResilienceTest {
 
         //when
         mockMvc.perform(post(url)
+                        .header("writer-id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(jsonPath("$.success").value("false"))
@@ -145,6 +145,7 @@ public class ControllerResilienceTest {
         when(diaryRepository.save(any(DiabetesDiary.class))).thenReturn(new DiabetesDiary());
 
         mockMvc.perform(post(url)
+                        .header("writer-id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
                 .andDo(print())
