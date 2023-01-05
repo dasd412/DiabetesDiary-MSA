@@ -24,12 +24,12 @@ public class JWTTokenProvider {
 
     private static final String TOKEN_ID = "token_id";
 
-    private static final String USER_ID="user_id";
+    private static final String USER_ID = "user_id";
 
-    public String createJwtAccessToken(String username, Long writerId,String requestURI, List<String>roles) {
+    public String createJwtAccessToken(String username, Long writerId, String requestURI, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(username);
 
-        claims.put(USER_ID,writerId);
+        claims.put(USER_ID, writerId);
 
         claims.put(ROLE, roles);
 
@@ -52,8 +52,21 @@ public class JWTTokenProvider {
                 .compact();
     }
 
-    public String retrieveUserId(String token) {
+    public void validateJwtToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+        } catch (SignatureException | MalformedJwtException |
+                 UnsupportedJwtException | IllegalArgumentException | ExpiredJwtException jwtException) {
+            throw jwtException;
+        }
+    }
+
+    public String retrieveSubject(String token) {
         return retrieveClaimsFromJwtToken(token).getSubject();
+    }
+
+    public String retrieveWriterId(String token) {
+        return retrieveClaimsFromJwtToken(token).get(USER_ID).toString();
     }
 
     public String retrieveRefreshTokenId(String token) {
