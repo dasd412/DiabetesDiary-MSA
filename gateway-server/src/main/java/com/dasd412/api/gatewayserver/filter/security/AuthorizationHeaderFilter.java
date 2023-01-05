@@ -1,5 +1,6 @@
 package com.dasd412.api.gatewayserver.filter.security;
 
+import com.dasd412.api.gatewayserver.handler.NoAuthorizationHeaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.dasd412.api.gatewayserver.security.JWTTokenProvider;
@@ -34,13 +35,13 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
-            logger.info("Staring jwt authorization... request is {}" ,exchange.getRequest());
+            logger.info("Staring jwt authorization... request is {}", exchange.getRequest());
 
             HttpHeaders headers = request.getHeaders();
 
             //프론트에서 요청을 쏠 때, Authorization header에 토큰이 담겨 있어야 한다.
             if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
-
+                throw new NoAuthorizationHeaderException("authorization header not exist");
             }
 
             String authorizationHeader = headers.get(HttpHeaders.AUTHORIZATION).get(0);

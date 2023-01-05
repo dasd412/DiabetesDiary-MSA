@@ -23,7 +23,7 @@ services:
           - "eurekaserver"
 
   gatewayserver:
-    image: msa/gateway-server:0.0.1-SNAPSHOT
+    image: msa/gateway-server:0.0.2-SNAPSHOT
     ports:
       - "8062:8062"
     environment:
