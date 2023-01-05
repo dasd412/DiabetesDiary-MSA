@@ -7,7 +7,7 @@ import com.dasd412.api.diaryservice.adapter.in.web.dto.post.FoodPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.update.DiaryUpdateRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.update.DietUpdateRequestDTO;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.update.FoodUpdateRequestDTO;
-import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
+
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -114,13 +113,16 @@ public class DiaryUpdateRestControllerTest {
     }
 
     private ResultActions updateDTO(DiaryUpdateRequestDTO dto) throws Exception {
-        return mockMvc.perform(put(URL).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(dto)));
+        return mockMvc.perform(put(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("writer-id", "1")
+                .content(new ObjectMapper().writeValueAsString(dto)));
     }
 
     //일지
     @Test
     public void updateDiaryWhichHasInvalidFastingPlasmaGlucose() throws Exception {
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(-100).remark("test").build();
 
         updateDTO(dto)
@@ -134,7 +136,7 @@ public class DiaryUpdateRestControllerTest {
         StringBuilder sb = new StringBuilder();
         IntStream.range(0, 600).forEach(sb::append);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(100).remark(sb.toString()).build();
 
         updateDTO(dto)
@@ -145,7 +147,7 @@ public class DiaryUpdateRestControllerTest {
 
     @Test
     public void updateDiaryValid() throws Exception {
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").build();
 
         updateDTO(dto)
@@ -167,7 +169,7 @@ public class DiaryUpdateRestControllerTest {
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
         dietList.add(dietDto);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").dietList(dietList).build();
 
         updateDTO(dto)
@@ -183,7 +185,7 @@ public class DiaryUpdateRestControllerTest {
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
         dietList.add(dietDto);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").dietList(dietList).build();
 
         updateDTO(dto)
@@ -209,7 +211,7 @@ public class DiaryUpdateRestControllerTest {
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
         dietList.add(dietDto);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").dietList(dietList).build();
 
         updateDTO(dto)
@@ -230,7 +232,7 @@ public class DiaryUpdateRestControllerTest {
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
         dietList.add(dietDto);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").dietList(dietList).build();
 
         updateDTO(dto)
@@ -251,7 +253,7 @@ public class DiaryUpdateRestControllerTest {
         List<DietUpdateRequestDTO> dietList = new ArrayList<>();
         dietList.add(dietDto);
 
-        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().writerId(1L).diaryId(1L)
+        DiaryUpdateRequestDTO dto = DiaryUpdateRequestDTO.builder().diaryId(1L)
                 .fastingPlasmaGlucose(200).remark("test1").dietList(dietList).build();
 
         updateDTO(dto)

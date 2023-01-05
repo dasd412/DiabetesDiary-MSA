@@ -45,12 +45,11 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
         this.foodRepository = foodRepository;
     }
 
-    //todo dto에서 id 속성 지우고, 리퀘스트 헤더에서 id 읽어오는 방식으로 변경 필요
     @Override
     @Transactional
-    public Long updateDiaryWithEntities(DiaryUpdateRequestDTO dto) throws TimeoutException {
+    public Long updateDiaryWithEntities(Long writerId, DiaryUpdateRequestDTO dto) throws TimeoutException {
 
-        Long diaryId = updateDiaryWithSubEntities(dto.getWriterId(), dto);
+        Long diaryId = updateDiaryWithSubEntities(writerId, dto);
 
         sendMessageToFindDiaryService();
 
