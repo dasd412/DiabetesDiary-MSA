@@ -1,6 +1,7 @@
 package com.dasd412.api.writerservice.application.service.writer.impl;
 
 import com.dasd412.api.writerservice.application.service.writer.FindWriterService;
+import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public class FindWriterServiceImpl implements FindWriterService {
 
     @Transactional(readOnly = true)
     public Writer findWriterById(Long id){
+        logger.info("find writer by writer id : {}", UserContextHolder.getContext().getCorrelationId());
         return writerRepository.findById(id).orElseThrow(NoResultException::new);
     }
 }

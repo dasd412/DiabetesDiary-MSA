@@ -2,12 +2,12 @@ package com.dasd412.api.writerservice.adapter.in.web.controller;
 
 import brave.ScopedSpan;
 import brave.Tracer;
-import com.dasd412.api.writerservice.adapter.in.security.dto.UserJoinRequestDTO;
+import com.dasd412.api.writerservice.adapter.in.web.controller.dto.UserJoinRequestDTO;
 import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.exception.EmailExistException;
 import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
 import com.dasd412.api.writerservice.application.service.authority.AuthorityService;
-import com.dasd412.api.writerservice.application.service.vo.UserDetailsVO;
+import com.dasd412.api.writerservice.application.service.security.vo.UserDetailsVO;
 import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
 import com.dasd412.api.writerservice.application.service.writerauthority.WriterAuthorityService;
 

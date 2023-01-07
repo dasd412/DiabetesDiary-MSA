@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.in.security.dto;
+package com.dasd412.api.writerservice.adapter.in.web.controller.dto;
 
 import com.dasd412.api.writerservice.domain.authority.Role;
 import lombok.Getter;

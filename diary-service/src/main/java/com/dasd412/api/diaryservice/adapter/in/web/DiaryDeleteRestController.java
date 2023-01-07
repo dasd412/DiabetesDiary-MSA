@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 @SuppressWarnings({"unused", "static-access"})
 @RestController
-public class DiaryDeleteRequestController {
+public class DiaryDeleteRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -27,7 +27,7 @@ public class DiaryDeleteRequestController {
     private final Tracer tracer;
 
 
-    public DiaryDeleteRequestController(DeleteDiaryService deleteDiaryService, Tracer tracer) {
+    public DiaryDeleteRestController(DeleteDiaryService deleteDiaryService, Tracer tracer) {
         this.deleteDiaryService = deleteDiaryService;
         this.tracer = tracer;
     }

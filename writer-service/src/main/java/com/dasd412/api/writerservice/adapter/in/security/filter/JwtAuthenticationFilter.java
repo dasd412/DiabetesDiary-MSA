@@ -4,9 +4,9 @@ package com.dasd412.api.writerservice.adapter.in.security.filter;
 import com.dasd412.api.writerservice.adapter.in.security.auth.PrincipalDetails;
 import com.dasd412.api.writerservice.adapter.in.security.exception.LoginBadRequestException;
 import com.dasd412.api.writerservice.adapter.in.security.dto.LoginRequestDTO;
-import com.dasd412.api.writerservice.adapter.in.security.jwt.JWTTokenProvider;
+import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
-import com.dasd412.api.writerservice.application.service.cache.refresh.RefreshTokenService;
+import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

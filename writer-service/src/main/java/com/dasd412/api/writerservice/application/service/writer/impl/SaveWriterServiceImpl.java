@@ -2,7 +2,7 @@ package com.dasd412.api.writerservice.application.service.writer.impl;
 
 import com.dasd412.api.writerservice.adapter.out.web.exception.EmailExistException;
 import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
-import com.dasd412.api.writerservice.application.service.vo.AuthenticationVO;
+import com.dasd412.api.writerservice.application.service.security.vo.AuthenticationVO;
 import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;

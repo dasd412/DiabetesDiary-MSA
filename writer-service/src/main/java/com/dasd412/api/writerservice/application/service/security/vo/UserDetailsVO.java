@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.application.service.vo;
+package com.dasd412.api.writerservice.application.service.security.vo;
 
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import lombok.Builder;
