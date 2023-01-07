@@ -1,10 +1,10 @@
-package com.dasd412.api.writerservice.application.service.cache.refresh.impl;
+package com.dasd412.api.writerservice.application.service.security.refresh.impl;
 
 import com.dasd412.api.writerservice.adapter.in.security.jwt.RefreshToken;
 import com.dasd412.api.writerservice.adapter.out.cache.RefreshTokenRepository;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
-import com.dasd412.api.writerservice.application.service.cache.refresh.RefreshTokenService;
+import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
