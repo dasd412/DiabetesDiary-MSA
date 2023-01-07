@@ -1,6 +1,6 @@
 package com.dasd412.api.writerservice.application.service.security.refresh.impl;
 
-import com.dasd412.api.writerservice.adapter.in.security.RefreshToken;
+import com.dasd412.api.writerservice.application.service.security.refresh.RefreshToken;
 import com.dasd412.api.writerservice.adapter.out.cache.RefreshTokenRepository;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;

@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.in.security;
+package com.dasd412.api.writerservice.application.service.security.refresh;
 
 import lombok.AccessLevel;
 import lombok.Getter;
