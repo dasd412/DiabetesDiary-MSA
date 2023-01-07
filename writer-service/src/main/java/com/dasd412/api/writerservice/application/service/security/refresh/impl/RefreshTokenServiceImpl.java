@@ -1,5 +1,6 @@
 package com.dasd412.api.writerservice.application.service.security.refresh.impl;
 
+import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshToken;
 import com.dasd412.api.writerservice.adapter.out.cache.RefreshTokenRepository;
 import com.dasd412.api.writerservice.domain.writer.Writer;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -28,5 +30,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         Writer writer=writerRepository.findById(userId).orElseThrow(()-> new NoResultException("writer not exist while updating refresh token"));
 
         refreshTokenRepository.save(RefreshToken.of(writer.getId().toString(), uuid));
+    }
+
+    @Override
+    @Transactional
+    public JWTTokenDTO refreshJwtToken(String accessToken, String refreshToken) throws TimeoutException {
+        return null;
     }
 }
