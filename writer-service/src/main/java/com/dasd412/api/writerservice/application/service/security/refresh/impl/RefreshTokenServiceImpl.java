@@ -3,7 +3,6 @@ package com.dasd412.api.writerservice.application.service.security.refresh.impl;
 import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
 import com.dasd412.api.writerservice.adapter.out.web.exception.InvalidRefreshTokenException;
-import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
 import com.dasd412.api.writerservice.application.service.security.PrincipalDetailsService;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshToken;
 import com.dasd412.api.writerservice.adapter.out.cache.RefreshTokenRepository;
@@ -16,15 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -62,9 +58,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         String userName = jwtTokenProvider.retrieveUserName(accessToken);
 
-        RefreshToken found = refreshTokenRepository.findById(userName).orElseThrow(() -> new NoResultException("refresh token not exist"));
+        String userId=jwtTokenProvider.retrieveWriterId(accessToken);
 
-        logger.debug("validating refresh token...");
+        RefreshToken found = refreshTokenRepository.findById(userId).orElseThrow(() -> new NoResultException("refresh token not exist"));
+
+        logger.info("validating refresh token...");
 
         String tokenIdOfFound = found.getRefreshTokenId();
 
@@ -77,15 +75,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             throw new InvalidRefreshTokenException("Unmatched refresh token in redis" + refreshToken);
         }
 
-        Long userId = Long.parseLong(jwtTokenProvider.retrieveWriterId(accessToken));
+        Long writerId = Long.parseLong(jwtTokenProvider.retrieveWriterId(accessToken));
 
-        writerRepository.findById(userId).orElseThrow(() -> new UserNameExistException("writer not exist"));
+        writerRepository.findById(writerId).orElseThrow(() -> new NoResultException("writer not exist"));
 
-        logger.debug("creating access token...");
+        logger.info("creating access token...");
 
         Authentication authentication = getAuthentication(userName);
 
-        String newAccessToken = jwtTokenProvider.issueNewJwtAccessToken(userName, userId, "/refresh", authentication.getAuthorities());
+        String newAccessToken = jwtTokenProvider.issueNewJwtAccessToken(userName, writerId, "/refresh", authentication.getAuthorities());
 
         Date expired = jwtTokenProvider.retrieveExpiredTime(newAccessToken);
 
