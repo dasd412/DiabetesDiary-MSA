@@ -1,4 +1,4 @@
-package com.dasd412.api.writerservice.adapter.in.security.jwt;
+package com.dasd412.api.writerservice.adapter.in.security;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;

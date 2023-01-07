@@ -1,7 +1,7 @@
 package com.dasd412.api.writerservice.common.config.security;
 
 import com.dasd412.api.writerservice.adapter.in.security.filter.JwtAuthenticationFilter;
-import com.dasd412.api.writerservice.adapter.in.security.jwt.JWTTokenProvider;
+import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;

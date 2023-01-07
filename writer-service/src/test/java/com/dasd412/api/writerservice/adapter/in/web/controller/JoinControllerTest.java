@@ -1,7 +1,7 @@
 package com.dasd412.api.writerservice.adapter.in.web.controller;
 
 import com.dasd412.api.writerservice.WriterServiceApplication;
-import com.dasd412.api.writerservice.adapter.in.security.dto.UserJoinRequestDTO;
+import com.dasd412.api.writerservice.adapter.in.web.controller.dto.UserJoinRequestDTO;
 import com.dasd412.api.writerservice.adapter.out.persistence.authority.AuthorityRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer_authority.WriterAuthorityRepository;
