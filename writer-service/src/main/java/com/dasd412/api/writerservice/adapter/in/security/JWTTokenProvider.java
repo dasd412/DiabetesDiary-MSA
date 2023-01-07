@@ -63,8 +63,12 @@ public class JWTTokenProvider {
                 .compact();
     }
 
-    public String retrieveUserId(String token) {
+    public String retrieveUserName(String token) {
         return retrieveClaimsFromJwtToken(token).getSubject();
+    }
+
+    public String retrieveWriterId(String token) {
+        return retrieveClaimsFromJwtToken(token).get(USER_ID).toString();
     }
 
     public String retrieveRefreshTokenId(String token) {
@@ -89,6 +93,11 @@ public class JWTTokenProvider {
             logger.error("jwt validation failed : {}", exception.getMessage());
             return false;
         }
+    }
+
+    public boolean equalRefreshTokenId(String refreshTokenId, String refreshToken) {
+        String compareToken = this.retrieveRefreshTokenId(refreshToken);
+        return refreshTokenId.equals(compareToken);
     }
 
     private Claims retrieveClaimsFromJwtToken(String token) {

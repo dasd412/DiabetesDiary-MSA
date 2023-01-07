@@ -6,6 +6,8 @@ import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
 import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
 import com.dasd412.api.writerservice.adapter.out.web.dto.RefreshTokenResponseDTO;
+import com.dasd412.api.writerservice.adapter.out.web.exception.InvalidRefreshTokenException;
+import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.google.common.net.HttpHeaders;
@@ -57,6 +59,13 @@ public class AuthRestController {
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             return ApiResult.OK(new RefreshTokenResponseDTO(dto));
+        } catch (InvalidRefreshTokenException | UserNameExistException e) {
+            //refresh 토큰이 유효하지 않으면 쿠키 제거
+            ResponseCookie removed = cookieProvider.removeRefreshTokenCookie();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, removed.toString());
+
+            return ApiResult.ERROR(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } finally {
             span.tag("writer.service", "refreshToken");
             span.finish();
