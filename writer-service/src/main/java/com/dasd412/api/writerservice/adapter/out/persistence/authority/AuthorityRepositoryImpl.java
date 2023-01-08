@@ -25,4 +25,11 @@ public class AuthorityRepositoryImpl implements AuthorityRepositoryCustom {
                 .where(QWriter.writer.writerId.eq(writerId))
                 .fetch();
     }
+
+    @Override
+    public void deleteAuthorityInIds(List<Long> ids) {
+        jpaQueryFactory.delete(QAuthority.authority)
+                .where(QAuthority.authority.id.in(ids))
+                .execute();
+    }
 }

@@ -5,6 +5,5 @@ import com.dasd412.api.writerservice.application.service.security.vo.Authenticat
 import java.util.concurrent.TimeoutException;
 
 public interface SaveWriterService extends WriterService {
-
-    public Long saveWriter(AuthenticationVO vo)throws TimeoutException;
+    Long saveWriter(AuthenticationVO vo)throws TimeoutException;
 }
