@@ -2,6 +2,7 @@ package com.dasd412.api.writerservice.adapter.in.web.controller;
 
 import brave.ScopedSpan;
 import brave.Tracer;
+import com.dasd412.api.writerservice.adapter.in.security.exception.InvalidAccessTokenException;
 import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
 import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
@@ -75,6 +76,38 @@ public class AuthRestController {
 
     private ApiResult<?> fallBackRefresh(HttpServletResponse response, String accessToken, String refreshToken, Throwable throwable) {
         logger.error("error occurred while refreshing token in AuthRestController:{}", UserContextHolder.getContext().getCorrelationId());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/auth/logout")
+    @RateLimiter(name = "writerService")
+    @CircuitBreaker(name = "writerService", fallbackMethod = "fallBackLogout")
+    public ApiResult<?> logout(HttpServletResponse response, @RequestHeader("X-AUTH-TOKEN") String accessToken) throws TimeoutException {
+        logger.info("logout in AuthRestController:{}", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("logout");
+
+        try {
+            refreshTokenService.logoutToken(accessToken);
+
+            ResponseCookie refreshTokenCookie = cookieProvider.removeRefreshTokenCookie();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+            return ApiResult.OK("logout success");
+        } catch (InvalidAccessTokenException | InvalidRefreshTokenException e) {
+            return ApiResult.ERROR("logout fail", HttpStatus.BAD_REQUEST);
+        } finally {
+            span.tag("writer.service", "logout");
+            span.finish();
+        }
+    }
+
+    private ApiResult<?> fallBackLogout(HttpServletResponse response, String accessToken, Throwable throwable) {
+        logger.error("error occurred while logout in AuthRestController:{}", UserContextHolder.getContext().getCorrelationId());
         if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
         }
