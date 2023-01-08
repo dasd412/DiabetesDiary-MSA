@@ -9,4 +9,6 @@ public interface RefreshTokenService {
     void updateRefreshToken(Long userId, String uuid);
 
     JWTTokenDTO refreshJwtToken(String accessToken, String refreshToken)throws TimeoutException;
+
+    void logoutToken(String accessToken) throws TimeoutException;
 }

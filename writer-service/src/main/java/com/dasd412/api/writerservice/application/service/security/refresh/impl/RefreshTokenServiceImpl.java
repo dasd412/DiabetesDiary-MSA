@@ -1,6 +1,7 @@
 package com.dasd412.api.writerservice.application.service.security.refresh.impl;
 
 import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
+import com.dasd412.api.writerservice.adapter.in.security.exception.InvalidAccessTokenException;
 import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
 import com.dasd412.api.writerservice.adapter.out.web.exception.InvalidRefreshTokenException;
 import com.dasd412.api.writerservice.application.service.security.PrincipalDetailsService;
@@ -58,7 +59,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         String userName = jwtTokenProvider.retrieveUserName(accessToken);
 
-        String userId=jwtTokenProvider.retrieveWriterId(accessToken);
+        String userId = jwtTokenProvider.retrieveWriterId(accessToken);
 
         RefreshToken found = refreshTokenRepository.findById(userId).orElseThrow(() -> new NoResultException("refresh token not exist"));
 
@@ -97,5 +98,23 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private Authentication getAuthentication(String username) {
         UserDetails principalDetails = principalDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(principalDetails, principalDetails.getPassword());
+    }
+
+
+    @Override
+    @Transactional
+    public void logoutToken(String accessToken)throws TimeoutException {
+        logger.info("logout and deleting refresh token in RefreshTokenService :{}", UserContextHolder.getContext().getCorrelationId());
+
+        if (!jwtTokenProvider.validateJwtToken(accessToken)) {
+            throw new InvalidAccessTokenException("this is invalid access token");
+        }
+
+        String userId = jwtTokenProvider.retrieveWriterId(accessToken);
+
+        RefreshToken refreshToken = refreshTokenRepository.findById(userId)
+                .orElseThrow(() -> new InvalidRefreshTokenException("refresh token not exist"));
+
+        refreshTokenRepository.delete(refreshToken);
     }
 }
