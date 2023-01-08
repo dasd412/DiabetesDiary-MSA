@@ -9,6 +9,7 @@ import com.dasd412.api.writerservice.adapter.out.web.dto.JWTTokenDTO;
 import com.dasd412.api.writerservice.adapter.out.web.dto.RefreshTokenResponseDTO;
 import com.dasd412.api.writerservice.adapter.out.web.exception.InvalidRefreshTokenException;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
+import com.dasd412.api.writerservice.application.service.security.validation.AccessTokenService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.google.common.net.HttpHeaders;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -17,10 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeoutException;
@@ -32,12 +30,15 @@ public class AuthRestController {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final AccessTokenService accessTokenService;
+
     private final CookieProvider cookieProvider;
 
     private final Tracer tracer;
 
-    public AuthRestController(RefreshTokenService refreshTokenService, CookieProvider cookieProvider, Tracer tracer) {
+    public AuthRestController(RefreshTokenService refreshTokenService, AccessTokenService accessTokenService, CookieProvider cookieProvider, Tracer tracer) {
         this.refreshTokenService = refreshTokenService;
+        this.accessTokenService = accessTokenService;
         this.cookieProvider = cookieProvider;
         this.tracer = tracer;
     }
@@ -112,5 +113,15 @@ public class AuthRestController {
             return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
         }
         return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/validation/access-token")
+    public ApiResult<?> validateAccessToken(@RequestHeader(name = "Authorization") String authorization) {
+        try {
+            accessTokenService.validateAccessToken(authorization);
+            return ApiResult.OK(HttpStatus.OK);
+        } catch (InvalidAccessTokenException e) {
+            return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
