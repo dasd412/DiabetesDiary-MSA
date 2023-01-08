@@ -7,6 +7,7 @@ import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterReposi
 import com.dasd412.api.writerservice.adapter.out.persistence.writer_authority.WriterAuthorityRepository;
 import com.dasd412.api.writerservice.domain.authority.Authority;
 import com.dasd412.api.writerservice.domain.authority.Role;
+import com.dasd412.api.writerservice.domain.authority.WriterAuthority;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -156,6 +157,10 @@ public class JoinControllerTest {
 
         assertThat(authorities.size()).isEqualTo(1);
         assertThat(authorities.get(0).getRole()).isEqualTo(Role.TESTER);
+
+        List<WriterAuthority>writerAuthorities=writerAuthorityRepository.findAllWriterAuthority(writer.getId());
+
+        assertThat(writerAuthorities.size()).isEqualTo(1);
     }
 
     @Test
@@ -192,6 +197,10 @@ public class JoinControllerTest {
         assertThat(roleSet.contains(Role.USER)).isTrue();
         assertThat(roleSet.contains(Role.PATIENT)).isTrue();
         assertThat(roleSet.contains(Role.TESTER)).isTrue();
+
+        List<WriterAuthority>writerAuthorities=writerAuthorityRepository.findAllWriterAuthority(writer.getId());
+
+        assertThat(writerAuthorities.size()).isEqualTo(3);
     }
 
     @Test

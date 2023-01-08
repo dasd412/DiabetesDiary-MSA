@@ -129,7 +129,9 @@ public class AuthRestController {
         }
     }
 
-    @PostMapping("/withdrawal")
+    @DeleteMapping("/withdrawal")
+    @RateLimiter(name = "writerService")
+    @CircuitBreaker(name = "writerService")
     public ApiResult<?> withdrawWriter(@RequestHeader("X-AUTH-TOKEN") String accessToken) {
         logger.info("withdraw in AuthRestController:{}", UserContextHolder.getContext().getCorrelationId());
 
