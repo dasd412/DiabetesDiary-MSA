@@ -20,7 +20,6 @@ public class WriterAuthorityRepositoryImpl implements WriterAuthorityRepositoryC
     public List<WriterAuthority> findAllWriterAuthority(Long writerId) {
         return jpaQueryFactory.select(QWriterAuthority.writerAuthority)
                 .from(QWriterAuthority.writerAuthority)
-                .join(QWriterAuthority.writerAuthority.authority, QAuthority.authority)
                 .join(QWriterAuthority.writerAuthority.writer, QWriter.writer)
                 .where(QWriter.writer.writerId.eq(writerId))
                 .fetch();

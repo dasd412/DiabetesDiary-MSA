@@ -48,22 +48,19 @@ public class DeleteWriterServiceImpl implements DeleteWriterService {
 
         Long writerId = Long.parseLong(jwtTokenProvider.retrieveWriterId(accessToken));
 
-        logger.info("delete relationships with writer and authority ...");
         List<WriterAuthority> writerAuthorities = writerAuthorityRepository.findAllWriterAuthority(writerId);
 
         List<Long> writerAuthorityIds = writerAuthorities.stream().map(WriterAuthority::getId).collect(Collectors.toList());
 
-        writerAuthorityRepository.deleteWriterAuthorityInIds(writerAuthorityIds);
-
-        logger.info("delete authorities...");
         List<Authority> authorities = authorityRepository.findAllAuthority(writerId);
 
         List<Long> authorityIds = authorities.stream().map(Authority::getId).collect(Collectors.toList());
 
+        writerAuthorityRepository.deleteWriterAuthorityInIds(writerAuthorityIds);
+
         authorityRepository.deleteAuthorityInIds(authorityIds);
 
-        logger.info("delete writer...");
-        writerRepository.deleteById(writerId);
+        writerRepository.deleteWriterById(writerId);
 
         return writerId;
     }

@@ -8,6 +8,8 @@ public interface WriterRepositoryCustom {
 
     Optional<Writer> findWriterByName(String username);
 
+    void deleteWriterById(Long writerId);
+
     Boolean existName(String username);
 
     Boolean existEmail(String email, String provider);
