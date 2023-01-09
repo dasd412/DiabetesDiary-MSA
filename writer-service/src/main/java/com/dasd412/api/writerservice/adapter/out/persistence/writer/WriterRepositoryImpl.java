@@ -21,13 +21,6 @@ public class WriterRepositoryImpl implements WriterRepositoryCustom {
                 .fetchOne());
     }
 
-    @Override
-    public void deleteWriterById(Long writerId) {
-        jpaQueryFactory.delete(QWriter.writer)
-                .where(QWriter.writer.writerId.eq(writerId))
-                .execute();
-    }
-
     /*
      * querydsl 에선 exists 사용시 count()를 사용하므로 총 몇건인 지 확인하기 위해 전체를 확인하는 추가 작업이 필요하다.
      * 따라서 Querydsl 이 기본적으로 제공하는 exists 는 성능 상 좋지 않다.

@@ -11,11 +11,13 @@ import com.dasd412.api.writerservice.application.service.writer.DeleteWriterServ
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.dasd412.api.writerservice.domain.authority.Authority;
 import com.dasd412.api.writerservice.domain.authority.WriterAuthority;
+import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,8 @@ public class DeleteWriterServiceImpl implements DeleteWriterService {
 
         Long writerId = Long.parseLong(jwtTokenProvider.retrieveWriterId(accessToken));
 
+        Writer found=writerRepository.findById(writerId).orElseThrow(()->new NoResultException("writer not exist"));
+
         List<WriterAuthority> writerAuthorities = writerAuthorityRepository.findAllWriterAuthority(writerId);
 
         List<Long> writerAuthorityIds = writerAuthorities.stream().map(WriterAuthority::getId).collect(Collectors.toList());
@@ -65,7 +69,8 @@ public class DeleteWriterServiceImpl implements DeleteWriterService {
 
         authorityRepository.deleteAuthorityInIds(authorityIds);
 
-        writerRepository.deleteWriterById(writerId);
+        //@ElementCollection 까지 모두 지우기 위해 select 후 delete(entity) 했다.
+        writerRepository.delete(found);
 
         return writerId;
     }
