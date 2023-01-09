@@ -10,6 +10,7 @@ import com.dasd412.api.writerservice.adapter.out.web.dto.RefreshTokenResponseDTO
 import com.dasd412.api.writerservice.adapter.out.web.exception.InvalidRefreshTokenException;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import com.dasd412.api.writerservice.application.service.security.validation.AccessTokenService;
+import com.dasd412.api.writerservice.application.service.writer.DeleteWriterService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.google.common.net.HttpHeaders;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -34,12 +35,15 @@ public class AuthRestController {
 
     private final CookieProvider cookieProvider;
 
+    private final DeleteWriterService deleteWriterService;
+
     private final Tracer tracer;
 
-    public AuthRestController(RefreshTokenService refreshTokenService, AccessTokenService accessTokenService, CookieProvider cookieProvider, Tracer tracer) {
+    public AuthRestController(RefreshTokenService refreshTokenService, AccessTokenService accessTokenService, CookieProvider cookieProvider, DeleteWriterService deleteWriterService, Tracer tracer) {
         this.refreshTokenService = refreshTokenService;
         this.accessTokenService = accessTokenService;
         this.cookieProvider = cookieProvider;
+        this.deleteWriterService = deleteWriterService;
         this.tracer = tracer;
     }
 
@@ -122,6 +126,26 @@ public class AuthRestController {
             return ApiResult.OK(HttpStatus.OK);
         } catch (InvalidAccessTokenException e) {
             return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/withdrawal")
+    @RateLimiter(name = "writerService")
+    @CircuitBreaker(name = "writerService")
+    public ApiResult<?> withdrawWriter(@RequestHeader("X-AUTH-TOKEN") String accessToken) {
+        logger.info("withdraw in AuthRestController:{}", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("withdrawal");
+
+        try {
+            Long writerId = deleteWriterService.removeWriter(accessToken);
+            deleteWriterService.sendMessageToOtherService(writerId);
+            return ApiResult.OK(HttpStatus.OK);
+        } catch (InvalidAccessTokenException e) {
+            return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+            span.tag("writer.service", "withdrawal");
+            span.finish();
         }
     }
 }

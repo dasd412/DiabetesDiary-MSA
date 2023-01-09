@@ -23,7 +23,6 @@ public class UpdateWriterServiceImpl implements UpdateWriterService {
         this.writerRepository = writerRepository;
     }
 
-    //todo attachRelationWithDiary()와 detachRelationWithDiary()는 추후에 레디스 도입하면 바꿀 예정...
     @Transactional
     public void attachRelationWithDiary(Long writerId, Long diaryId) {
         logger.debug("attaching relation of writer {} with diary {} in correlation id {}.", writerId, diaryId, UserContext.getCorrelationId());

@@ -7,7 +7,7 @@ import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.food.Food;
-import com.dasd412.api.diaryservice.adapter.out.message.ActionEum;
+import com.dasd412.api.diaryservice.adapter.out.message.ActionEnum;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.common.utils.date.DateStringJoiner;
 import com.dasd412.api.diaryservice.common.utils.trace.UserContextHolder;
@@ -79,7 +79,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
     private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.CREATED, writerId, diaryId);
+        kafkaSourceBean.publishDiaryChangeToWriter(ActionEnum.CREATED, writerId, diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요

@@ -20,4 +20,11 @@ public class FoodRepositoryImpl implements FoodRepositoryCustom {
                 .where(QFood.food.foodId.in(foodIds))
                 .execute();
     }
+
+    @Override
+    public void deleteAllOfWriter(Long writerId) {
+        jpaQueryFactory.delete(QFood.food)
+                .where(QFood.food.writerId.eq(writerId))
+                .execute();
+    }
 }

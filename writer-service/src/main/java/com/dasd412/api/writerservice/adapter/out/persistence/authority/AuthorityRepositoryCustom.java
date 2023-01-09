@@ -7,4 +7,6 @@ import java.util.List;
 public interface AuthorityRepositoryCustom {
 
     List<Authority> findAllAuthority(long writerId);
+
+    void deleteAuthorityInIds(List<Long>ids);
 }

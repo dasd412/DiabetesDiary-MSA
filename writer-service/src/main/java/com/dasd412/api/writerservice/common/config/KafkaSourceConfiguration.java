@@ -1,24 +1,23 @@
-package com.dasd412.api.diaryservice.common.config;
+package com.dasd412.api.writerservice.common.config;
 
-import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
+import com.dasd412.api.writerservice.adapter.out.message.WriterChannels;
+import com.dasd412.api.writerservice.adapter.out.message.source.KafkaSourceBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@SuppressWarnings("unused")
-@EnableBinding(Source.class)
+@EnableBinding(WriterChannels.class)
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 @Configuration
-public class KafkaConfiguration {
+public class KafkaSourceConfiguration {
 
     @Autowired
-    private Source source;
+    private WriterChannels writerChannels;
 
     @Bean
-    public KafkaSourceBean kafkaSourceBean() {
-        return new KafkaSourceBean(source);
+    public KafkaSourceBean kafkaSourceForWithdrawal() {
+        return new KafkaSourceBean(writerChannels);
     }
 }

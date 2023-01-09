@@ -1,6 +1,6 @@
 package com.dasd412.api.diaryservice.adapter.out.message;
 
-public enum ActionEum {
+public enum ActionEnum {
     CREATED,
     UPDATED,
     DELETED
