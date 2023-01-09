@@ -86,4 +86,10 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
         logger.info("diary-service sent message to find-diary-service in DeleteDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
     }
+
+    @Override
+    @Transactional
+    public void deleteAllOfWriter(Long writerId) throws TimeoutException {
+
+    }
 }
