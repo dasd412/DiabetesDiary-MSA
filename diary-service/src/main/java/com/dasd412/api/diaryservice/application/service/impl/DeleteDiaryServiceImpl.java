@@ -1,6 +1,6 @@
 package com.dasd412.api.diaryservice.application.service.impl;
 
-import com.dasd412.api.diaryservice.adapter.out.message.ActionEum;
+import com.dasd412.api.diaryservice.adapter.out.message.ActionEnum;
 import com.dasd412.api.diaryservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diary.DiaryRepository;
 import com.dasd412.api.diaryservice.adapter.out.persistence.diet.DietRepository;
@@ -78,7 +78,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in DeleteDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.DELETED, writerId, diaryId);
+        kafkaSourceBean.publishDiaryChangeToWriter(ActionEnum.DELETED, writerId, diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요
