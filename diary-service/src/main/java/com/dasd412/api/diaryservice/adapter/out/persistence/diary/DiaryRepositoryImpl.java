@@ -18,4 +18,11 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
                 .where(QDiabetesDiary.diabetesDiary.diaryId.eq(diaryId))
                 .execute();
     }
+
+    @Override
+    public void deleteAllOfWriter(Long writerId) {
+        jpaQueryFactory.delete(QDiabetesDiary.diabetesDiary)
+                .where(QDiabetesDiary.diabetesDiary.writerId.eq(writerId))
+                .execute();
+    }
 }

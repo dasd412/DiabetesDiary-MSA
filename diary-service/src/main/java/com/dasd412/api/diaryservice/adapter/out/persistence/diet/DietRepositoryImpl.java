@@ -35,4 +35,11 @@ public class DietRepositoryImpl implements DietRepositoryCustom {
                 .where(QDiet.diet.dietId.in(dietIds))
                 .execute();
     }
+
+    @Override
+    public void deleteAllOfWriter(Long writerId) {
+        jpaQueryFactory.delete(QDiet.diet)
+                .where(QDiet.diet.writerId.eq(writerId))
+                .execute();
+    }
 }

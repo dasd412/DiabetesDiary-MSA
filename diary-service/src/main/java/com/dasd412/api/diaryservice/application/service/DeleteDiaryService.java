@@ -6,5 +6,5 @@ public interface DeleteDiaryService extends DiaryService{
 
     Long deleteDiaryWithSubEntities(Long diaryId,Long writerId)throws TimeoutException;
 
-    void deleteAllOfWriter(Long writerId)throws TimeoutException;
+    void deleteAllOfWriter(Long writerId);
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 
-@SuppressWarnings({"unused","static-access"})
+@SuppressWarnings({"unused", "static-access"})
 @Service
 public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
@@ -45,7 +45,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     @Override
     @Transactional
-    public Long deleteDiaryWithSubEntities(Long diaryId,Long writerId) throws TimeoutException {
+    public Long deleteDiaryWithSubEntities(Long diaryId, Long writerId) throws TimeoutException {
 
         removeDiaryWithSubEntities(diaryId);
 
@@ -76,7 +76,7 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
         diaryRepository.deleteDiaryForBulkDelete(diaryId);
     }
 
-    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException  {
+    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in DeleteDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEum.DELETED, writerId, diaryId);
     }
@@ -89,7 +89,9 @@ public class DeleteDiaryServiceImpl implements DeleteDiaryService {
 
     @Override
     @Transactional
-    public void deleteAllOfWriter(Long writerId) throws TimeoutException {
-
+    public void deleteAllOfWriter(Long writerId) {
+        foodRepository.deleteAllOfWriter(writerId);
+        dietRepository.deleteAllOfWriter(writerId);
+        diaryRepository.deleteAllOfWriter(writerId);
     }
 }

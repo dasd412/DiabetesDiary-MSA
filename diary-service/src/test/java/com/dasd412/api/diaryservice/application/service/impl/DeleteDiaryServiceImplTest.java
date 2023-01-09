@@ -88,7 +88,7 @@ public class DeleteDiaryServiceImplTest {
     }
 
     @Test
-    public void deleteAllOfWriter() throws TimeoutException {
+    public void deleteAllOfWriter() {
         //when
         deleteDiaryService.deleteAllOfWriter(1L);
 

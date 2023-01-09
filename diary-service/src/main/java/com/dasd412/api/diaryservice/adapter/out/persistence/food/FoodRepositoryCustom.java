@@ -6,4 +6,6 @@ import java.util.concurrent.TimeoutException;
 public interface FoodRepositoryCustom {
 
     void deleteFoodsInIds(List<Long> foodIds)throws TimeoutException;
+
+    void deleteAllOfWriter(Long writerId);
 }
