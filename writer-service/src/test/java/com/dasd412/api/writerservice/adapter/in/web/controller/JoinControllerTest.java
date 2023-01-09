@@ -2,6 +2,7 @@ package com.dasd412.api.writerservice.adapter.in.web.controller;
 
 import com.dasd412.api.writerservice.WriterServiceApplication;
 import com.dasd412.api.writerservice.adapter.in.web.controller.dto.UserJoinRequestDTO;
+import com.dasd412.api.writerservice.adapter.out.message.source.KafkaSourceBean;
 import com.dasd412.api.writerservice.adapter.out.persistence.authority.AuthorityRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer_authority.WriterAuthorityRepository;
@@ -16,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
@@ -44,6 +46,9 @@ public class JoinControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @MockBean
+    private KafkaSourceBean kafkaSourceBean;
 
     private MockMvc mockMvc;
 
