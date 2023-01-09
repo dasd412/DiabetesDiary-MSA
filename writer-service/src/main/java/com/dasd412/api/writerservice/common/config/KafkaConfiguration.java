@@ -11,7 +11,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableBinding({DiaryChannels.class, WriterChannels.class})
+@EnableBinding({WriterChannels.class,DiaryChannels.class})
 @ConditionalOnProperty(value = "kafka.enabled", matchIfMissing = true)
 @Configuration
 public class KafkaConfiguration {
