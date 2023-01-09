@@ -80,7 +80,7 @@ services:
           - "redis"
 
   diaryservice:
-    image: msa/diary-service:0.0.6-SNAPSHOT
+    image: msa/diary-service:0.0.7-SNAPSHOT
     ports:
       - "8081:8081"
     environment:
@@ -112,7 +112,7 @@ services:
       - backend
 
   writerservice:
-    image: msa/writer-service:0.0.6-SNAPSHOT
+    image: msa/writer-service:0.0.7-SNAPSHOT
     ports:
       - "8082:8082"
     environment:
