@@ -70,7 +70,7 @@ public class JoinController {
             for (Long authorityId : authorityIds) {
                 writerAuthorityService.createWriterAuthority(writerId, authorityId);
             }
-            return ApiResult.OK("join success");
+            return ApiResult.OK(HttpStatus.OK);
         } catch (UserNameExistException | EmailExistException e) {
             return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

@@ -102,7 +102,7 @@ public class AuthRestController {
 
             response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
-            return ApiResult.OK("logout success");
+            return ApiResult.OK(HttpStatus.OK);
         } catch (InvalidAccessTokenException | InvalidRefreshTokenException e) {
             return ApiResult.ERROR("logout fail", HttpStatus.BAD_REQUEST);
         } finally {
