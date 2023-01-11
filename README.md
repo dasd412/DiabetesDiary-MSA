@@ -1,5 +1,5 @@
 # DiabetesDiary-MSA
-MSA project
+MSA project by dasd412
 
 ***
 
@@ -29,6 +29,7 @@ MSA project
 ***
 
 ## API 설계서 (dev 프로파일 기준)
+***
 * WriterService
     - API 명 : **회원 가입**
         + 리소스 URI : /signup
@@ -40,7 +41,7 @@ MSA project
             
             {
              "username": "test22",
-             "email":"test22@gmail.com",
+             "email":"test22@naver.com",
              "password":"testtest",
              "roles":[
              "USER",
@@ -105,14 +106,122 @@ MSA project
       
       Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
       ```
+***
 * DiaryService
+  - API 명 : **일지 작성**
+    + 리소스 URI : /diabetes-diary
+    + HTTP 메서드 : POST
+    + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+    + 요청 매개변수 : 일지 작성 DTO
+    + 응답 값 : 성공 시 200 코드 + 작성된 일지 id , 실패 시 400 (DTO 문제)또는 500 (그 외 문제) 
+    + 요청 예시
+```
+http://localhost:8062/diary/diabetes-diary
 
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+
+{
+    "fastingPlasmaGlucose":100,
+    "remark":"test",
+    "year":"2022",
+    "month":"12",
+    "day":"11",
+    "hour":"11",
+    "minute":"25",
+    "second":"43",
+    "dietList":[
+        {
+            "eatTime":"LUNCH",
+            "bloodSugar":100,
+            "foodList":[
+{
+                    "foodName":"TOAST",
+                    "amount":50.0,
+                    "amountUnit":"g"
+                },
+                {
+                    "foodName":"coke",
+                    "amount":100.0,
+                    "amountUnit":"mL"
+                }
+            ]
+        }
+
+    ]
+}
+```
+  - API 명 : **일지 수정**
+    + 리소스 URI : /diabetes-diary
+    + HTTP 메서드 : PUT
+    + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+    + 요청 매개변수 : 일지 수정 DTO
+    + 응답 값 :  성공 시 200 코드 + 수정된 일지 id , 실패 시 400 (DTO 문제)또는 500 (그 외 문제)
+    + 요청 예시
+```
+http://localhost:8062/diary/diabetes-diary
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+
+{
+    "diaryId":1,
+    "fastingPlasmaGlucose":120,
+    "remark":"test11",
+    "year":"2022",
+    "month":"12",
+    "day":"11",
+    "hour":"11",
+    "minute":"25",
+    "second":"43",
+    "dietList":[
+        {
+            "dietId":1,
+            "eatTime":"DINNER",
+            "bloodSugar":200,
+            "foodList":[
+                {
+                    "foodId":1,
+                    "foodName":"test1",
+                    "amount":5.0,
+                    "amountUnit":"g"
+                },
+                {
+                    "foodId":2,
+                    "foodName":"test2",
+                    "amount":6.50,
+                    "amountUnit":"g"
+                }
+            ]
+        }
+
+    ]
+}
+```
+- API 명 : **일지 삭제**
+  + 리소스 URI : /diabetes-diary
+  + HTTP 메서드 : DELETE
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 일지 삭제 id
+  + 응답 값 :  성공 시 200 코드 + 삭제된 일지 id , 실패 시 400 (해당 id 없을 경우)또는 500 (그 외 문제)
+  + 요청 예시
+```
+http://localhost:8062/diary/diabetes-diary/1
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+***
 * ReadDiaryService
 
 ***
 
-## 소스 코드 출처
+## 참고 서적
++ 스프링 마이크로 서비스 코딩 공작소 개정 2판
++ 도메인 주도 설계로 시작하는 마이크로 서비스 개발
+
+***
+## 소스 코드 참고
 
 1. JWT : https://github.com/Development-team-1/just-pickup
 
 
+***
