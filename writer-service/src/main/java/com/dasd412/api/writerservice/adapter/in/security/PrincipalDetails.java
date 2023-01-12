@@ -1,25 +1,30 @@
-package com.dasd412.api.writerservice.adapter.in.security.auth;
+package com.dasd412.api.writerservice.adapter.in.security;
 
 import com.dasd412.api.writerservice.domain.authority.Authority;
 import com.dasd412.api.writerservice.domain.authority.Role;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PrincipalDetails implements UserDetails {
-
-    //todo 나중에 OAUTH도 구현하자.
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     //실제 엔티티 참조
     private final Writer writer;
 
     //작성자가 가질 수 있는 권한 엔티티 목록
     private List<Authority> authorities;
+
+    /**
+     * OAuth와 관련된 속성을 담고 있는 해시맵. OAuth 로그인시에만 쓰인다.
+     */
+    private Map<String, Object> oauthAttributes;
 
     public PrincipalDetails(Writer writer) {
         this.writer = writer;
@@ -28,6 +33,17 @@ public class PrincipalDetails implements UserDetails {
     public PrincipalDetails(Writer writer, List<Authority> authorities) {
         this.writer = writer;
         this.authorities = authorities;
+    }
+
+    public PrincipalDetails(Writer writer, List<Authority> authorities, Map<String, Object> oauthAttributes) {
+        this.writer = writer;
+        this.authorities = authorities;
+        this.oauthAttributes = oauthAttributes;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.oauthAttributes;
     }
 
     @Override
@@ -81,5 +97,10 @@ public class PrincipalDetails implements UserDetails {
 
     public Writer getWriter() {
         return writer;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

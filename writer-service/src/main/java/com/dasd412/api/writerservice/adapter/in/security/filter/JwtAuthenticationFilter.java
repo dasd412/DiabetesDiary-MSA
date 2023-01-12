@@ -1,7 +1,7 @@
 package com.dasd412.api.writerservice.adapter.in.security.filter;
 
 
-import com.dasd412.api.writerservice.adapter.in.security.auth.PrincipalDetails;
+import com.dasd412.api.writerservice.adapter.in.security.PrincipalDetails;
 import com.dasd412.api.writerservice.adapter.in.security.exception.LoginBadRequestException;
 import com.dasd412.api.writerservice.adapter.in.security.dto.LoginRequestDTO;
 import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
