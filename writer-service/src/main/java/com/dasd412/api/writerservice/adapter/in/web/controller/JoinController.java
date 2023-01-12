@@ -6,10 +6,8 @@ import com.dasd412.api.writerservice.adapter.in.web.controller.dto.UserJoinReque
 import com.dasd412.api.writerservice.adapter.out.web.ApiResult;
 import com.dasd412.api.writerservice.adapter.out.web.exception.EmailExistException;
 import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
-import com.dasd412.api.writerservice.application.service.authority.AuthorityService;
 import com.dasd412.api.writerservice.application.service.security.vo.UserDetailsVO;
-import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
-import com.dasd412.api.writerservice.application.service.writerauthority.WriterAuthorityService;
+import com.dasd412.api.writerservice.application.service.writer.JoinFacadeService;
 
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -30,18 +28,12 @@ public class JoinController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final SaveWriterService saveWriterService;
-
-    private final AuthorityService authorityService;
-
-    private final WriterAuthorityService writerAuthorityService;
+    private final JoinFacadeService joinFacadeService;
 
     private final Tracer tracer;
 
-    public JoinController(SaveWriterService saveWriterService, AuthorityService authorityService, WriterAuthorityService writerAuthorityService, Tracer tracer) {
-        this.saveWriterService = saveWriterService;
-        this.authorityService = authorityService;
-        this.writerAuthorityService = writerAuthorityService;
+    public JoinController(JoinFacadeService joinFacadeService, Tracer tracer) {
+        this.joinFacadeService = joinFacadeService;
         this.tracer = tracer;
     }
 
@@ -59,17 +51,9 @@ public class JoinController {
                 .password(dto.getPassword())
                 .build();
 
-        //1.dto 내 작성자 저장.
         try {
-            Long writerId = saveWriterService.saveWriter(userDetailsVO);
+            joinFacadeService.join(userDetailsVO, dto.getRoles());
 
-            //2.dto 내 권한들 저장
-            List<Long> authorityIds = authorityService.createAuthority(dto.getRoles());
-
-            //3. 작성자와 권한들 연관 관계 맺기
-            for (Long authorityId : authorityIds) {
-                writerAuthorityService.createWriterAuthority(writerId, authorityId);
-            }
             return ApiResult.OK(HttpStatus.OK);
         } catch (UserNameExistException | EmailExistException e) {
             return ApiResult.ERROR(e.getMessage(), HttpStatus.BAD_REQUEST);
