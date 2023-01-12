@@ -1,14 +1,16 @@
 package com.dasd412.api.writerservice.application.service.writer.impl;
 
+import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.adapter.out.web.exception.EmailExistException;
 import com.dasd412.api.writerservice.adapter.out.web.exception.UserNameExistException;
 import com.dasd412.api.writerservice.application.service.authority.AuthorityService;
-import com.dasd412.api.writerservice.application.service.security.vo.UserDetailsVO;
+import com.dasd412.api.writerservice.application.service.security.vo.AuthenticationVO;
 import com.dasd412.api.writerservice.application.service.writer.JoinFacadeService;
 import com.dasd412.api.writerservice.application.service.writer.SaveWriterService;
 import com.dasd412.api.writerservice.application.service.writerauthority.WriterAuthorityService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
 import com.dasd412.api.writerservice.domain.authority.Role;
+import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,18 +37,20 @@ public class JoinFacadeServiceImpl implements JoinFacadeService {
     }
 
     @Override
-    public void join(UserDetailsVO vo, Set<Role> roleSet) throws TimeoutException,UserNameExistException, EmailExistException {
+    public Writer join(AuthenticationVO vo, Set<Role> roleSet) throws TimeoutException, UserNameExistException, EmailExistException {
         logger.info("join in JoinFacadeService:{}", UserContextHolder.getContext().getCorrelationId());
 
         //회원 가입
-        Long writerId = saveWriterService.saveWriter(vo);
+        Writer entity = saveWriterService.saveWriter(vo);
 
         //권한들 저장
         List<Long> authorityIds = authorityService.createAuthority(roleSet);
 
         //작성자와 권한들 연관 관계 맺기
         for (Long authorityId : authorityIds) {
-            writerAuthorityService.createWriterAuthority(writerId, authorityId);
+            writerAuthorityService.createWriterAuthority(entity.getId(), authorityId);
         }
+
+        return entity;
     }
 }

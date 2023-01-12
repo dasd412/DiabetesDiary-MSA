@@ -32,14 +32,14 @@ public class SaveWriterServiceImpl implements SaveWriterService {
 
     @Transactional
     @Override
-    public Long saveWriter(AuthenticationVO vo) throws TimeoutException, UserNameExistException, EmailExistException {
+    public Writer saveWriter(AuthenticationVO vo) throws TimeoutException, UserNameExistException, EmailExistException {
         logger.info("create writer in SaveWriterService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
-        if (writerRepository.existName(vo.getName())==Boolean.TRUE) {
+        if (writerRepository.existName(vo.getName()) == Boolean.TRUE) {
             throw new UserNameExistException("username already exist");
         }
 
-        if (writerRepository.existEmail(vo.getEmail(), vo.getProvider())==Boolean.TRUE) {
+        if (writerRepository.existEmail(vo.getEmail(), vo.getProvider()) == Boolean.TRUE) {
             throw new EmailExistException("email already exist");
         }
 
@@ -47,6 +47,6 @@ public class SaveWriterServiceImpl implements SaveWriterService {
 
         writerRepository.save(entity);
 
-        return entity.getId();
+        return entity;
     }
 }
