@@ -55,6 +55,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
 
+        http.logout()
+                .logoutUrl("/logout")
+                .deleteCookies("refresh-token");
+
+
     }
 
     @Override
