@@ -30,14 +30,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         this.writer = writer;
     }
 
-    public PrincipalDetails(Writer writer, List<Authority> authorities) {
+    public PrincipalDetails(Writer writer, Map<String, Object> oauthAttributes) {
         this.writer = writer;
-        this.authorities = authorities;
-    }
-
-    public PrincipalDetails(Writer writer, List<Authority> authorities, Map<String, Object> oauthAttributes) {
-        this.writer = writer;
-        this.authorities = authorities;
         this.oauthAttributes = oauthAttributes;
     }
 
