@@ -3,6 +3,7 @@ package com.dasd412.api.writerservice.common.config.security;
 import com.dasd412.api.writerservice.adapter.in.security.filter.JwtAuthenticationFilter;
 import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
+import com.dasd412.api.writerservice.application.service.security.OAuth2Service;
 import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final RefreshTokenService refreshTokenService;
 
     private final CookieProvider cookieProvider;
+
+    private final OAuth2Service oAuth2Service;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -59,7 +62,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .deleteCookies("refresh-token");
 
-
+        http.oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuth2Service)
+                .and()
+                .successHandler(oAuth2Service::onAuthenticationSuccess);
     }
 
     @Override
