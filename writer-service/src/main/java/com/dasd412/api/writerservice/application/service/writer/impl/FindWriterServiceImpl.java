@@ -23,8 +23,14 @@ public class FindWriterServiceImpl implements FindWriterService {
     }
 
     @Transactional(readOnly = true)
-    public Writer findWriterById(Long id){
+    public Writer findWriterById(Long id) {
         logger.info("find writer by writer id : {}", UserContextHolder.getContext().getCorrelationId());
         return writerRepository.findById(id).orElseThrow(NoResultException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Writer findWriterByUsername(String username) {
+        logger.info("find writer by writer username : {}", UserContextHolder.getContext().getCorrelationId());
+        return writerRepository.findWriterByName(username).orElseThrow(NoResultException::new);
     }
 }

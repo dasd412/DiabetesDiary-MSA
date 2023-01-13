@@ -1,13 +1,11 @@
 package com.dasd412.api.writerservice.application.service.security;
 
-import com.dasd412.api.writerservice.adapter.in.security.auth.PrincipalDetails;
+import com.dasd412.api.writerservice.adapter.in.security.PrincipalDetails;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
 import com.dasd412.api.writerservice.domain.writer.Writer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
