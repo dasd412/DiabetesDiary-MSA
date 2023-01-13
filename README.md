@@ -25,6 +25,8 @@ MSA project by dasd412
 14. JWT 리프레시 토큰 로직 완성 및 테스트 ✅
 15. 로그아웃, 액세스 토큰 검증 로직 완성 및 테스트 ✅
 16. 회원 탈퇴 및 전체 일지 삭제 완성 및 테스트 (카프카 비동기 메시지 활용)✅
+17. 인증 서비스 내의 OAuth 인증 로직 완성 및 테스트 ✅
+18. 게이트웨이를 경유할 경우의 OAuth 인증 실패 ❌
 
 ***
 
@@ -50,18 +52,22 @@ MSA project by dasd412
              ]
             }
             ```
-  - API 명 : **로그인** 
-      + 리소스 URI : /login
+  - API 명 : **일반 로그인** 
+      + 리소스 URI : auth/login
       + HTTP 메서드 : POST
       + 요청 매개변수 : 로그인 정보 DTO
       + 응답 값 : 성공 시 accesstoken과 만료 시간, 리스폰스 헤더에는 리프레시 토큰이 저장됨
       + ```
-        http://localhost:8062/writer/login
+        http://localhost:8062/writer/auth/login
         {
          "username": "test22",
          "password":"testtest"
         }
         ```
+  - API 명 : **구글 로그인**
+    + 리소스 URI : /oauth2/authorization/google
+    + HTTP 메서드 : GET
+    + 특이 사항 : `http://localhost:8082/oauth2/authorization/google` 와 같이 게이트웨이를 경유하지 않아야만 OAuth 회원 가입 및 로그인이 됩니다. (아직 해결하지 못했습니다.)
 
   - API 명 : **토큰 재발급**
       + 리소스 URI : /refresh
