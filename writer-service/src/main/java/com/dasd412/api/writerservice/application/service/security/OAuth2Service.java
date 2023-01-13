@@ -1,11 +1,8 @@
 package com.dasd412.api.writerservice.application.service.security;
 
-import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
 import com.dasd412.api.writerservice.adapter.in.security.PrincipalDetails;
 import com.dasd412.api.writerservice.adapter.out.persistence.writer.WriterRepository;
-import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
 import com.dasd412.api.writerservice.application.service.security.provider.OAuth2UserInfo;
-import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import com.dasd412.api.writerservice.application.service.security.vo.OAuth2UserVO;
 import com.dasd412.api.writerservice.application.service.writer.JoinFacadeService;
 import com.dasd412.api.writerservice.common.utils.UserContextHolder;
@@ -15,8 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -29,11 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Cookie;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -47,15 +38,11 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
 
     private final OAuth2UserInfoFactory factory;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
-    private final RefreshTokenService refreshTokenService;
-
-    private final CookieProvider cookieProvider;
-
     private final JoinFacadeService joinFacadeService;
 
     private final WriterRepository writerRepository;
+
+    private final JWTTokenWriterIntoResponseBody responseBodyFacade;
 
     @Override
     @Transactional
@@ -96,36 +83,11 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        logger.info("after authentication success : {}",UserContextHolder.getContext().getCorrelationId());
+        logger.info("after authentication success : {}", UserContextHolder.getContext().getCorrelationId());
 
-        PrincipalDetails principalDetails=((PrincipalDetails)authentication.getPrincipal());
+        PrincipalDetails principalDetails = ((PrincipalDetails) authentication.getPrincipal());
 
-        Writer loginUser=principalDetails.getWriter();
-
-        String refreshToken=jwtTokenProvider.issueJwtRefreshToken();
-
-        refreshTokenService.updateRefreshToken(loginUser.getId(),jwtTokenProvider.retrieveRefreshTokenId(refreshToken));
-
-        logger.info("making cookie...");
-
-        ResponseCookie responseCookie=cookieProvider.createCookieForRefreshToken(refreshToken);
-
-        Cookie cookie=cookieProvider.createCookie(responseCookie);
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        response.addCookie(cookie);
-
-        logger.info("making response body...");
-
-        String accessToken = jwtTokenProvider.issueNewJwtAccessToken(principalDetails.getUsername(), principalDetails.getWriter().getId(), request.getRequestURI(), principalDetails.getAuthorities());
-
-        LocalDateTime expired = LocalDateTime.ofInstant(jwtTokenProvider.retrieveExpiredTime(accessToken).toInstant(), ZoneId.systemDefault());
-
-        Map<String, Object> responseBody = Map.of(
-                "accessToken", accessToken,
-                "expired", expired.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        );
+        Map<String, Object> responseBody = responseBodyFacade.makeTokenForResponseBody(principalDetails, request, response);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
     }

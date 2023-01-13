@@ -1,10 +1,8 @@
 package com.dasd412.api.writerservice.common.config.security;
 
 import com.dasd412.api.writerservice.adapter.in.security.filter.JwtAuthenticationFilter;
-import com.dasd412.api.writerservice.adapter.in.security.JWTTokenProvider;
-import com.dasd412.api.writerservice.adapter.out.web.cookie.CookieProvider;
+import com.dasd412.api.writerservice.application.service.security.JWTTokenWriterIntoResponseBody;
 import com.dasd412.api.writerservice.application.service.security.OAuth2Service;
-import com.dasd412.api.writerservice.application.service.security.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
-    private final RefreshTokenService refreshTokenService;
-
-    private final CookieProvider cookieProvider;
+    private final JWTTokenWriterIntoResponseBody facade;
 
     private final OAuth2Service oAuth2Service;
 
@@ -45,13 +39,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter authenticationFilter=new JwtAuthenticationFilter(authenticationManagerBean(),jwtTokenProvider,refreshTokenService,cookieProvider);
-        authenticationFilter.setFilterProcessesUrl("/login");
+        JwtAuthenticationFilter authenticationFilter=new JwtAuthenticationFilter(authenticationManagerBean(),facade);
+        authenticationFilter.setFilterProcessesUrl("/auth/login");
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(corsFilter)
-                .addFilter(authenticationFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests().anyRequest().permitAll()
@@ -67,6 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .userService(oAuth2Service)
                 .and()
                 .successHandler(oAuth2Service::onAuthenticationSuccess);
+
+        http.addFilter(authenticationFilter);
     }
 
     @Override
