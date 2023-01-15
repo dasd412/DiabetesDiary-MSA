@@ -74,7 +74,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
         diaryRepository.save(diary);
 
-        return diary.getId();
+        return diary.getDiaryId();
     }
 
     private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {

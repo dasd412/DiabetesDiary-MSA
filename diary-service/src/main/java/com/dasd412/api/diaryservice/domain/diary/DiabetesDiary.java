@@ -4,6 +4,7 @@ import com.dasd412.api.diaryservice.domain.BaseTimeEntity;
 import com.dasd412.api.diaryservice.domain.StringMaxLength;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -14,6 +15,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @SuppressWarnings("unused")
+@Getter
 @Entity
 @Table(name = "DiabetesDiary")
 public class DiabetesDiary extends BaseTimeEntity {
@@ -36,9 +38,6 @@ public class DiabetesDiary extends BaseTimeEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Diet> dietList = new ArrayList<>();
 
-    /**
-     * JPA 엔티티에는 기본 생성자가 필요하다.
-     */
     public DiabetesDiary() {
     }
 
@@ -53,12 +52,17 @@ public class DiabetesDiary extends BaseTimeEntity {
         this.writtenTime = writtenTime;
     }
 
-    public Long getId() {
-        return diaryId;
+    public void update(int fastingPlasmaGlucose, String remark) {
+        modifyFastingPlasmaGlucose(fastingPlasmaGlucose);
+        modifyRemark(remark);
     }
 
-    public int getFastingPlasmaGlucose() {
-        return fastingPlasmaGlucose;
+    /**
+     * 연관 관계 제거 시에만 사용하는 메서드
+     */
+    public void removeDiet(Diet diet) {
+        checkArgument(this.dietList.contains(diet), "this diary dose not have the diet");
+        this.dietList.remove(diet);
     }
 
     public void modifyFastingPlasmaGlucose(int fastingPlasmaGlucose) {
@@ -66,21 +70,9 @@ public class DiabetesDiary extends BaseTimeEntity {
         this.fastingPlasmaGlucose = fastingPlasmaGlucose;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
     public void modifyRemark(String remark) {
         checkArgument(remark.length() <= StringMaxLength.DIARY_REMARK, "remark length should be lower than 501");
         this.remark = remark;
-    }
-
-    public LocalDateTime getWrittenTime() {
-        return writtenTime;
-    }
-
-    public List<Diet> getDietList() {
-        return new ArrayList<>(dietList);
     }
 
     public void addDiet(Diet diet) {
@@ -90,21 +82,6 @@ public class DiabetesDiary extends BaseTimeEntity {
         if (diet.getDiary() != this) {
             diet.makeRelationWithDiary(this);
         }
-    }
-
-    public Long getWriterId() {
-        return writerId;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", diaryId)
-                .append("writerId", writerId)
-                .append("fpg", fastingPlasmaGlucose)
-                .append("remark", remark)
-                .append("written time", writtenTime)
-                .toString();
     }
 
     @Override
@@ -124,16 +101,14 @@ public class DiabetesDiary extends BaseTimeEntity {
         return Objects.equals(this.writerId, target.writerId) && Objects.equals(this.diaryId, target.diaryId);
     }
 
-    public void update(int fastingPlasmaGlucose, String remark) {
-        modifyFastingPlasmaGlucose(fastingPlasmaGlucose);
-        modifyRemark(remark);
-    }
-
-    /**
-     * 연관 관계 제거 시에만 사용하는 메서드
-     */
-    public void removeDiet(Diet diet) {
-        checkArgument(this.dietList.contains(diet), "this diary dose not have the diet");
-        this.dietList.remove(diet);
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", diaryId)
+                .append("writerId", writerId)
+                .append("fpg", fastingPlasmaGlucose)
+                .append("remark", remark)
+                .append("written time", writtenTime)
+                .toString();
     }
 }

@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.domain.diet;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
 import com.dasd412.api.diaryservice.domain.food.Food;
 import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,6 +13,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @SuppressWarnings("unused")
+@Getter
 @Entity
 @Table(name = "Diet")
 public class Diet {
@@ -49,33 +51,18 @@ public class Diet {
         this.bloodSugar = bloodSugar;
     }
 
-    public Long getDietId() {
-        return dietId;
-    }
-
-    public EatTime getEatTime() {
-        return eatTime;
+    public void update(EatTime eatTime, int bloodSugar) {
+        modifyEatTime(eatTime);
+        modifyBloodSugar(bloodSugar);
     }
 
     public void modifyEatTime(EatTime eatTime) {
         this.eatTime = eatTime;
     }
 
-    public int getBloodSugar() {
-        return bloodSugar;
-    }
-
     public void modifyBloodSugar(int bloodSugar) {
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
         this.bloodSugar = bloodSugar;
-    }
-
-    public List<Food> getFoodList() {
-        return new ArrayList<>(foodList);
-    }
-
-    public Long getWriterId() {
-        return writerId;
     }
 
     public void addFood(Food food) {
@@ -86,8 +73,12 @@ public class Diet {
         }
     }
 
-    public DiabetesDiary getDiary() {
-        return diary;
+    /**
+     * 연관 관계 제거 시에만 사용
+     */
+    public void removeFood(Food food) {
+        checkArgument(this.foodList.contains(food), "this diet dose not have the food");
+        this.foodList.remove(food);
     }
 
     /**
@@ -101,17 +92,6 @@ public class Diet {
             diary.getDietList().add(this);
         }
     }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", dietId)
-                .append("diary", diary)
-                .append("eatTime", eatTime)
-                .append("blood sugar", bloodSugar)
-                .toString();
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(diary, dietId);
@@ -129,16 +109,13 @@ public class Diet {
         return Objects.equals(this.dietId, target.dietId) && Objects.equals(this.diary, target.diary);
     }
 
-    public void update(EatTime eatTime, int bloodSugar) {
-        modifyEatTime(eatTime);
-        modifyBloodSugar(bloodSugar);
-    }
-
-    /**
-     * 연관 관계 제거 시에만 사용
-     */
-    public void removeFood(Food food) {
-        checkArgument(this.foodList.contains(food), "this diet dose not have the food");
-        this.foodList.remove(food);
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", dietId)
+                .append("diary", diary)
+                .append("eatTime", eatTime)
+                .append("blood sugar", bloodSugar)
+                .toString();
     }
 }
