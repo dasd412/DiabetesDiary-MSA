@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.domain;
+package com.dasd412.api.readdiaryservice.adapter.out.persistence;
 
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @DataMongoTest
 @TestPropertySource(locations = "/application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MongoDBBasicCrudTest {
 
     @Autowired
@@ -48,18 +50,32 @@ public class MongoDBBasicCrudTest {
     }
 
     @Test
-    public void findDiary() {
-
-    }
-
-    @Test
     public void updateDiary() {
+        DiabetesDiaryDocument created = createDiaryDocument();
 
+        created = diaryDocumentRepository.save(created);
+
+        created.update(150, "test1");
+
+        created = diaryDocumentRepository.save(created);
+
+        Long diaryId = created.getDiaryId();
+
+        DiabetesDiaryDocument found = diaryDocumentRepository.findById(diaryId).orElseThrow(IllegalArgumentException::new);
+
+        assertThat(found.getFastingPlasmaGlucose()).isEqualTo(150);
+        assertThat(found.getRemark()).isEqualTo("test1");
     }
 
     @Test
     public void deleteDiary() {
+        DiabetesDiaryDocument created = createDiaryDocument();
 
+        created = diaryDocumentRepository.save(created);
+
+        diaryDocumentRepository.deleteById(created.getDiaryId());
+
+        assertThat(diaryDocumentRepository.findAll().size()).isEqualTo(0);
     }
 
     private DiabetesDiaryDocument createDiaryDocument() {
