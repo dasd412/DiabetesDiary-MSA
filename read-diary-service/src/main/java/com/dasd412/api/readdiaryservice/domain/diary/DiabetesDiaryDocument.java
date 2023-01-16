@@ -4,6 +4,7 @@ import com.dasd412.api.readdiaryservice.domain.StringMaxLength;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.annotation.Id;
@@ -11,20 +12,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
-@Document(collation = "diabetes_diary")
+@NoArgsConstructor
+@Document(collection = "diabetes_diary")
 public class DiabetesDiaryDocument {
 
     @Id
-    private final Long diaryId;
+    private Long diaryId;
 
     @Field("writer_id")
-    private final long writerId;
+    private long writerId;
 
     @Field("fpg")
     private int fastingPlasmaGlucose;
@@ -33,9 +34,10 @@ public class DiabetesDiaryDocument {
     private String remark;
 
     @Field("written_time")
-    private final LocalDateTime writtenTime;
+    private LocalDateTime writtenTime;
 
-    private final List<DietDocument> dietList;
+    @Field("diet_list")
+    private List<DietDocument> dietList;
 
     @Builder
     public DiabetesDiaryDocument(Long diaryId, Long writerId, int fastingPlasmaGlucose, String remark, LocalDateTime writtenTime, List<DietDocument> dietDocuments) {

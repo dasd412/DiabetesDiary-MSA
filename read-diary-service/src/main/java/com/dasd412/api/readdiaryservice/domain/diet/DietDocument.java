@@ -3,6 +3,7 @@ package com.dasd412.api.readdiaryservice.domain.diet;
 import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.annotation.Id;
@@ -14,17 +15,18 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
+@NoArgsConstructor
 @Document(collection = "diet")
 public class DietDocument {
 
     @Id
-    private final Long dietId;
+    private Long dietId;
 
     @Field("diary_id")
-    private final Long diaryId;
+    private Long diaryId;
 
     @Field("writer_id")
-    private final Long writerId;
+    private Long writerId;
 
     @Field("eat_time")
     private EatTime eatTime;
@@ -32,7 +34,8 @@ public class DietDocument {
     @Field("blood_sugar")
     private int bloodSugar;
 
-    private final List<FoodDocument> foodList;
+    @Field("food_list")
+    private List<FoodDocument> foodList;
 
     @Builder
     public DietDocument(Long dietId, Long diaryId, Long writerId, EatTime eatTime, int bloodSugar, List<FoodDocument> foodList) {
