@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: writer-service
+  profiles:
+    active: dev
+  cloud:
+    config:
+      uri: http://configserver:8071
+
+resilience4j.circuitbreaker:
+  instances:
+    writerService:
+      registerHealthIndicator: true
+      ringBufferSizeInClosedState: 6
+      ringBufferSizeInHalfOpenState: 4
+      waitDurationInOpenState: 20s
+      failureRateThreshold: 60
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - java.util.concurrent.TimeoutException
+        - org.springframework.web.client.ResourceAccessException
+    diaryService:
+      registerHealthIndicator: true
+      ringBufferSizeInClosedState: 5
+      ringBufferSizeInHalfOpenState: 3
+      waitDurationInOpenState: 10s
+      failureRateThreshold: 50
+      # 실패로 기록될 예외
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.io.IOException
+        - java.util.concurrent.TimeoutException
+        - org.springframework.web.client.ResourceAccessException
+
+resilience4j.ratelimiter:
+  instances:
+    diaryService:
+      timeOutDuration: 1000ms
+      limitRefreshPeriod: 1000
+      limitForPeriod: 1
+
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.dasd412: DEBUG
