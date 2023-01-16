@@ -29,9 +29,5 @@ logs/
 /nbdist/
 /.nb-gradle/
 
-###security###
-application-oauth.properties
-src/main/resources/application-oauth.properties
-application-database.properties
-application-real-db.properties
-application-email.properties
+### mongo
+/docker/development/mongodb/
