@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -66,7 +67,10 @@ public class DocumentFindControllerTest {
         mockMvc.perform(get(url)
                 .header("writer-id", "1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.success").value("true"));
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(2)));
     }
 
     @Test
@@ -156,7 +160,7 @@ public class DocumentFindControllerTest {
 
         List<DietDocument> dietList = Arrays.asList(diet1, diet2, diet3);
 
-        return DiabetesDiaryDocument.builder().diaryId(1L).writerId(1L)
+        return DiabetesDiaryDocument.builder().diaryId(2L).writerId(1L)
                 .fastingPlasmaGlucose(100).remark("test")
                 .writtenTime(LocalDateTime.now()).dietDocuments(dietList)
                 .build();

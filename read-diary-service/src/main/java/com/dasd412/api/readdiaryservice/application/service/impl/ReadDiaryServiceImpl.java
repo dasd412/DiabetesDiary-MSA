@@ -26,6 +26,6 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     @Override
     public List<DiabetesDiaryDocument> getDiabetesDiariesOfWriter(String writerId) {
         logger.info("find all fpg in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
-        return diaryDocumentRepository.getDiabetesDiariesOfWriter(writerId);
+        return diaryDocumentRepository.getDiabetesDiariesOfWriter(Long.parseLong(writerId));
     }
 }

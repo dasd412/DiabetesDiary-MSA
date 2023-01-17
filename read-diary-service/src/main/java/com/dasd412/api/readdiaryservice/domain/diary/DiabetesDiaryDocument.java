@@ -27,7 +27,7 @@ public class DiabetesDiaryDocument {
     private Long diaryId;
 
     @Field("writer_id")
-    private long writerId;
+    private Long writerId;
 
     @Field("fpg")
     private int fastingPlasmaGlucose;
