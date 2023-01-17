@@ -19,7 +19,6 @@ public class DocumentFindController {
 
     private final ReadDiaryService readDiaryService;
 
-
     public DocumentFindController(ReadDiaryService readDiaryService) {
         this.readDiaryService = readDiaryService;
     }
