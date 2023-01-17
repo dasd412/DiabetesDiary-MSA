@@ -103,13 +103,13 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-            <version>5.0.0</version>
+            <version>4.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-mongodb</artifactId>
-            <version>5.0.0</version>
+            <version>4.3.1</version>
         </dependency>
 
         <!-- test -->

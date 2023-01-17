@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DiaryDocumentRepository extends MongoRepository<DiabetesDiaryDocument,Long>,DiaryDocumentRepositoryCustom {
+public interface DiaryDocumentRepository extends MongoRepository<DiabetesDiaryDocument, Long>, DiaryDocumentRepositoryCustom {
 
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DiaryDocumentRepositoryCustom {
 
-    List<DiabetesDiaryDocument> findDiabetesDiariesOfWriter(String writerId);
+    List<DiabetesDiaryDocument>  getDiabetesDiariesOfWriter(String writerId);
 }

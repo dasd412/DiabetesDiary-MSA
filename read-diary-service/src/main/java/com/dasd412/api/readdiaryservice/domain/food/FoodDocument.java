@@ -1,6 +1,7 @@
 package com.dasd412.api.readdiaryservice.domain.food;
 
 import com.dasd412.api.readdiaryservice.domain.StringMaxLength;
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 @NoArgsConstructor
+@QueryEntity
 @Document(collection = "food")
 public class FoodDocument {
 

@@ -2,6 +2,7 @@ package com.dasd412.api.readdiaryservice.domain.diary;
 
 import com.dasd412.api.readdiaryservice.domain.StringMaxLength;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 @NoArgsConstructor
+@QueryEntity
 @Document(collection = "diabetes_diary")
 public class DiabetesDiaryDocument {
 
