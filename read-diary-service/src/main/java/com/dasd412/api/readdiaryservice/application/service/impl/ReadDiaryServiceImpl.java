@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,8 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
 
     private final DiaryDocumentRepository diaryDocumentRepository;
 
+    private final QDiabetesDiaryDocument qDocument = new QDiabetesDiaryDocument("diabetesDiaryDocument");
+
     public ReadDiaryServiceImpl(DiaryDocumentRepository diaryDocumentRepository) {
         this.diaryDocumentRepository = diaryDocumentRepository;
     }
@@ -34,7 +35,10 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     @Override
     public List<DiabetesDiaryDocument> getDiabetesDiariesOfWriter(String writerId) {
         logger.info("find all fpg in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
-        return diaryDocumentRepository.getDiabetesDiariesOfWriter(Long.parseLong(writerId));
+
+        Predicate predicate = qDocument.writerId.eq(Long.parseLong(writerId));
+
+        return (List<DiabetesDiaryDocument>) diaryDocumentRepository.findAll(predicate);
     }
 
     @Override
@@ -45,8 +49,6 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
         LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(timeSpan);
 
         checkArgument(DateStringConverter.isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
-
-        QDiabetesDiaryDocument qDocument = new QDiabetesDiaryDocument("diabetesDiaryDocument");
 
         Predicate predicate = qDocument.writerId.eq(Long.parseLong(writerId))
                 .and(qDocument.writtenTime.between(startDate, endDate));

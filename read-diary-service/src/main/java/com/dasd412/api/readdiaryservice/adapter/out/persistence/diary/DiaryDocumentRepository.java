@@ -6,6 +6,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DiaryDocumentRepository extends MongoRepository<DiabetesDiaryDocument, Long>, DiaryDocumentRepositoryCustom, QuerydslPredicateExecutor<DiabetesDiaryDocument> {
+public interface DiaryDocumentRepository extends MongoRepository<DiabetesDiaryDocument, Long>, QuerydslPredicateExecutor<DiabetesDiaryDocument> {
 
 }
