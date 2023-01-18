@@ -1,5 +1,7 @@
-package com.dasd412.api.readdiaryservice.common.utils;
+package com.dasd412.api.readdiaryservice.common.utils.trace;
 
+
+import com.dasd412.api.readdiaryservice.common.utils.trace.UserContext;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
