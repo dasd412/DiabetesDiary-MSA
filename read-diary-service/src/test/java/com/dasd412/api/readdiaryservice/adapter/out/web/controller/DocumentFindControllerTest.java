@@ -6,6 +6,7 @@ import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.EatTime;
 import com.dasd412.api.readdiaryservice.domain.food.AmountUnit;
 import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,11 @@ public class DocumentFindControllerTest {
         diaryDocumentRepository.save(createdTwo);
     }
 
+    @After
+    public void clean() {
+        this.diaryDocumentRepository.deleteAll();
+    }
+
     @Test
     public void findAllFpg() throws Exception {
         String url = "/fpg/all";
@@ -91,8 +97,8 @@ public class DocumentFindControllerTest {
                         .params(params)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success").value("false"));
+                .andExpect(jsonPath("$.success").value("false"))
+                .andExpect(jsonPath("$.error.status").value("400"));
     }
 
     @Test
