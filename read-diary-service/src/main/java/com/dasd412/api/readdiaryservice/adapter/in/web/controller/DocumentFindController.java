@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.adapter.out.web.controller;
+package com.dasd412.api.readdiaryservice.adapter.in.web.controller;
 
 import brave.ScopedSpan;
 import brave.Tracer;
@@ -71,7 +71,7 @@ public class DocumentFindController {
     }
 
     @GetMapping("/fpg/between")
-    public ApiResult<?> finalFpgBetween(@RequestHeader(value = "writer-id") String writerId, @RequestParam
+    public ApiResult<?> findFpgBetween(@RequestHeader(value = "writer-id") String writerId, @RequestParam
     Map<String, String> timeSpan) {
         return null;
     }

@@ -17,6 +17,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
@@ -24,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,8 +66,8 @@ public class DocumentFindControllerTest {
     public void findAllFpg() throws Exception {
         String url = "/fpg/all";
         mockMvc.perform(get(url)
-                .header("writer-id", "1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header("writer-id", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
@@ -74,7 +75,46 @@ public class DocumentFindControllerTest {
     }
 
     @Test
-    public void finalFpgBetween() {
+    public void findFpgBetweenInvalid() throws Exception {
+        String url = "/fpg/between";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2023");
+        params.add("startMonth", "01");
+        params.add("startDay", "28");
+
+        params.add("endYear", "2023");
+        params.add("endMonth", "01");
+        params.add("endDay", "17");
+
+        mockMvc.perform(get(url).header("writer-id", "1")
+                        .params(params)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value("false"));
+    }
+
+    @Test
+    public void findFpgBetween() throws Exception {
+        String url = "/fpg/between";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2023");
+        params.add("startMonth", "01");
+        params.add("startDay", "14");
+
+        params.add("endYear", "2023");
+        params.add("endMonth", "01");
+        params.add("endDay", "28");
+
+        mockMvc.perform(get(url).header("writer-id", "1")
+                        .params(params)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(1)));
     }
 
     @Test
@@ -124,7 +164,7 @@ public class DocumentFindControllerTest {
 
         return DiabetesDiaryDocument.builder().diaryId(1L).writerId(1L)
                 .fastingPlasmaGlucose(120).remark("test")
-                .writtenTime(LocalDateTime.now()).dietDocuments(dietList)
+                .writtenTime(LocalDateTime.of(2023, 1, 11, 7, 7)).dietDocuments(dietList)
                 .build();
     }
 
@@ -162,7 +202,7 @@ public class DocumentFindControllerTest {
 
         return DiabetesDiaryDocument.builder().diaryId(2L).writerId(1L)
                 .fastingPlasmaGlucose(100).remark("test")
-                .writtenTime(LocalDateTime.now()).dietDocuments(dietList)
+                .writtenTime(LocalDateTime.of(2023, 1, 15, 6, 6)).dietDocuments(dietList)
                 .build();
     }
 }
