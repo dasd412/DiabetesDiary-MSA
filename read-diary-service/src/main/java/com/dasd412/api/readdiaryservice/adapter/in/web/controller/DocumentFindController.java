@@ -5,8 +5,9 @@ import brave.Tracer;
 import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.ApiResult;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllFpgDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FpgBetweenDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
-import com.dasd412.api.readdiaryservice.common.utils.UserContextHolder;
+import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -53,10 +54,7 @@ public class DocumentFindController {
                     .collect(Collectors.toList());
 
             return ApiResult.OK(dtoList);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ApiResult.ERROR(exception.getMessage(), HttpStatus.BAD_REQUEST);
-        } finally {
+        }finally {
             span.tag("read.diary.service", "allFpg");
             span.finish();
         }
@@ -71,9 +69,34 @@ public class DocumentFindController {
     }
 
     @GetMapping("/fpg/between")
+    @RateLimiter(name = "readDiaryService")
+    @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindFpgBetween")
     public ApiResult<?> findFpgBetween(@RequestHeader(value = "writer-id") String writerId, @RequestParam
-    Map<String, String> timeSpan) {
-        return null;
+    Map<String, String> timeSpan) throws TimeoutException {
+        logger.info("find fpg between time span in document find controller : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("findFpgBetween");
+
+        try {
+            List<DiabetesDiaryDocument> diaryDocumentList = readDiaryService.getDiariesBetweenTimeSpan(writerId, timeSpan);
+
+            List<FpgBetweenDTO> dtoList = diaryDocumentList.stream().map(FpgBetweenDTO::new)
+                    .sorted(Comparator.comparing(FpgBetweenDTO::getTimeStamp))
+                    .collect(Collectors.toList());
+
+            return ApiResult.OK(dtoList);
+        }finally {
+            span.tag("read.diary.service", "fpgBetween");
+            span.finish();
+        }
+    }
+
+    private ApiResult<?> fallBackFindFpgBetween(String writerId, Map<String, String> timeSpan, Throwable throwable) {
+        logger.error("failed to call outer component in finding fpg  between time span in DocumentFindController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/blood-sugar/all")

@@ -43,10 +43,7 @@ public class DiaryDeleteRestController {
         try {
             Long removedId = deleteDiaryService.deleteDiaryWithSubEntities(diaryId, Long.parseLong(writerId));
             return ApiResult.OK(new DiaryDeleteResponseDTO(removedId));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ApiResult.ERROR(exception.getMessage(), HttpStatus.BAD_REQUEST);
-        } finally {
+        }finally {
             span.tag("cud.diary.service", "delete");
             span.finish();
         }
