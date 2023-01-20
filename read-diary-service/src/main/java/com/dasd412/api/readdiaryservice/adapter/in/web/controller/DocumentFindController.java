@@ -4,6 +4,7 @@ import brave.ScopedSpan;
 import brave.Tracer;
 import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.ApiResult;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllFpgDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FpgBetweenDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
@@ -54,7 +55,7 @@ public class DocumentFindController {
                     .collect(Collectors.toList());
 
             return ApiResult.OK(dtoList);
-        }finally {
+        } finally {
             span.tag("read.diary.service", "allFpg");
             span.finish();
         }
@@ -85,7 +86,7 @@ public class DocumentFindController {
                     .collect(Collectors.toList());
 
             return ApiResult.OK(dtoList);
-        }finally {
+        } finally {
             span.tag("read.diary.service", "fpgBetween");
             span.finish();
         }
@@ -100,8 +101,29 @@ public class DocumentFindController {
     }
 
     @GetMapping("/blood-sugar/all")
-    public ApiResult<?> findAllBloodSugar(@RequestHeader(value = "writer-id") String writerId) {
-        return null;
+    @RateLimiter(name = "readDiaryService")
+    @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindAllBloodSugar")
+    public ApiResult<?> findAllBloodSugar(@RequestHeader(value = "writer-id") String writerId) throws TimeoutException {
+        logger.info("find all blood sugar in document find controller : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("findAllBloodSugar");
+
+        try {
+            List<AllBloodSugarDTO> dtoList = readDiaryService.getAllBloodSugarOfWriter(writerId);
+
+            return ApiResult.OK(dtoList);
+        } finally {
+            span.tag("read.diary.service", "allBloodSugar");
+            span.finish();
+        }
+    }
+
+    private ApiResult<?> fallBackFindAllBloodSugar(String writerId, Throwable throwable) {
+        logger.error("failed to call outer component in finding all blood sugar in DocumentFindController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/blood-sugar/between")
