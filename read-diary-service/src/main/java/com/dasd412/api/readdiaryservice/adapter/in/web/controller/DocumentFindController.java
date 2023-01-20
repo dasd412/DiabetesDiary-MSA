@@ -6,7 +6,8 @@ import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.ApiResult;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllFpgDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FpgBetweenDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FpgBetweenTimeSpanDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
@@ -81,8 +82,8 @@ public class DocumentFindController {
         try {
             List<DiabetesDiaryDocument> diaryDocumentList = readDiaryService.getDiariesBetweenTimeSpan(writerId, timeSpan);
 
-            List<FpgBetweenDTO> dtoList = diaryDocumentList.stream().map(FpgBetweenDTO::new)
-                    .sorted(Comparator.comparing(FpgBetweenDTO::getTimeStamp))
+            List<FpgBetweenTimeSpanDTO> dtoList = diaryDocumentList.stream().map(FpgBetweenTimeSpanDTO::new)
+                    .sorted(Comparator.comparing(FpgBetweenTimeSpanDTO::getTimeStamp))
                     .collect(Collectors.toList());
 
             return ApiResult.OK(dtoList);
@@ -127,10 +128,32 @@ public class DocumentFindController {
     }
 
     @GetMapping("/blood-sugar/between")
+    @RateLimiter(name = "readDiaryService")
+    @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindBloodSugarBetween")
     public ApiResult<?> findBloodSugarBetween(@RequestHeader(value = "writer-id") String writerId, @RequestParam
     Map<String, String> timeSpan) {
-        return null;
+        logger.info("find blood sugar between time span in document find controller : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("findBloodSugarBetween");
+
+        try {
+            List<BloodSugarBetweenTimeSpanDTO> dtoList = readDiaryService.getBloodSugarBetweenTimeSpan(writerId, timeSpan);
+
+            return ApiResult.OK(dtoList);
+        } finally {
+            span.tag("read.diary.service", "bloodSugarBetween");
+            span.finish();
+        }
     }
+
+    private ApiResult<?> fallBackFindBloodSugarBetween(String writerId, Map<String, String> timeSpan, Throwable throwable) {
+        logger.error("failed to call outer component in finding blood sugar  between time span in DocumentFindController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @GetMapping("/food/list")
     public ApiResult<?> findFoodList(@RequestHeader(value = "writer-id") String writerId, FoodPageVO foodPageVO) {

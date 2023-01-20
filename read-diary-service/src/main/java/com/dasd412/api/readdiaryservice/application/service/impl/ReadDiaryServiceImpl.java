@@ -2,6 +2,7 @@ package com.dasd412.api.readdiaryservice.application.service.impl;
 
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.date.DateStringConverter;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
@@ -77,6 +78,33 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
         }
 
         dtoList.sort(Comparator.comparing(AllBloodSugarDTO::getDateTime));
+
+        return dtoList;
+    }
+
+    @Override
+    public List<BloodSugarBetweenTimeSpanDTO> getBloodSugarBetweenTimeSpan(String writerId, Map<String, String> timeSpan) {
+        logger.info("find blood sugar between time span in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        LocalDateTime startDate = DateStringConverter.convertMapParamsToStartDate(timeSpan);
+        LocalDateTime endDate = DateStringConverter.convertMapParamsToEndDate(timeSpan);
+
+        checkArgument(DateStringConverter.isStartDateEqualOrBeforeEndDate(startDate, endDate), "startDate must be equal or before than endDate");
+
+        Predicate predicate = qDocument.writerId.eq(Long.parseLong(writerId))
+                .and(qDocument.writtenTime.between(startDate, endDate));
+
+        List<DiabetesDiaryDocument> diaryDocumentList = (List<DiabetesDiaryDocument>) diaryDocumentRepository.findAll(predicate);
+
+        List<BloodSugarBetweenTimeSpanDTO> dtoList = new ArrayList<>();
+
+        for (DiabetesDiaryDocument diaryDocument : diaryDocumentList) {
+            for (DietDocument dietDocument : diaryDocument.getDietList()) {
+                dtoList.add(new BloodSugarBetweenTimeSpanDTO(diaryDocument, dietDocument));
+            }
+        }
+
+        dtoList.sort(Comparator.comparing(BloodSugarBetweenTimeSpanDTO::getBloodSugar));
 
         return dtoList;
     }

@@ -8,13 +8,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.time.LocalDateTime;
 
 @Getter
-public class FpgBetweenDTO {
+public class FpgBetweenTimeSpanDTO {
 
     private final int fastingPlasmaGlucose;
 
     private final LocalDateTime timeStamp;
 
-    public FpgBetweenDTO(DiabetesDiaryDocument document) {
+    public FpgBetweenTimeSpanDTO(DiabetesDiaryDocument document) {
         this.fastingPlasmaGlucose = document.getFastingPlasmaGlucose();
         this.timeStamp = document.getWrittenTime();
     }
