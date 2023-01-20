@@ -81,7 +81,7 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
 
         diaryRepository.save(targetDiary);
 
-        return targetDiary.getId();
+        return targetDiary.getDiaryId();
     }
 
     private void sendMessageToFindDiaryService() {

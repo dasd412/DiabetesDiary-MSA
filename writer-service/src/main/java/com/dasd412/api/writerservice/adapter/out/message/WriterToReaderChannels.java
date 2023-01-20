@@ -1,10 +1,10 @@
-package com.dasd412.api.diaryservice.adapter.out.message;
+package com.dasd412.api.writerservice.adapter.out.message;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
-public interface DiaryChannels {
+public interface WriterToReaderChannels {
 
-    @Output("outboundDiaryChanges")
+    @Output("outboundWriterChangesToReader")
     MessageChannel getOutputChannel();
 }

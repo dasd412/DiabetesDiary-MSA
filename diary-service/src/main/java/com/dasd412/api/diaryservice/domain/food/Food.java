@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.domain.food;
 import com.dasd412.api.diaryservice.domain.StringMaxLength;
 import com.dasd412.api.diaryservice.domain.diet.Diet;
 import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @SuppressWarnings("unused")
+@Getter
 @Entity
 @Table(name = "Food")
 public class Food {
@@ -59,20 +61,14 @@ public class Food {
         this.amountUnit = Objects.requireNonNullElse(amountUnit, AmountUnit.NONE);
     }
 
-    public Long getFoodId() {
-        return foodId;
+    public void update(String foodName) {
+        modifyFoodName(foodName);
     }
 
-    public String getFoodName() {
-        return foodName;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public AmountUnit getAmountUnit() {
-        return amountUnit;
+    public void update(String foodName, double amount, AmountUnit amountUnit) {
+        modifyFoodName(foodName);
+        modifyAmount(amount);
+        modifyAmountUnit(amountUnit);
     }
 
     public void modifyFoodName(String foodName) {
@@ -87,10 +83,6 @@ public class Food {
 
     public void modifyAmountUnit(AmountUnit amountUnit) {
         this.amountUnit = amountUnit;
-    }
-
-    public Diet getDiet() {
-        return diet;
     }
 
     /**
@@ -111,17 +103,6 @@ public class Food {
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", foodId)
-                .append("diet", diet)
-                .append("foodName", foodName)
-                .append("amount", amount)
-                .append("amountUnit", amountUnit)
-                .toString();
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(diet, foodId);
     }
@@ -138,14 +119,14 @@ public class Food {
         return Objects.equals(this.foodId, target.foodId) && Objects.equals(this.diet, target.diet);
     }
 
-    public void update(String foodName) {
-        modifyFoodName(foodName);
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("id", foodId)
+                .append("diet", diet)
+                .append("foodName", foodName)
+                .append("amount", amount)
+                .append("amountUnit", amountUnit)
+                .toString();
     }
-
-    public void update(String foodName, double amount, AmountUnit amountUnit) {
-        modifyFoodName(foodName);
-        modifyAmount(amount);
-        modifyAmountUnit(amountUnit);
-    }
-
 }
