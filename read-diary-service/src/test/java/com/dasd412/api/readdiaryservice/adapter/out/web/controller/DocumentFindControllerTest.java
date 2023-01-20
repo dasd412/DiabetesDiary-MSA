@@ -71,6 +71,7 @@ public class DocumentFindControllerTest {
     @Test
     public void findAllFpg() throws Exception {
         String url = "/fpg/all";
+
         mockMvc.perform(get(url)
                         .header("writer-id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -81,7 +82,7 @@ public class DocumentFindControllerTest {
     }
 
     @Test
-    public void findFpgBetweenInvalid() throws Exception {
+    public void findFpgBetweenInvalidTimeSpan() throws Exception {
         String url = "/fpg/between";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -124,11 +125,59 @@ public class DocumentFindControllerTest {
     }
 
     @Test
-    public void findAllBloodSugar() {
+    public void findAllBloodSugar() throws Exception {
+        String url = "/blood-sugar/all";
+
+        mockMvc.perform(get(url)
+                        .header("writer-id", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(6)));
     }
 
     @Test
-    public void findBloodSugarBetween() {
+    public void findBloodSugarBetweenInvalidTimeSpan() throws Exception {
+        String url = "/blood-sugar/between";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2023");
+        params.add("startMonth", "01");
+        params.add("startDay", "28");
+
+        params.add("endYear", "2023");
+        params.add("endMonth", "01");
+        params.add("endDay", "17");
+
+        mockMvc.perform(get(url).header("writer-id", "1")
+                        .params(params)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.success").value("false"))
+                .andExpect(jsonPath("$.error.status").value("400"));
+    }
+
+    @Test
+    public void findBloodSugarBetween() throws Exception {
+        String url = "/blood-sugar/between";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("startYear", "2023");
+        params.add("startMonth", "01");
+        params.add("startDay", "14");
+
+        params.add("endYear", "2023");
+        params.add("endMonth", "01");
+        params.add("endDay", "28");
+
+        mockMvc.perform(get(url).header("writer-id", "1")
+                        .params(params)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"))
+                .andExpect(jsonPath("$.response").value(hasSize(3)));
     }
 
     @Test
