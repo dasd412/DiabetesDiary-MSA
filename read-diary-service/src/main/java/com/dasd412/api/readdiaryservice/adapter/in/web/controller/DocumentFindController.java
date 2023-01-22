@@ -4,10 +4,8 @@ import brave.ScopedSpan;
 import brave.Tracer;
 import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.ApiResult;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllFpgDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FpgBetweenTimeSpanDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.FoodPageMaker;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.*;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
@@ -15,6 +13,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -154,9 +153,29 @@ public class DocumentFindController {
         return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //todo 게시판 페이징
     @GetMapping("/food/list")
-    public ApiResult<?> findFoodList(@RequestHeader(value = "writer-id") String writerId, FoodPageVO foodPageVO) {
-        return null;
+    @RateLimiter(name = "readDiaryService")
+    @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindFoodList")
+    public ApiResult<?> findFoodList(@RequestHeader(value = "writer-id") String writerId, FoodPageVO foodPageVO) throws TimeoutException {
+        logger.info("find food list in document find controller : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("findFoodList");
+
+        try {
+            Page<FoodBoardDTO> dtoPage = readDiaryService.getFoodByPagination(writerId, foodPageVO);
+
+            return ApiResult.OK(new FoodPageMaker<>(dtoPage));
+        } finally {
+            span.tag("read.diary.service", "foodList");
+            span.finish();
+        }
+    }
+
+    private ApiResult<?> fallBackFindFoodList(String writerId, FoodPageVO foodPageVO, Throwable throwable) {
+        logger.error("failed to call outer component in finding food list sugar in DocumentFindController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,8 +1,10 @@
 package com.dasd412.api.readdiaryservice.application.service.impl;
 
+import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FoodBoardDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.date.DateStringConverter;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
@@ -12,6 +14,7 @@ import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,6 +110,11 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
         dtoList.sort(Comparator.comparing(BloodSugarBetweenTimeSpanDTO::getBloodSugar));
 
         return dtoList;
+    }
+
+    @Override
+    public Page<FoodBoardDTO> getFoodByPagination(String writerId, FoodPageVO foodPageVO) {
+        return null;
     }
 
 }
