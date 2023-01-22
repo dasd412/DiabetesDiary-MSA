@@ -5,7 +5,6 @@ import com.dasd412.api.readdiaryservice.adapter.in.web.InequalitySign;
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FoodBoardDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.date.DateStringConverter;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
@@ -13,8 +12,9 @@ import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diary.QDiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.QDietDocument;
-import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
+
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,13 +121,17 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     }
 
     @Override
-    public Page<FoodBoardDTO> getFoodByPagination(String writerId, FoodPageVO foodPageVO) {
+    public Page<DiabetesDiaryDocument> getFoodByPagination(String writerId, FoodPageVO foodPageVO) {
         logger.info("find food board in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
 
-        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Pageable pageable = makePageableWithSort(foodPageVO);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(qDocument.writerId.eq(Long.parseLong(writerId)));
 
         if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
-            booleanBuilder.and(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
+            predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
         }
 
         LocalDateTime startDate;
@@ -139,33 +143,17 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
 
             endDate = foodPageVO.convertEndDate().orElseThrow(() -> new DateTimeException("end date cannot convert"));
 
-            if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
-                booleanBuilder.and(qDocument.writerId.eq(Long.parseLong(writerId))
-                        .and(qDocument.writtenTime.between(startDate, endDate)));
-            }
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            // 날짜 변환이 안되면 날짜 조건 없이 질의.
+            return diaryDocumentRepository.findAll(ExpressionUtils.allOf(predicates),pageable);
         }
 
-        Pageable pageable = makePageableWithSort(foodPageVO);
-
-        List<DiabetesDiaryDocument> diaryDocumentList = (List<DiabetesDiaryDocument>) diaryDocumentRepository.findAll(booleanBuilder.getValue(), pageable);
-
-        List<FoodBoardDTO> dtoList = new ArrayList<>();
-
-        for (DiabetesDiaryDocument diaryDocument : diaryDocumentList) {
-            for (DietDocument dietDocument : diaryDocument.getDietList()) {
-                for (FoodDocument foodDocument : dietDocument.getFoodList()) {
-                    dtoList.add(new FoodBoardDTO(foodDocument.getFoodName(), dietDocument.getBloodSugar(),
-                            diaryDocument.getWrittenTime(), diaryDocument.getDiaryId()
-                    ));
-                }
-            }
+        if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
+            predicates.add(qDocument.writtenTime.between(startDate, endDate));
         }
 
-        long count=diaryDocumentRepository.count(booleanBuilder.getValue());
 
-        return new PageImpl<>(dtoList,pageable,count);
+        return diaryDocumentRepository.findAll(ExpressionUtils.allOf(predicates),pageable);
     }
 
     private BooleanBuilder decideEqualitySignOfBloodSugar(InequalitySign sign, int bloodSugar) {

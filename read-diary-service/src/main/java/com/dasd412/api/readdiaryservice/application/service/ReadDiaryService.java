@@ -3,7 +3,6 @@ package com.dasd412.api.readdiaryservice.application.service;
 import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FoodBoardDTO;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
 import org.springframework.data.domain.Page;
 
@@ -20,5 +19,5 @@ public interface ReadDiaryService {
 
     List<BloodSugarBetweenTimeSpanDTO> getBloodSugarBetweenTimeSpan(String writerId, Map<String, String> timeSpan);
 
-    Page<FoodBoardDTO> getFoodByPagination(String writerId, FoodPageVO foodPageVO);
+    Page<DiabetesDiaryDocument> getFoodByPagination(String writerId, FoodPageVO foodPageVO);
 }
