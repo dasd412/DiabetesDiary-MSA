@@ -162,7 +162,7 @@ public class DocumentFindController {
         ScopedSpan span = tracer.startScopedSpan("findFoodList");
 
         try {
-            Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination(writerId, foodPageVO);
+            Page<FoodBoardDTO> dtoPage = readDiaryService.getFoodByPagination(writerId, foodPageVO);
 
             return ApiResult.OK(new FoodPageMaker<>(dtoPage));
         } finally {

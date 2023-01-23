@@ -5,6 +5,7 @@ import com.dasd412.api.readdiaryservice.adapter.in.web.InequalitySign;
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.AllBloodSugarDTO;
 import com.dasd412.api.readdiaryservice.adapter.out.web.dto.BloodSugarBetweenTimeSpanDTO;
+import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FoodBoardDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.common.utils.date.DateStringConverter;
 import com.dasd412.api.readdiaryservice.common.utils.trace.UserContextHolder;
@@ -121,39 +122,10 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     }
 
     @Override
-    public Page<DiabetesDiaryDocument> getFoodByPagination(String writerId, FoodPageVO foodPageVO) {
+    public Page<FoodBoardDTO> getFoodByPagination(String writerId, FoodPageVO foodPageVO) {
         logger.info("find food board in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
 
-        Pageable pageable = makePageableWithSort(foodPageVO);
-
-        List<Predicate> predicates = new ArrayList<>();
-
-        predicates.add(qDocument.writerId.eq(Long.parseLong(writerId)));
-
-        if (foodPageVO.getSign() != null && foodPageVO.getEnumOfSign() != InequalitySign.NONE) {
-            predicates.add(decideEqualitySignOfBloodSugar(foodPageVO.getEnumOfSign(), foodPageVO.getBloodSugar()));
-        }
-
-        LocalDateTime startDate;
-
-        LocalDateTime endDate;
-
-        try {
-            startDate = foodPageVO.convertStartDate().orElseThrow(() -> new DateTimeException("start date cannot convert"));
-
-            endDate = foodPageVO.convertEndDate().orElseThrow(() -> new DateTimeException("end date cannot convert"));
-
-        } catch (DateTimeException e) {
-            // 날짜 변환이 안되면 날짜 조건 없이 질의.
-            return diaryDocumentRepository.findAll(ExpressionUtils.allOf(predicates),pageable);
-        }
-
-        if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
-            predicates.add(qDocument.writtenTime.between(startDate, endDate));
-        }
-
-
-        return diaryDocumentRepository.findAll(ExpressionUtils.allOf(predicates),pageable);
+        return null;
     }
 
     private BooleanBuilder decideEqualitySignOfBloodSugar(InequalitySign sign, int bloodSugar) {
@@ -182,13 +154,5 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
         }
 
         return booleanBuilder;
-    }
-
-    private Pageable makePageableWithSort(FoodPageVO foodPageVO) {
-        // Sort.by 내 인자는 document 엔티티 내의 @Field 값과 동일해야 한다.
-        Sort sort = Sort.by("blood_sugar").descending()
-                .and(Sort.by("written_time").descending().and(Sort.by("food_name")).ascending());
-
-        return PageRequest.of(foodPageVO.getPage() - 1, foodPageVO.getSize(), sort);
     }
 }
