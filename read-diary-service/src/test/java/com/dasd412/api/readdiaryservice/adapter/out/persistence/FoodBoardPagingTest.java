@@ -50,7 +50,7 @@ public class FoodBoardPagingTest {
 
         IntStream.range(0, 200).forEach(
                 i -> {
-                    saveDiaryDocument((long) (i + 1), (i%31+1));
+                    saveDiaryDocument((long) (i + 1), (i % 31 + 1));
                 }
         );
     }
@@ -118,6 +118,35 @@ public class FoodBoardPagingTest {
     @Test
     public void testDefaultPaging() {
         FoodPageVO vo = new FoodPageVO();
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getTotalPages()).isEqualTo(20);
+        assertThat(dtoPage.getContent().size()).isEqualTo(10);
+    }
+
+    @Test
+    public void testInvalidTimeFormat(){
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("")
+                .startYear("2023").startMonth("21").startDay("1411")
+                .endYear("2023").endMonth("2231").endDay("1151")
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getTotalPages()).isEqualTo(20);
+        assertThat(dtoPage.getContent().size()).isEqualTo(10);
+    }
+
+
+    @Test
+    public void testInvalidTimeOrder() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("")
+                .startYear("2023").startMonth("01").startDay("31")
+                .endYear("2023").endMonth("01").endDay("01")
+                .build();
+
         Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
 
         assertThat(dtoPage.getTotalPages()).isEqualTo(20);

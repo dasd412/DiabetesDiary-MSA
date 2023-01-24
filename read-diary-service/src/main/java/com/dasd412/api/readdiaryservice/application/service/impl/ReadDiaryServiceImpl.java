@@ -24,6 +24,7 @@ import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -153,10 +154,10 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
         LocalDateTime endDate;
 
         try {
-            startDate = vo.convertStartDate().orElseThrow(IllegalArgumentException::new);
+            startDate = vo.convertStartDate().orElseThrow();
 
-            endDate = vo.convertEndDate().orElseThrow(IllegalArgumentException::new);
-        } catch (IllegalArgumentException e) {
+            endDate = vo.convertEndDate().orElseThrow();
+        } catch (DateTimeException e) {
             logger.info("It is invalid date format... So, this predicate should be ignored...");
             return;
         }
