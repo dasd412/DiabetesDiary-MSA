@@ -2,7 +2,6 @@ package com.dasd412.api.readdiaryservice.adapter.out.persistence;
 
 import com.dasd412.api.readdiaryservice.adapter.in.web.FoodPageVO;
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
-import com.dasd412.api.readdiaryservice.adapter.out.web.dto.FoodBoardDTO;
 import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
@@ -49,9 +48,9 @@ public class FoodBoardPagingTest {
 
         this.foodId = 1;
 
-        IntStream.range(0, 20).forEach(
+        IntStream.range(0, 200).forEach(
                 i -> {
-                    saveDiaryDocument((long) (i + 1), i + 1);
+                    saveDiaryDocument((long) (i + 1), (i%31+1));
                 }
         );
     }
@@ -119,8 +118,9 @@ public class FoodBoardPagingTest {
     @Test
     public void testDefaultPaging() {
         FoodPageVO vo = new FoodPageVO();
-        Page<FoodBoardDTO> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
 
         assertThat(dtoPage.getTotalPages()).isEqualTo(20);
+        assertThat(dtoPage.getContent().size()).isEqualTo(10);
     }
 }
