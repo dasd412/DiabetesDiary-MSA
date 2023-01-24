@@ -12,7 +12,6 @@ import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diary.QDiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 
-import com.dasd412.api.readdiaryservice.domain.diet.QDietDocument;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +39,6 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     private final DiaryDocumentRepository diaryDocumentRepository;
 
     private final QDiabetesDiaryDocument qDocument = new QDiabetesDiaryDocument("diabetesDiaryDocument");
-
-    private final QDietDocument qDietDocument = new QDietDocument("dietDocument");
 
     private final MongoTemplate mongoTemplate;
 
