@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.dasd412.api</groupId>
     <artifactId>read-diary-service</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>read-diary-service</name>
     <description>diary service for only reading entities</description>
     <properties>

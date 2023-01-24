@@ -24,7 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -134,7 +133,7 @@ public class DocumentFindControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response").value(hasSize(6)));
+                .andExpect(jsonPath("$.response").value(hasSize(4)));
     }
 
     @Test
@@ -177,12 +176,7 @@ public class DocumentFindControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value("true"))
-                .andExpect(jsonPath("$.response").value(hasSize(3)));
-    }
-
-    @Test
-    public void findFoodList() {
-
+                .andExpect(jsonPath("$.response").value(hasSize(2)));
     }
 
     private DiabetesDiaryDocument createDiaryDocumentOne() {
@@ -191,17 +185,17 @@ public class DocumentFindControllerTest {
                 .amount(50.0).amountUnit(AmountUnit.g).build();
 
         FoodDocument food2 = FoodDocument.builder()
-                .foodId(1L).dietId(1L).writerId(1L).foodName("juice")
+                .foodId(2L).dietId(1L).writerId(1L).foodName("juice")
                 .amount(60.0).amountUnit(AmountUnit.mL).build();
 
         List<FoodDocument> breakFast = Arrays.asList(food1, food2);
 
         FoodDocument food3 = FoodDocument.builder()
-                .foodId(1L).dietId(2L).writerId(1L).foodName("chicken")
+                .foodId(3L).dietId(2L).writerId(1L).foodName("chicken")
                 .amount(150.0).amountUnit(AmountUnit.g).build();
 
         FoodDocument food4 = FoodDocument.builder()
-                .foodId(1L).dietId(2L).writerId(1L).foodName("coke")
+                .foodId(4L).dietId(2L).writerId(1L).foodName("coke")
                 .amount(100.0).amountUnit(AmountUnit.mL).build();
 
         List<FoodDocument> dinner = Arrays.asList(food3, food4);
@@ -209,13 +203,10 @@ public class DocumentFindControllerTest {
         DietDocument diet1 = DietDocument.builder().dietId(1L).diaryId(1L).writerId(1L)
                 .bloodSugar(170).eatTime(EatTime.BREAK_FAST).foodList(breakFast).build();
 
-        DietDocument diet2 = DietDocument.builder().dietId(1L).diaryId(1L).writerId(1L)
-                .bloodSugar(140).eatTime(EatTime.LUNCH).foodList(breakFast).build();
-
-        DietDocument diet3 = DietDocument.builder().dietId(2L).diaryId(1L).writerId(1L)
+        DietDocument diet2 = DietDocument.builder().dietId(2L).diaryId(1L).writerId(1L)
                 .bloodSugar(150).eatTime(EatTime.DINNER).foodList(dinner).build();
 
-        List<DietDocument> dietList = Arrays.asList(diet1, diet2, diet3);
+        List<DietDocument> dietList = Arrays.asList(diet1, diet2);
 
         return DiabetesDiaryDocument.builder().diaryId(1L).writerId(1L)
                 .fastingPlasmaGlucose(120).remark("test")
@@ -225,35 +216,33 @@ public class DocumentFindControllerTest {
 
     private DiabetesDiaryDocument createDiaryDocumentTwo() {
         FoodDocument food1 = FoodDocument.builder()
-                .foodId(1L).dietId(1L).writerId(1L).foodName("ham")
+                .foodId(5L).dietId(4L).writerId(1L).foodName("ham")
                 .amount(110.0).amountUnit(AmountUnit.g).build();
 
         FoodDocument food2 = FoodDocument.builder()
-                .foodId(1L).dietId(1L).writerId(1L).foodName("coffee")
+                .foodId(6L).dietId(4L).writerId(1L).foodName("coffee")
                 .amount(70.0).amountUnit(AmountUnit.mL).build();
 
         List<FoodDocument> breakFast = Arrays.asList(food1, food2);
 
         FoodDocument food3 = FoodDocument.builder()
-                .foodId(1L).dietId(2L).writerId(1L).foodName("pizza")
+                .foodId(7L).dietId(5L).writerId(1L).foodName("pizza")
                 .amount(250.0).amountUnit(AmountUnit.g).build();
 
         FoodDocument food4 = FoodDocument.builder()
-                .foodId(1L).dietId(2L).writerId(1L).foodName("water")
+                .foodId(8L).dietId(5L).writerId(1L).foodName("water")
                 .amount(200.0).amountUnit(AmountUnit.mL).build();
 
         List<FoodDocument> dinner = Arrays.asList(food3, food4);
 
-        DietDocument diet1 = DietDocument.builder().dietId(1L).diaryId(1L).writerId(1L)
+        DietDocument diet4 = DietDocument.builder().dietId(4L).diaryId(2L).writerId(1L)
                 .bloodSugar(120).eatTime(EatTime.BREAK_FAST).foodList(breakFast).build();
 
-        DietDocument diet2 = DietDocument.builder().dietId(1L).diaryId(1L).writerId(1L)
-                .bloodSugar(160).eatTime(EatTime.LUNCH).foodList(Collections.singletonList(food1)).build();
 
-        DietDocument diet3 = DietDocument.builder().dietId(2L).diaryId(1L).writerId(1L)
+        DietDocument diet5 = DietDocument.builder().dietId(5L).diaryId(2L).writerId(1L)
                 .bloodSugar(110).eatTime(EatTime.DINNER).foodList(dinner).build();
 
-        List<DietDocument> dietList = Arrays.asList(diet1, diet2, diet3);
+        List<DietDocument> dietList = Arrays.asList(diet4, diet5);
 
         return DiabetesDiaryDocument.builder().diaryId(2L).writerId(1L)
                 .fastingPlasmaGlucose(100).remark("test")
