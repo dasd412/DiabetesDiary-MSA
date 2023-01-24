@@ -125,7 +125,7 @@ public class FoodBoardPagingTest {
     }
 
     @Test
-    public void testInvalidTimeFormat(){
+    public void testInvalidTimeFormat() {
         FoodPageVO vo = FoodPageVO.builder()
                 .sign("")
                 .startYear("2023").startMonth("21").startDay("1411")
@@ -151,5 +151,117 @@ public class FoodBoardPagingTest {
 
         assertThat(dtoPage.getTotalPages()).isEqualTo(20);
         assertThat(dtoPage.getContent().size()).isEqualTo(10);
+    }
+
+    @Test
+    public void testPagingWithTimeSpan() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("")
+                .startYear("2023").startMonth("01").startDay("01")
+                .endYear("2023").endMonth("01").endDay("11")
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent())
+                .allSatisfy(diaryDocument -> {
+                    assertThat(diaryDocument.getWrittenTime()).isAfter(LocalDateTime.of(2023, 1, 1, 0, 0));
+                    assertThat(diaryDocument.getWrittenTime()).isBefore(LocalDateTime.of(2023, 1, 11, 0, 0, 0));
+                });
+
+    }
+
+    @Test
+    public void testPagingWithSignOfGreater() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("greater")
+                .bloodSugar(110)
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent()).allSatisfy(diaryDocument -> {
+            assertThat(diaryDocument.getDietList())
+                    .allMatch(dietDocument -> dietDocument.getBloodSugar() > 110);
+        });
+    }
+
+    @Test
+    public void testPagingWithSignOfLesser() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("lesser")
+                .bloodSugar(130)
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent()).allSatisfy(diaryDocument -> {
+            assertThat(diaryDocument.getDietList())
+                    .allMatch(dietDocument -> dietDocument.getBloodSugar() < 130);
+        });
+    }
+
+    @Test
+    public void testPagingWithSignOfEqual() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("equal")
+                .bloodSugar(120)
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent()).allSatisfy(diaryDocument -> {
+            assertThat(diaryDocument.getDietList())
+                    .allMatch(dietDocument -> dietDocument.getBloodSugar() == 120);
+        });
+    }
+
+    @Test
+    public void testPagingWithSignOfGreaterOrEqual() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("ge")
+                .bloodSugar(120)
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent()).allSatisfy(diaryDocument -> {
+            assertThat(diaryDocument.getDietList())
+                    .allMatch(dietDocument -> dietDocument.getBloodSugar() >= 120);
+        });
+    }
+
+    @Test
+    public void testPagingWithSignOfLesserOrEqual() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("le")
+                .bloodSugar(120)
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent()).allSatisfy(diaryDocument -> {
+            assertThat(diaryDocument.getDietList())
+                    .allMatch(dietDocument -> dietDocument.getBloodSugar() <= 120);
+        });
+    }
+
+    @Test
+    public void testPagingWithComplexPredicate() {
+        FoodPageVO vo = FoodPageVO.builder()
+                .sign("le")
+                .bloodSugar(115)
+                .startYear("2023").startMonth("01").startDay("01")
+                .endYear("2023").endMonth("01").endDay("11")
+                .build();
+
+        Page<DiabetesDiaryDocument> dtoPage = readDiaryService.getFoodByPagination("1", vo);
+
+        assertThat(dtoPage.getContent())
+                .allSatisfy(diaryDocument -> {
+                    assertThat(diaryDocument.getWrittenTime()).isAfter(LocalDateTime.of(2023, 1, 1, 0, 0));
+                    assertThat(diaryDocument.getWrittenTime()).isBefore(LocalDateTime.of(2023, 1, 11, 0, 0, 0));
+                    assertThat(diaryDocument.getDietList()).allMatch(dietDocument -> dietDocument.getBloodSugar() <= 115);
+                });
     }
 }

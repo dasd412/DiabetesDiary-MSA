@@ -26,10 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.dasd412.api.readdiaryservice.common.utils.date.DateStringConverter.isStartDateEqualOrBeforeEndDate;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -135,7 +132,7 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
 
         Query query = new Query(Criteria.where("writer_id").is(Long.parseLong(writerId)))
                 .with(pageable)
-                .with(Sort.by(Sort.Direction.DESC, "diet_list.bloodSugar", "writtenTime"));
+                .with(Sort.by(Sort.Direction.DESC, "diet_list.blood_sugar", "written_time"));
 
         addCriteriaForTimeSpan(query,foodPageVO);
 
@@ -157,13 +154,13 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
             startDate = vo.convertStartDate().orElseThrow();
 
             endDate = vo.convertEndDate().orElseThrow();
-        } catch (DateTimeException e) {
+        } catch (DateTimeException | NoSuchElementException e) {
             logger.info("It is invalid date format... So, this predicate should be ignored...");
             return;
         }
 
         if (isStartDateEqualOrBeforeEndDate(startDate, endDate)) {
-            query.addCriteria(Criteria.where("written_time").gte(startDate).lte(endDate));
+            query.addCriteria(Criteria.where("written_time").gte(startDate).lt(endDate));
         }
     }
 
