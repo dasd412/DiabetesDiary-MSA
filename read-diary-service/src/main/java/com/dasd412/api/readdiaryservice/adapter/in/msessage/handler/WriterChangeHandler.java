@@ -2,7 +2,7 @@ package com.dasd412.api.readdiaryservice.adapter.in.msessage.handler;
 
 import com.dasd412.api.readdiaryservice.adapter.in.msessage.WriterActionEnum;
 import com.dasd412.api.readdiaryservice.adapter.in.msessage.exception.NotSupportedActionEnumException;
-import com.dasd412.api.readdiaryservice.adapter.in.msessage.model.WriterChangeModel;
+import com.dasd412.api.readdiaryservice.adapter.in.msessage.model.writer.WriterChangeModel;
 import com.dasd412.api.readdiaryservice.application.service.DiaryDataSyncService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

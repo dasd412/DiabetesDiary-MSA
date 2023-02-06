@@ -1,4 +1,4 @@
-package com.dasd412.api.readdiaryservice.adapter.in.msessage.model;
+package com.dasd412.api.readdiaryservice.adapter.in.msessage.model.writer;
 
 import lombok.Builder;
 import lombok.Getter;

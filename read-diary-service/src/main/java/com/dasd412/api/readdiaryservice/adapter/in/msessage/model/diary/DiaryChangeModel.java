@@ -1,7 +1,6 @@
-package com.dasd412.api.diaryservice.adapter.out.message.model.readdiary;
+package com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary;
 
-import com.dasd412.api.diaryservice.adapter.out.message.model.DiaryChangeModel;
-import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
+import com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto.DiaryToReaderDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Getter
 @Setter
 @Builder
-public class ModelToReader implements DiaryChangeModel {
+public class DiaryChangeModel {
 
     private String type;
 
