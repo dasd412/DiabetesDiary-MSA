@@ -84,6 +84,7 @@ public class UpdateDiaryServiceImpl implements UpdateDiaryService {
         return targetDiary.getDiaryId();
     }
 
+    //todo 카프카 로직 추가 필요
     private void sendMessageToFindDiaryService() {
         logger.info("diary-service sent message to find-diary-service in UpdateDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
     }
