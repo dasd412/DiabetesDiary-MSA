@@ -2,6 +2,7 @@ package com.dasd412.api.diaryservice.adapter.out.message.source;
 
 import com.dasd412.api.diaryservice.adapter.out.message.ActionEnum;
 import com.dasd412.api.diaryservice.adapter.out.message.DiaryChannels;
+import com.dasd412.api.diaryservice.adapter.out.message.DiaryToReaderChannels;
 import com.dasd412.api.diaryservice.adapter.out.message.model.DiaryChangeModel;
 import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.ModelToReader;
 import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
@@ -20,10 +21,13 @@ public class KafkaSourceBean {
 
     private final DiaryChannels diaryChannels;
 
+    private final DiaryToReaderChannels diaryToReaderChannels;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public KafkaSourceBean(DiaryChannels diaryChannels) {
+    public KafkaSourceBean(DiaryChannels diaryChannels, DiaryToReaderChannels diaryToReaderChannels) {
         this.diaryChannels = diaryChannels;
+        this.diaryToReaderChannels = diaryToReaderChannels;
     }
 
     public void publishDiaryChangeToWriter(ActionEnum action, Long writerId, Long diaryId) throws TimeoutException {
@@ -53,6 +57,6 @@ public class KafkaSourceBean {
                 .localDateTimeFormat(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .build();
 
-        diaryChannels.getOutputChannel().send(MessageBuilder.withPayload(changeModel).build());
+        diaryToReaderChannels.getOutputChannel().send(MessageBuilder.withPayload(changeModel).build());
     }
 }
