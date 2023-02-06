@@ -5,6 +5,6 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface DiaryChannels {
 
-    @Input("inboundDiaryChangesToReader")
+    @Input("inboundDiaryChanges")
     SubscribableChannel getChannel();
 }

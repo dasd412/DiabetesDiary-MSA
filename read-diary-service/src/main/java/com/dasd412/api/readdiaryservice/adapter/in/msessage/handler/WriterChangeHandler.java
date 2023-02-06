@@ -18,7 +18,7 @@ public class WriterChangeHandler {
         this.diaryDataSyncService = diaryDataSyncService;
     }
 
-    @StreamListener("inboundWriterChangesToReader")
+    @StreamListener("inboundWriterChanges")
     public void deleteAllOfWriter(WriterChangeModel writerChangeModel) {
 
         logger.info("received an {} event for writer id {} at time {}", writerChangeModel.getAction(), writerChangeModel.getWriterId(), writerChangeModel.getLocalDateTimeFormat());
