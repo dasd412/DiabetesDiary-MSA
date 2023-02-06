@@ -19,7 +19,7 @@ public class DiaryChangeHandler {
     }
 
     //todo if 문 각각 완성해야 함.
-    @StreamListener("inboundDiaryChanges")
+    @StreamListener("inboundDiaryChangesToReader")
     public void syncDataOfDiary(DiaryChangeModel diaryChangeModel) {
         logger.info("received an message of diary cud service");
 

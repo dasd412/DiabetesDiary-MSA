@@ -5,6 +5,6 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface WriterChannels {
 
-    @Input("inboundWriterChanges")
+    @Input("inboundWriterChangesToReader")
     SubscribableChannel getChannel();
 }
