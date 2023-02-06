@@ -41,17 +41,6 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
         LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
 
-        Long diaryId = makeDiaryWithSubEntities(writerId, dto, writtenTime);
-
-        sendMessageToWriterService(writerId, diaryId);
-
-        sendMessageToFindDiaryService();
-
-        return diaryId;
-    }
-
-    private Long makeDiaryWithSubEntities(Long writerId, DiaryPostRequestDTO dto, LocalDateTime writtenTime) throws TimeoutException {
-        logger.info("saving diary in SaveDiaryService correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
         if (dto.getDietList() != null) {
@@ -77,15 +66,16 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         return diary.getDiaryId();
     }
 
-    private void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
+    public void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
         logger.info("diary-service sent message to writer-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEnum.CREATED, writerId, diaryId);
     }
 
     //todo 아파치 카프카 로직 추가 필요
-    private void sendMessageToFindDiaryService() {
+    public void sendMessageToFindDiaryService() {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
+        //kafkaSourceBean.publishDiaryChangeToReadDiary(ActionEnum.CREATED,dto);
     }
 
     /**

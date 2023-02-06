@@ -47,6 +47,11 @@ public class DiaryPostRestController {
 
         try {
             Long diaryId = saveDiaryService.postDiaryWithEntities(Long.parseLong(writerId), dto);
+
+            saveDiaryService.sendMessageToWriterService(Long.parseLong(writerId), diaryId);
+
+            saveDiaryService.sendMessageToFindDiaryService();
+
             return ApiResult.OK(new DiaryPostResponseDTO(diaryId));
         } catch (NoResultException exception) {
             return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
