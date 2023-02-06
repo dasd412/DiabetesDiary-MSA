@@ -1,7 +1,7 @@
 package com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto;
 
 import com.dasd412.api.diaryservice.domain.food.AmountUnit;
-import lombok.Builder;
+import com.dasd412.api.diaryservice.domain.food.Food;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -21,14 +21,13 @@ public class FoodToReaderDTO {
 
     private final AmountUnit amountUnit;
 
-    @Builder
-    public FoodToReaderDTO(Long foodId, Long dietId, Long writerId, String foodName, double amount, AmountUnit amountUnit) {
-        this.foodId = foodId;
+    public FoodToReaderDTO(Food food,Long dietId) {
+        this.foodId = food.getFoodId();
         this.dietId = dietId;
-        this.writerId = writerId;
-        this.foodName = foodName;
-        this.amount = amount;
-        this.amountUnit = amountUnit;
+        this.writerId = food.getWriterId();
+        this.foodName = food.getFoodName();
+        this.amount = food.getAmount();
+        this.amountUnit = food.getAmountUnit();
     }
 
     @Override

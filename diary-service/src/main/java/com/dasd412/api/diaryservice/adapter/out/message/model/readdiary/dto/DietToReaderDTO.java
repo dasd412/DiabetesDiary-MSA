@@ -1,7 +1,7 @@
 package com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto;
 
+import com.dasd412.api.diaryservice.domain.diet.Diet;
 import com.dasd412.api.diaryservice.domain.diet.EatTime;
-import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,13 +23,12 @@ public class DietToReaderDTO {
 
     private final List<FoodToReaderDTO> foodList;
 
-    @Builder
-    public DietToReaderDTO(Long dietId, Long diaryId, Long writerId, EatTime eatTime, int bloodSugar, List<FoodToReaderDTO> foodList) {
-        this.dietId = dietId;
+    public DietToReaderDTO(Diet diet, Long diaryId, List<FoodToReaderDTO> foodList) {
+        this.dietId = diet.getDietId();
         this.diaryId = diaryId;
-        this.writerId = writerId;
-        this.eatTime = eatTime;
-        this.bloodSugar = bloodSugar;
+        this.writerId = diet.getWriterId();
+        this.eatTime = diet.getEatTime();
+        this.bloodSugar = diet.getBloodSugar();
         this.foodList = foodList;
     }
 

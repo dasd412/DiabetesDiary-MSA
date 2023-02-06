@@ -1,6 +1,9 @@
 package com.dasd412.api.diaryservice.application.service.impl;
 
 import com.dasd412.api.diaryservice.adapter.out.client.FindWriterFeignClient;
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DietToReaderDTO;
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.FoodToReaderDTO;
 import com.dasd412.api.diaryservice.application.service.SaveDiaryService;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.domain.diary.DiabetesDiary;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 @SuppressWarnings({"unused", "static-access"})
@@ -36,11 +41,12 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
     }
 
     @Transactional
-    public Long postDiaryWithEntities(Long writerId, DiaryPostRequestDTO dto) throws TimeoutException {
+    public DiaryToReaderDTO postDiaryWithEntities(Long writerId, DiaryPostRequestDTO dto) throws TimeoutException {
         logger.info("call writer micro service for finding writer id. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
 
         LocalDateTime writtenTime = convertStringToLocalDateTime(dto);
 
+        // 1. 실제 엔티티 저장
         DiabetesDiary diary = new DiabetesDiary(writerId, dto.getFastingPlasmaGlucose(), dto.getRemark(), writtenTime);
 
         if (dto.getDietList() != null) {
@@ -53,17 +59,44 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
                         if (dietDTO.getFoodList() != null) {
                             dietDTO.getFoodList().forEach(
                                     foodDto -> {
-                                        Food food = new Food(diet, foodDto.getFoodName(), foodDto.getAmount());
+                                        Food food = new Food(diet, foodDto.getFoodName(), foodDto.getAmount(), foodDto.getAmountUnit());
                                         diet.addFood(food);
                                     }
                             );
                         }
                     });
+
         }
 
+        // save를 해야 채번이 된다.
         diaryRepository.save(diary);
 
-        return diary.getDiaryId();
+        // 2. 트랜잭션 내에 영속성 컨텍스트가 살아있으므로 여기서 dto를 만들어준다. 안그러면 읽기를 위해 한 번 더 디스크를 긁어야 한다.
+        DiaryToReaderDTO diaryToReaderDTO = new DiaryToReaderDTO(diary);
+
+        if (diary.getDietList() != null) {
+
+            List<DietToReaderDTO> dietToReaderDTOList = new ArrayList<>();
+
+            diary.getDietList().forEach(
+                    diet -> {
+
+                        List<FoodToReaderDTO> foodToReaderDTOList = new ArrayList<>();
+
+                        if (diet.getFoodList() != null) {
+                            diet.getFoodList().forEach(
+                                    food -> {
+                                        foodToReaderDTOList.add(new FoodToReaderDTO(food, diet.getDietId()));
+                                    }
+                            );
+                        }
+                        dietToReaderDTOList.add(new DietToReaderDTO(diet, diary.getDiaryId(), foodToReaderDTOList));
+                    });
+
+            diaryToReaderDTO.addDietList(dietToReaderDTOList);
+        }
+
+        return diaryToReaderDTO;
     }
 
     public void sendMessageToWriterService(Long writerId, Long diaryId) throws TimeoutException {
@@ -71,11 +104,9 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
         kafkaSourceBean.publishDiaryChangeToWriter(ActionEnum.CREATED, writerId, diaryId);
     }
 
-    //todo 아파치 카프카 로직 추가 필요
-    public void sendMessageToFindDiaryService() {
+    public void sendMessageToFindDiaryService(DiaryToReaderDTO dto) {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-
-        //kafkaSourceBean.publishDiaryChangeToReadDiary(ActionEnum.CREATED,dto);
+        kafkaSourceBean.publishDiaryChangeToReadDiary(ActionEnum.CREATED,dto);
     }
 
     /**

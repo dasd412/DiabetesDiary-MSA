@@ -2,6 +2,7 @@ package com.dasd412.api.diaryservice.adapter.in.web;
 
 import brave.ScopedSpan;
 import brave.Tracer;
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
 import com.dasd412.api.diaryservice.adapter.out.web.ApiResult;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.post.DiaryPostRequestDTO;
 import com.dasd412.api.diaryservice.adapter.out.web.dto.post.DiaryPostResponseDTO;
@@ -46,13 +47,13 @@ public class DiaryPostRestController {
         ScopedSpan span = tracer.startScopedSpan("postDiary");
 
         try {
-            Long diaryId = saveDiaryService.postDiaryWithEntities(Long.parseLong(writerId), dto);
+            DiaryToReaderDTO readerDTO = saveDiaryService.postDiaryWithEntities(Long.parseLong(writerId), dto);
 
-            saveDiaryService.sendMessageToWriterService(Long.parseLong(writerId), diaryId);
+            saveDiaryService.sendMessageToWriterService(readerDTO.getWriterId(), readerDTO.getDiaryId());
 
-            saveDiaryService.sendMessageToFindDiaryService();
+            saveDiaryService.sendMessageToFindDiaryService(readerDTO);
 
-            return ApiResult.OK(new DiaryPostResponseDTO(diaryId));
+            return ApiResult.OK(new DiaryPostResponseDTO(readerDTO.getDiaryId()));
         } catch (NoResultException exception) {
             return ApiResult.ERROR("cannot find appropriate writer...", HttpStatus.BAD_REQUEST);
         } finally {
