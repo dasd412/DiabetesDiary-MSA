@@ -24,6 +24,7 @@ public class DiaryChangeHandler {
         logger.info("received an message of diary cud service");
 
         if (DiaryActionEnum.compare(diaryChangeModel.getAction()).equals(DiaryActionEnum.CREATED)) {
+            diaryDataSyncService.createDocument(diaryChangeModel.getDiaryToReaderDTO());
 
         } else if (DiaryActionEnum.compare(diaryChangeModel.getAction()).equals(DiaryActionEnum.UPDATED)) {
 

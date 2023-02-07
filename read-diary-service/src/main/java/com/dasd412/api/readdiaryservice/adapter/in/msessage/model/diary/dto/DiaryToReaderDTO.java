@@ -1,5 +1,7 @@
 package com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto;
 
+import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
+import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -42,5 +44,15 @@ public class DiaryToReaderDTO {
                 .append("remark", remark)
                 .append("written time", writtenTime)
                 .toString();
+    }
+
+    public DiabetesDiaryDocument toEntity(List<DietDocument> dietDocumentList) {
+        return DiabetesDiaryDocument.builder()
+                .diaryId(this.diaryId).writerId(this.writerId)
+                .fastingPlasmaGlucose(this.fastingPlasmaGlucose)
+                .remark(this.remark)
+                .writtenTime(this.writtenTime)
+                .dietDocuments(dietDocumentList)
+                .build();
     }
 }

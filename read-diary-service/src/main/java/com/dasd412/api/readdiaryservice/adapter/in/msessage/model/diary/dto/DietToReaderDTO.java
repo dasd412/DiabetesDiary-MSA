@@ -1,6 +1,8 @@
 package com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto;
 
+import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.EatTime;
+import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -40,5 +42,13 @@ public class DietToReaderDTO {
                 .append("eatTime", eatTime)
                 .append("blood sugar", bloodSugar)
                 .toString();
+    }
+
+    public DietDocument toEntity(List<FoodDocument>foodDocumentList){
+        return DietDocument.builder()
+                .dietId(this.dietId).diaryId(this.diaryId).writerId(this.writerId)
+                .eatTime(this.eatTime).bloodSugar(this.bloodSugar)
+                .foodList(foodDocumentList)
+                .build();
     }
 }
