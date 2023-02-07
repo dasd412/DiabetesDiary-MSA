@@ -69,22 +69,6 @@ services:
         aliases:
           - "kafka"
 
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    ports:
-      - 27017:27017
-    volumes:
-      - ./mongodb:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=1234
-      - MONGO_INITDB_DATABASE=mymongo
-    networks:
-      backend:
-        aliases:
-          - "mongo"
-
   redisserver:
     image: redis:alpine
     container_name: redis
@@ -123,8 +107,6 @@ services:
       configserver:
         condition: service_started
       kafkaserver:
-        condition: service_started
-      mongodb:
         condition: service_started
     networks:
       - backend
