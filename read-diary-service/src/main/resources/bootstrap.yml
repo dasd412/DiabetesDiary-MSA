@@ -50,8 +50,4 @@ resilience4j.ratelimiter:
       limitRefreshPeriod: 1000
       limitForPeriod: 1
 
-logging:
-  level:
-    com.netflix: WARN
-    org.springframework.web: WARN
-    com.dasd412: DEBUG
+
