@@ -15,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -38,6 +35,34 @@ public class DocumentFindController {
     public DocumentFindController(ReadDiaryService readDiaryService, Tracer tracer) {
         this.readDiaryService = readDiaryService;
         this.tracer = tracer;
+    }
+
+    @GetMapping("/diary/{diaryId}")
+    @RateLimiter(name = "readDiaryService")
+    @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindDiaryDocument")
+    public ApiResult<?>findDiaryDocument(@RequestHeader(value = "writer-id") String writerId, @PathVariable Long diaryId) throws TimeoutException{
+        logger.info("find one diary document in document find controller:{}",UserContextHolder.getContext().getCorrelationId());
+
+        ScopedSpan span = tracer.startScopedSpan("findDiaryDocument");
+
+        try{
+            DiabetesDiaryDocument document=readDiaryService.getOneDiaryDocument(writerId,diaryId);
+
+            FindOneDiaryDocumentDTO dto=new FindOneDiaryDocumentDTO(document);
+
+            return ApiResult.OK(dto);
+        }finally {
+            span.tag("read.diary.service", "diaryDocument");
+            span.finish();
+        }
+    }
+
+    private ApiResult<?> fallBackFindDiaryDocument(String writerId, Long diaryId, Throwable throwable){
+        logger.error("failed to call outer component in finding diary document in DocumentFindController. correlation id :{} , exception : {}", UserContextHolder.getContext().getCorrelationId(), throwable.getClass());
+        if (throwable.getClass().isAssignableFrom(IllegalArgumentException.class)) {
+            return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.BAD_REQUEST);
+        }
+        return ApiResult.ERROR(throwable.getClass().getName(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/fpg/all")

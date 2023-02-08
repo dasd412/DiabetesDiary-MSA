@@ -66,6 +66,17 @@ public class DocumentFindControllerTest {
     }
 
     @Test
+    public void findOneDiaryDocument() throws Exception {
+        String url = "/diary/1";
+
+        mockMvc.perform(get(url).header("writer-id", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value("true"));
+    }
+
+    @Test
     public void findAllFpg() throws Exception {
         String url = "/fpg/all";
 
