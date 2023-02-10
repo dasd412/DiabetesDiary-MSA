@@ -85,9 +85,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
                         if (diet.getFoodList() != null) {
                             diet.getFoodList().forEach(
-                                    food -> {
-                                        foodToReaderDTOList.add(new FoodToReaderDTO(food, diet.getDietId()));
-                                    }
+                                    food -> foodToReaderDTOList.add(new FoodToReaderDTO(food, diet.getDietId()))
                             );
                         }
                         dietToReaderDTOList.add(new DietToReaderDTO(diet, diary.getDiaryId(), foodToReaderDTOList));
@@ -106,7 +104,7 @@ public class SaveDiaryServiceImpl implements SaveDiaryService {
 
     public void sendMessageToFindDiaryService(DiaryToReaderDTO dto) {
         logger.info("diary-service sent message to find-diary-service in SaveDiaryService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
-        kafkaSourceBean.publishDiaryChangeToReadDiary(ActionEnum.CREATED,dto);
+        kafkaSourceBean.publishDiaryChangeToReadDiary(ActionEnum.CREATED, dto);
     }
 
     /**
