@@ -24,6 +24,14 @@ public class DiaryToReaderDTO {
 
     private List<DietToReaderDTO> dietList;
 
+    public DiaryToReaderDTO(Long diaryId, Long writerId) {
+        this.diaryId = diaryId;
+        this.writerId = writerId;
+        this.fastingPlasmaGlucose = 0;
+        this.remark = "";
+        this.writtenTime = LocalDateTime.now();
+    }
+
     public DiaryToReaderDTO(DiabetesDiary diary) {
         this.diaryId = diary.getDiaryId();
         this.writerId = diary.getWriterId();
