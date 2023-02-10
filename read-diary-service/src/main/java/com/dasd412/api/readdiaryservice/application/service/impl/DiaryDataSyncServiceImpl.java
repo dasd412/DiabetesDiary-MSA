@@ -76,4 +76,11 @@ public class DiaryDataSyncServiceImpl implements DiaryDataSyncService {
 
         diaryDocumentRepository.save(targetDiary);
     }
+
+    @Override
+    public void deleteDocument(DiabetesDiaryDocument targetDiary) {
+        logger.info("deleting document in DiaryDataSyncService");
+
+        diaryDocumentRepository.delete(targetDiary);
+    }
 }

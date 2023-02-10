@@ -23,7 +23,6 @@ public class DiaryChangeHandler {
         this.readDiaryService = readDiaryService;
     }
 
-    //todo if 문 각각 완성해야 함.
     @StreamListener("inboundDiaryChangesToReader")
     public void syncDataOfDiary(DiaryChangeModel diaryChangeModel) {
         logger.info("received an message of diary cud service");
@@ -39,6 +38,11 @@ public class DiaryChangeHandler {
             diaryDataSyncService.updateDocument(targetDiary,diaryChangeModel.getDiaryToReaderDTO());
 
         } else if (DiaryActionEnum.compare(diaryChangeModel.getAction()).equals(DiaryActionEnum.DELETED)) {
+
+            DiabetesDiaryDocument targetDiary = readDiaryService.getOneDiaryDocument(
+                    String.valueOf(diaryChangeModel.getDiaryToReaderDTO().getWriterId()), diaryChangeModel.getDiaryToReaderDTO().getDiaryId());
+
+            diaryDataSyncService.deleteDocument(targetDiary);
 
         } else {
             throw new NotSupportedActionEnumException("diary actions supported for read diary service are create, update, delete...");
