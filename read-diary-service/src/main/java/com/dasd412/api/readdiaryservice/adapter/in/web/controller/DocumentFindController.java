@@ -181,7 +181,7 @@ public class DocumentFindController {
     @GetMapping("/food/list")
     @RateLimiter(name = "readDiaryService")
     @CircuitBreaker(name = "readDiaryService", fallbackMethod = "fallBackFindFoodList")
-    public ApiResult<?> findFoodList(@RequestHeader(value = "writer-id") String writerId, @RequestParam FoodPageVO foodPageVO) throws TimeoutException {
+    public ApiResult<?> findFoodList(@RequestHeader(value = "writer-id") String writerId, @ModelAttribute("foodPageVO") FoodPageVO foodPageVO) throws TimeoutException {
         logger.info("find food list in document find controller : {} ", UserContextHolder.getContext().getCorrelationId());
 
         ScopedSpan span = tracer.startScopedSpan("findFoodList");

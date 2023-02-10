@@ -96,7 +96,7 @@ services:
       - backend
 
   readdiaryservice:
-    image: msa/read-diary-service:0.0.4-SNAPSHOT
+    image: msa/read-diary-service:0.0.5-SNAPSHOT
     ports:
       - "8083:8083"
     environment:
