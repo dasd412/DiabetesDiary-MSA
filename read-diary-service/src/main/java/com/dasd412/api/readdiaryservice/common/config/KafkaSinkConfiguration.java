@@ -5,6 +5,7 @@ import com.dasd412.api.readdiaryservice.adapter.in.msessage.WriterChannels;
 import com.dasd412.api.readdiaryservice.adapter.in.msessage.handler.DiaryChangeHandler;
 import com.dasd412.api.readdiaryservice.adapter.in.msessage.handler.WriterChangeHandler;
 import com.dasd412.api.readdiaryservice.application.service.DiaryDataSyncService;
+import com.dasd412.api.readdiaryservice.application.service.ReadDiaryService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +22,13 @@ public class KafkaSinkConfiguration {
 
     private final DiaryDataSyncService diaryDataSyncService;
 
-    public KafkaSinkConfiguration(DiaryChannels diaryChannels, WriterChannels writerChannels, DiaryDataSyncService diaryDataSyncService) {
+    private final ReadDiaryService readDiaryService;
+
+    public KafkaSinkConfiguration(DiaryChannels diaryChannels, WriterChannels writerChannels, DiaryDataSyncService diaryDataSyncService, ReadDiaryService readDiaryService) {
         this.diaryChannels = diaryChannels;
         this.writerChannels = writerChannels;
         this.diaryDataSyncService = diaryDataSyncService;
+        this.readDiaryService = readDiaryService;
     }
 
     @Bean
@@ -34,6 +38,6 @@ public class KafkaSinkConfiguration {
 
     @Bean
     public DiaryChangeHandler diaryChangeHandler() {
-        return new DiaryChangeHandler(diaryDataSyncService);
+        return new DiaryChangeHandler(diaryDataSyncService, readDiaryService);
     }
 }
