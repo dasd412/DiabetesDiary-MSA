@@ -1,14 +1,50 @@
 # DiabetesDiary-MSA
-MSA project by dasd412
+MSA project by dasd412 
 
 ***
+
+## 아키텍쳐
+
+### development 환경
+![architecture](https://velog.velcdn.com/images/dasd412/post/bb35a9e9-934d-429c-a98b-6603fa0e8e0c/image.png)
+
+#### 세부 사항
+1. 컨피그 서버는 외부 git 저장소에서 properties, yaml 설정을 로드합니다. 외부 저장소는 private repository이며 암호화되어 있습니다.  
+  
+
+2.  CUD 서비스는 CREATE, UPDATE ,DELETE 전용 서비스를 뜻합니다.  
+
+
+3. 인증 서비스와 CUD 서비스는 H2를, 조회 서비스는 embed mongo를 사용하고 있습니다.  
+
+
+4. 인증 서비스에서 '탈퇴' 이벤트가 발생하면, CUD 서비스와 조회서비스에 메시지를 보냅니다. 각각 writerChange, writerChangeToReader 토픽을 사용합니다. 보내는 메시지는 작성자 id입니다.  
+
+
+5. CUD 서비스에서 생성, 변경, 삭제 이벤트가 발생하면, 인증 서비스와 조회 서비스 각각에 메시지를 보냅니다. 조회 서비스에 보내는 메시지는 DTO입니다.
+
+#### 아쉬운 점 또는 아직 해결하지 못한 것
+1. 유레카 서버가 가끔씩 커스텀 포트가 아닌 디폴트 포트에서 구동되는 문제가 있습니다.  
+
+
+2. 컨트롤러 코드에서 resilience4j를 작성한 부분이 많이 중복됩니다.
+
+
+3. OAuth가 아닌 로그인의 경우 게이트웨이를 정상 경유합니다. 하지만 OAuth 로그인의 경우 게이트웨이를 경유하면 인증에 실패하는 문제점이 있습니다.  
+
+
+4. 구현하고 보니, CUD 서비스에서 인증 서비스로 이벤트로 보낼 필요가 없음을 알게 되었습니다.
+
+
+***
+
 
 ## DDD 이벤트 스토밍
 ![ddd](https://velog.velcdn.com/images/dasd412/post/03122079-a3d8-4d79-b3da-18269a9b7944/image.png)
 
 ***
 
-## 히스토리
+## 개발 히스토리
 1. 일지 서비스와 작성자 서비스 간단히 분할 ✅
 2. 게이트 웨이 추가 및 상관 관계 Id 필터 추가 ✅
 3. 일지 CUD 서비스의 Create 완성 및 테스트 ✅
@@ -29,7 +65,7 @@ MSA project by dasd412
 18. 게이트웨이를 경유할 경우의 OAuth 인증 실패 ❌
 19.  Mongo DB + Querydsl 조합으로 읽기 전용 서비스 로직 완성 및 테스트 ✅
 20. 읽기 전용 서비스에 페이징 로직 완성 ✅
-21. 읽기 전용 서비스에 카프카 메시징 도입
+21. 읽기 전용 서비스에 카프카 메시징 도입  ✅
 
 ***
 
