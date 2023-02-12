@@ -1,11 +1,14 @@
 package com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto;
 
+import com.dasd412.api.readdiaryservice.domain.StringMaxLength;
 import com.dasd412.api.readdiaryservice.domain.food.AmountUnit;
 import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 public class FoodToReaderDTO {
@@ -24,6 +27,12 @@ public class FoodToReaderDTO {
 
     @Builder
     public FoodToReaderDTO(Long foodId, Long dietId, Long writerId, String foodName, double amount, AmountUnit amountUnit) {
+        checkArgument(foodId != null && foodId > 0, "id for reading must be positive integer.");
+        checkArgument(writerId != null && writerId > 0, "reference for writer must be positive integer.");
+        checkArgument(dietId != null && dietId > 0, "foreign key must be positive integer.");
+        checkArgument(foodName.length() > 0 && foodName.length() <= StringMaxLength.FOOD_NAME, "food name length should be between 1 and 50");
+        checkArgument(amount >= 0, "amount must be positive.");
+
         this.foodId = foodId;
         this.dietId = dietId;
         this.writerId = writerId;

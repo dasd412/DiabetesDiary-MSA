@@ -9,6 +9,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @Getter
 public class DietToReaderDTO {
 
@@ -26,6 +28,12 @@ public class DietToReaderDTO {
 
     @Builder
     public DietToReaderDTO(Long dietId, Long diaryId, Long writerId, EatTime eatTime, int bloodSugar, List<FoodToReaderDTO> foodList) {
+        checkArgument(dietId != null && dietId > 0, "id for reading must be positive integer.");
+        checkArgument(diaryId != null && diaryId > 0, "reference for diary must be positive integer.");
+        checkArgument(writerId != null && writerId > 0, "reference for writer must be positive integer.");
+        checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
+        checkArgument(foodList!=null,"document list must not be null");
+
         this.dietId = dietId;
         this.diaryId = diaryId;
         this.writerId = writerId;
