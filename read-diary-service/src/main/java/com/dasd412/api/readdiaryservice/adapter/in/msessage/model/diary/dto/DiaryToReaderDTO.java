@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -34,7 +35,6 @@ public class DiaryToReaderDTO {
         checkArgument(writerId != null && writerId > 0, "reference must be positive integer.");
         checkArgument(fastingPlasmaGlucose >= 0 && fastingPlasmaGlucose <= 1000, "fastingPlasmaGlucose must be between 0 and 1000");
         checkArgument(remark.length() <= StringMaxLength.DIARY_REMARK, "remark length should be lower than 501");
-        checkArgument(dietToReaderDTOList!=null,"document list must not be null");
 
         this.diaryId = diaryId;
         this.writerId = writerId;
@@ -42,6 +42,13 @@ public class DiaryToReaderDTO {
         this.remark = remark;
         this.writtenTime = writtenTime;
         this.dietList = dietToReaderDTOList;
+    }
+
+    public List<DietToReaderDTO> getDietList() {
+        if(this.dietList==null){
+            return Collections.emptyList();
+        }
+        return dietList;
     }
 
     @Override

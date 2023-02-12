@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -32,7 +34,6 @@ public class DietToReaderDTO {
         checkArgument(diaryId != null && diaryId > 0, "reference for diary must be positive integer.");
         checkArgument(writerId != null && writerId > 0, "reference for writer must be positive integer.");
         checkArgument(bloodSugar >= 0 && bloodSugar <= 1000, "bloodSugar must be between 0 and 1000");
-        checkArgument(foodList!=null,"document list must not be null");
 
         this.dietId = dietId;
         this.diaryId = diaryId;
@@ -40,6 +41,13 @@ public class DietToReaderDTO {
         this.eatTime = eatTime;
         this.bloodSugar = bloodSugar;
         this.foodList = foodList;
+    }
+
+    public List<FoodToReaderDTO> getFoodList() {
+        if(this.foodList==null){
+            return Collections.emptyList();
+        }
+        return foodList;
     }
 
     @Override
