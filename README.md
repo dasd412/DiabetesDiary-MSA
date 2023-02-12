@@ -1,14 +1,55 @@
 # DiabetesDiary-MSA
-MSA project by dasd412
+
+
+기존 모놀리식 프로젝트(https://github.com/dasd412/RemakeDiabetesDiaryAPI)를 MSA로 재설계한 프로젝트
+
+## 실행 방법
+1. msa/docker/development 디렉토리로 이동합니다.
+2. docker-compose up 명령어를 실행합니다.
+***
+
+## 아키텍쳐
+
+### development 환경
+![architecture](https://velog.velcdn.com/images/dasd412/post/bb35a9e9-934d-429c-a98b-6603fa0e8e0c/image.png)
+
+#### 세부 사항
+1. 컨피그 서버는 외부 git 저장소에서 properties, yaml 설정을 로드합니다. 외부 저장소는 private repository이며 암호화되어 있습니다.  
+  
+
+2.  CUD 서비스는 CREATE, UPDATE ,DELETE 전용 서비스를 뜻합니다.  
+
+
+3. 인증 서비스와 CUD 서비스는 H2를, 조회 서비스는 embed mongo를 사용하고 있습니다.  
+
+
+4. 인증 서비스에서 '탈퇴' 이벤트가 발생하면, CUD 서비스와 조회서비스에 메시지를 보냅니다. 각각 writerChange, writerChangeToReader 토픽을 사용합니다. 보내는 메시지는 작성자 id입니다.  
+
+
+5. CUD 서비스에서 생성, 변경, 삭제 이벤트가 발생하면, 인증 서비스와 조회 서비스 각각에 메시지를 보냅니다. 조회 서비스에 보내는 메시지는 DTO입니다.
+
+#### 아쉬운 점 또는 아직 해결하지 못한 것
+1. 유레카 서버가 가끔씩 커스텀 포트가 아닌 디폴트 포트에서 구동되는 문제가 있습니다.  
+
+
+2. 컨트롤러 코드에서 resilience4j를 작성한 부분이 많이 중복됩니다.
+
+
+3. OAuth가 아닌 로그인의 경우 게이트웨이를 정상 경유합니다. 하지만 OAuth 로그인의 경우 게이트웨이를 경유하면 인증에 실패하는 문제점이 있습니다.  
+
+
+4. 구현하고 보니, CUD 서비스에서 인증 서비스로 이벤트로 보낼 필요가 없음을 알게 되었습니다.
+
 
 ***
+
 
 ## DDD 이벤트 스토밍
 ![ddd](https://velog.velcdn.com/images/dasd412/post/03122079-a3d8-4d79-b3da-18269a9b7944/image.png)
 
 ***
 
-## 히스토리
+## 개발 히스토리
 1. 일지 서비스와 작성자 서비스 간단히 분할 ✅
 2. 게이트 웨이 추가 및 상관 관계 Id 필터 추가 ✅
 3. 일지 CUD 서비스의 Create 완성 및 테스트 ✅
@@ -29,7 +70,7 @@ MSA project by dasd412
 18. 게이트웨이를 경유할 경우의 OAuth 인증 실패 ❌
 19.  Mongo DB + Querydsl 조합으로 읽기 전용 서비스 로직 완성 및 테스트 ✅
 20. 읽기 전용 서비스에 페이징 로직 완성 ✅
-21. 읽기 전용 서비스에 카프카 메시징 도입
+21. 읽기 전용 서비스에 카프카 메시징 도입  ✅
 
 ***
 
@@ -221,6 +262,92 @@ Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
 ***
 * ReadDiaryService
 
+- API 명 : **일지 1개 조회**
+  + 리소스 URI : /diary
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 일지 id
+  + 응답 값 :  성공 시 200 코드 + 일지 DTO , 실패 시 400 (해당 id 없을 경우)또는 500 (그 외 문제)
+  + 요청 예시
+```
+http://localhost:8062/view/diary/1
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **모든 공복혈당 조회**
+  + 리소스 URI : /fpg/all
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 없음
+  + 응답 값 :  성공 시 200 코드 + 공복 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/fpg/all
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **기간 내 공복혈당 조회**
+  + 리소스 URI : /fpg/between
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 날짜 문자열
+  + 응답 값 :  성공 시 200 코드 + 공복 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/fpg/between?startYear=2022&startMonth=02&startDay=01&endYear=2023&endMonth=02&endDay=10
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+- API 명 : **모든 식사 혈당 조회**
+  + 리소스 URI : /blood-sugar/all
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 없음
+  + 응답 값 :  성공 시 200 코드 + 식사 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/blood-sugar/all
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **기간 내 식사 혈당 조회**
+  + 리소스 URI : /blood-sugar/between
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 날짜 문자열
+  + 응답 값 :  성공 시 200 코드 + 식사 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/blood-sugar/between?startYear=2022&startMonth=02&startDay=01&endYear=2023&endMonth=02&endDay=10
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **음식 페이징 조회**
+  + 리소스 URI : /food/list
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 식사 혈당 부등호 조건, 날짜 조건
+  + 응답 값 :  성공 시 200 코드 + 페이징된 DTO 리스트
+  + 요청 예시
+```
+http://localhost:8062/view/food/list
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+
+form-data :
+    bloodSugar:100
+    sign:ge
+    startYear:2022
+    startMonth:01
+    startDay:01
+    endYear:2023
+    endMonth:01
+    endDay:01
+```
 ***
 
 ## 참고 서적
