@@ -6,10 +6,14 @@ import com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto.Food
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.application.service.DiaryDataSyncService;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
+import com.dasd412.api.readdiaryservice.domain.diary.QDiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +27,11 @@ public class DiaryDataSyncServiceImpl implements DiaryDataSyncService {
 
     private final DiaryDocumentRepository diaryDocumentRepository;
 
-    public DiaryDataSyncServiceImpl(DiaryDocumentRepository diaryDocumentRepository) {
+    private final MongoTemplate mongoTemplate;
+
+    public DiaryDataSyncServiceImpl(DiaryDocumentRepository diaryDocumentRepository, MongoTemplate mongoTemplate) {
         this.diaryDocumentRepository = diaryDocumentRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -82,5 +89,14 @@ public class DiaryDataSyncServiceImpl implements DiaryDataSyncService {
         logger.info("deleting document in DiaryDataSyncService");
 
         diaryDocumentRepository.delete(targetDiary);
+    }
+
+    @Override
+    public void deleteAllOfWriter(Long writerId) {
+        logger.info("delete all of writer in DiaryDataSyncService");
+
+        Query query=new Query(Criteria.where("writer_id").is(writerId));
+
+        mongoTemplate.remove(query,DiabetesDiaryDocument.class);
     }
 }

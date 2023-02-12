@@ -20,12 +20,12 @@ public class WriterChangeHandler {
 
     @StreamListener("inboundWriterChangesToReader")
     public void deleteAllOfWriter(WriterChangeModel writerChangeModel) {
-
         logger.info("received an {} event for writer id {} at time {}", writerChangeModel.getAction(), writerChangeModel.getWriterId(), writerChangeModel.getLocalDateTimeFormat());
 
         if (WriterActionEnum.compare(writerChangeModel.getAction()).equals(WriterActionEnum.DELETED)) {
             logger.info("handle for deleting all data with writer...");
-            //todo 전체 삭제 로직 넣기
+
+            diaryDataSyncService.deleteAllOfWriter(writerChangeModel.getWriterId());
         } else {
             throw new NotSupportedActionEnumException("Writer action supported for read diary service is only Delete...");
         }

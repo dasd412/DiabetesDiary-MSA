@@ -7,4 +7,6 @@ public interface DiaryDataSyncService {
     void createDocument(DiaryToReaderDTO diaryToReaderDTO);
     void updateDocument(DiabetesDiaryDocument targetDiary,DiaryToReaderDTO diaryToReaderDTO);
     void deleteDocument(DiabetesDiaryDocument targetDiary);
+
+    void deleteAllOfWriter(Long writerId);
 }
