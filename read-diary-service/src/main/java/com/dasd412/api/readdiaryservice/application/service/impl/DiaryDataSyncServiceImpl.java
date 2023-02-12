@@ -6,7 +6,6 @@ import com.dasd412.api.readdiaryservice.adapter.in.msessage.model.diary.dto.Food
 import com.dasd412.api.readdiaryservice.adapter.out.persistence.diary.DiaryDocumentRepository;
 import com.dasd412.api.readdiaryservice.application.service.DiaryDataSyncService;
 import com.dasd412.api.readdiaryservice.domain.diary.DiabetesDiaryDocument;
-import com.dasd412.api.readdiaryservice.domain.diary.QDiabetesDiaryDocument;
 import com.dasd412.api.readdiaryservice.domain.diet.DietDocument;
 import com.dasd412.api.readdiaryservice.domain.food.FoodDocument;
 import org.slf4j.Logger;
