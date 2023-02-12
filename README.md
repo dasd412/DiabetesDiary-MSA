@@ -1,6 +1,11 @@
 # DiabetesDiary-MSA
-MSA project by dasd412 
 
+
+기존 모놀리식 프로젝트(https://github.com/dasd412/RemakeDiabetesDiaryAPI)를 MSA로 재설계한 프로젝트
+
+## 실행 방법
+1. msa/docker/development 디렉토리로 이동합니다.
+2. docker-compose up 명령어를 실행합니다.
 ***
 
 ## 아키텍쳐
@@ -257,6 +262,92 @@ Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
 ***
 * ReadDiaryService
 
+- API 명 : **일지 1개 조회**
+  + 리소스 URI : /diary
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 일지 id
+  + 응답 값 :  성공 시 200 코드 + 일지 DTO , 실패 시 400 (해당 id 없을 경우)또는 500 (그 외 문제)
+  + 요청 예시
+```
+http://localhost:8062/view/diary/1
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **모든 공복혈당 조회**
+  + 리소스 URI : /fpg/all
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 없음
+  + 응답 값 :  성공 시 200 코드 + 공복 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/fpg/all
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **기간 내 공복혈당 조회**
+  + 리소스 URI : /fpg/between
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 날짜 문자열
+  + 응답 값 :  성공 시 200 코드 + 공복 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/fpg/between?startYear=2022&startMonth=02&startDay=01&endYear=2023&endMonth=02&endDay=10
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+- API 명 : **모든 식사 혈당 조회**
+  + 리소스 URI : /blood-sugar/all
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 없음
+  + 응답 값 :  성공 시 200 코드 + 식사 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/blood-sugar/all
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **기간 내 식사 혈당 조회**
+  + 리소스 URI : /blood-sugar/between
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 날짜 문자열
+  + 응답 값 :  성공 시 200 코드 + 식사 혈당 DTO
+  + 요청 예시
+```
+http://localhost:8062/view/blood-sugar/between?startYear=2022&startMonth=02&startDay=01&endYear=2023&endMonth=02&endDay=10
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+```
+
+- API 명 : **음식 페이징 조회**
+  + 리소스 URI : /food/list
+  + HTTP 메서드 : GET
+  + 요청 헤더 : Authorization 헤더 (Bearer 액세스 토큰 값)
+  + 요청 매개변수 : 식사 혈당 부등호 조건, 날짜 조건
+  + 응답 값 :  성공 시 200 코드 + 페이징된 DTO 리스트
+  + 요청 예시
+```
+http://localhost:8062/view/food/list
+
+Authorization : Bearer 로그인 성공 시 받은 액세스 토큰 값
+
+form-data :
+    bloodSugar:100
+    sign:ge
+    startYear:2022
+    startMonth:01
+    startDay:01
+    endYear:2023
+    endMonth:01
+    endDay:01
+```
 ***
 
 ## 참고 서적
