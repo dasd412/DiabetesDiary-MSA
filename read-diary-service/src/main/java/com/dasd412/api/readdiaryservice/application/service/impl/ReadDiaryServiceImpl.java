@@ -48,6 +48,16 @@ public class ReadDiaryServiceImpl implements ReadDiaryService {
     }
 
     @Override
+    public DiabetesDiaryDocument getOneDiaryDocument(String writerId, Long diaryId) {
+        logger.info("find one document in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
+
+        Predicate predicate=qDocument.writerId.eq(Long.parseLong(writerId))
+                .and(qDocument.diaryId.eq(diaryId));
+
+        return diaryDocumentRepository.findOne(predicate).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Override
     public List<DiabetesDiaryDocument> getDiabetesDiariesOfWriter(String writerId) {
         logger.info("find all fpg in ReadDiaryService : {} ", UserContextHolder.getContext().getCorrelationId());
 

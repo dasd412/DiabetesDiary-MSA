@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.adapter.in.web;
 import brave.ScopedSpan;
 import brave.Tracer;
 import com.dasd412.api.diaryservice.adapter.in.web.dto.update.DiaryUpdateRequestDTO;
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
 import com.dasd412.api.diaryservice.adapter.out.web.ApiResult;
 import com.dasd412.api.diaryservice.adapter.out.web.dto.update.DiaryUpdateResponseDTO;
 import com.dasd412.api.diaryservice.application.service.UpdateDiaryService;
@@ -45,8 +46,11 @@ public class DiaryUpdateRestController {
         ScopedSpan span = tracer.startScopedSpan("updateDiary");
 
         try {
-            Long diaryId = updateDiaryService.updateDiaryWithEntities(Long.parseLong(writerId), dto);
-            return ApiResult.OK(new DiaryUpdateResponseDTO(diaryId));
+            DiaryToReaderDTO readerDTO = updateDiaryService.updateDiaryWithEntities(Long.parseLong(writerId), dto);
+
+            updateDiaryService.sendMessageToFindDiaryService(readerDTO);
+
+            return ApiResult.OK(new DiaryUpdateResponseDTO(readerDTO.getDiaryId()));
         } catch (NoResultException exception) {
             return ApiResult.ERROR(exception.getMessage(), HttpStatus.BAD_REQUEST);
         } finally {

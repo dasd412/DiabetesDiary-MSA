@@ -11,6 +11,7 @@ import java.util.Map;
 
 public interface ReadDiaryService {
 
+    DiabetesDiaryDocument getOneDiaryDocument(String writerId, Long diaryId);
     List<DiabetesDiaryDocument> getDiabetesDiariesOfWriter(String writerId);
 
     List<DiabetesDiaryDocument> getDiariesBetweenTimeSpan(String writerId, Map<String, String> timeSpan);

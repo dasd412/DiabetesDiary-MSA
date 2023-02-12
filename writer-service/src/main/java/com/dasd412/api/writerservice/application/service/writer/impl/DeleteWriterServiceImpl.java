@@ -78,7 +78,9 @@ public class DeleteWriterServiceImpl implements DeleteWriterService {
     @Override
     public void sendMessageToOtherService(Long writerId) {
         logger.info("writer-service sent message to  diary-service  in DeleteWriterService. correlation id :{}", UserContextHolder.getContext().getCorrelationId());
+
         kafkaSourceBean.publishWriterChangeToDiary(ActionEnum.DELETED,writerId);
-        //todo 읽기용 서비스에도 카프카 비동기 메시지 보내기
+
+        kafkaSourceBean.publishWriterChangeToReader(ActionEnum.DELETED,writerId);
     }
 }

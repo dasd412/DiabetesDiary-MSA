@@ -3,6 +3,7 @@ package com.dasd412.api.diaryservice.adapter.in.web;
 import brave.ScopedSpan;
 import brave.Tracer;
 
+import com.dasd412.api.diaryservice.adapter.out.message.model.readdiary.dto.DiaryToReaderDTO;
 import com.dasd412.api.diaryservice.adapter.out.web.ApiResult;
 import com.dasd412.api.diaryservice.adapter.out.web.dto.delete.DiaryDeleteResponseDTO;
 import com.dasd412.api.diaryservice.application.service.DeleteDiaryService;
@@ -41,9 +42,14 @@ public class DiaryDeleteRestController {
         ScopedSpan span = tracer.startScopedSpan("deleteDiary");
 
         try {
-            Long removedId = deleteDiaryService.deleteDiaryWithSubEntities(diaryId, Long.parseLong(writerId));
-            return ApiResult.OK(new DiaryDeleteResponseDTO(removedId));
-        }finally {
+            DiaryToReaderDTO diaryToReaderDTO = deleteDiaryService.deleteDiaryWithSubEntities(diaryId, Long.parseLong(writerId));
+
+            deleteDiaryService.sendMessageToWriterService(Long.parseLong(writerId), diaryId);
+
+            deleteDiaryService.sendMessageToFindDiaryService(diaryToReaderDTO);
+
+            return ApiResult.OK(new DiaryDeleteResponseDTO(diaryToReaderDTO.getDiaryId()));
+        } finally {
             span.tag("cud.diary.service", "delete");
             span.finish();
         }
