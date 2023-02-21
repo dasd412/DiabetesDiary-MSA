@@ -12,7 +12,7 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
 # stage 2 layerd jar
 
-FROM openjdk:11-slim
+FROM gcr.io/distroless/java:11
 
 VOLUME /tmp
 
